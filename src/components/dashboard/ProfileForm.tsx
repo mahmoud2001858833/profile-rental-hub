@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +28,7 @@ interface Profile {
 const ProfileForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 1200, maxHeight: 600, quality: 0.8 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -52,8 +54,8 @@ const ProfileForm = () => {
 
     if (error) {
       toast({
-        title: 'خطأ',
-        description: 'فشل في تحميل الملف الشخصي',
+        title: t('profile.error'),
+        description: t('profile.loadError'),
         variant: 'destructive',
       });
     } else {
@@ -66,7 +68,6 @@ const ProfileForm = () => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
 
-    // Delete old avatar if exists
     if (profile.avatar_url) {
       await deleteImage(profile.avatar_url);
     }
@@ -74,13 +75,12 @@ const ProfileForm = () => {
     const url = await uploadImage(file, user.id, 'avatars');
     if (url) {
       setProfile({ ...profile, avatar_url: url });
-      // Save immediately
       await supabase
         .from('profiles')
         .update({ avatar_url: url })
         .eq('user_id', user.id);
       
-      toast({ title: 'تم رفع الصورة', description: 'تم تحديث صورة البروفايل' });
+      toast({ title: t('profile.imageUploaded'), description: t('profile.avatarUpdated') });
     }
   };
 
@@ -88,7 +88,6 @@ const ProfileForm = () => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
 
-    // Delete old cover if exists
     if (profile.cover_url) {
       await deleteImage(profile.cover_url);
     }
@@ -96,13 +95,12 @@ const ProfileForm = () => {
     const url = await uploadImage(file, user.id, 'covers');
     if (url) {
       setProfile({ ...profile, cover_url: url });
-      // Save immediately
       await supabase
         .from('profiles')
         .update({ cover_url: url })
         .eq('user_id', user.id);
       
-      toast({ title: 'تم رفع الصورة', description: 'تم تحديث صورة الغلاف' });
+      toast({ title: t('profile.imageUploaded'), description: t('profile.coverUpdated') });
     }
   };
 
@@ -116,7 +114,7 @@ const ProfileForm = () => {
       .update({ avatar_url: null })
       .eq('user_id', user.id);
     
-    toast({ title: 'تم الحذف', description: 'تم حذف صورة البروفايل' });
+    toast({ title: t('profile.deleted'), description: t('profile.avatarDeleted') });
   };
 
   const removeCover = async () => {
@@ -129,7 +127,7 @@ const ProfileForm = () => {
       .update({ cover_url: null })
       .eq('user_id', user.id);
     
-    toast({ title: 'تم الحذف', description: 'تم حذف صورة الغلاف' });
+    toast({ title: t('profile.deleted'), description: t('profile.coverDeleted') });
   };
 
   const handleSave = async () => {
@@ -152,14 +150,14 @@ const ProfileForm = () => {
 
     if (error) {
       toast({
-        title: 'خطأ',
-        description: 'فشل في حفظ التغييرات',
+        title: t('profile.error'),
+        description: t('profile.saveError'),
         variant: 'destructive',
       });
     } else {
       toast({
-        title: 'تم الحفظ',
-        description: 'تم تحديث الملف الشخصي بنجاح',
+        title: t('profile.saved'),
+        description: t('profile.profileUpdated'),
       });
     }
   };
@@ -169,8 +167,8 @@ const ProfileForm = () => {
       const url = `${window.location.origin}/p/${profile.page_slug}`;
       navigator.clipboard.writeText(url);
       toast({
-        title: 'تم النسخ',
-        description: 'تم نسخ رابط صفحتك',
+        title: t('profile.linkCopied'),
+        description: t('profile.pageLinkCopied'),
       });
     }
   };
@@ -187,7 +185,7 @@ const ProfileForm = () => {
     return (
       <Card>
         <CardContent className="p-8 text-center">
-          <p className="text-muted-foreground">لم يتم العثور على الملف الشخصي</p>
+          <p className="text-muted-foreground">{t('profile.notFound')}</p>
         </CardContent>
       </Card>
     );
@@ -195,7 +193,6 @@ const ProfileForm = () => {
 
   return (
     <div className="space-y-6">
-      {/* Hidden file inputs */}
       <input
         ref={avatarInputRef}
         type="file"
@@ -211,15 +208,13 @@ const ProfileForm = () => {
         onChange={handleCoverChange}
       />
 
-      {/* Profile Images Card */}
       <Card className="overflow-hidden">
         <CardHeader className="p-0">
-          {/* Cover Image */}
           <div className="relative h-40 bg-gradient-to-br from-primary/20 to-accent/20">
             {profile.cover_url ? (
               <img 
                 src={profile.cover_url} 
-                alt="صورة الغلاف" 
+                alt="" 
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -227,7 +222,7 @@ const ProfileForm = () => {
                 <ImagePlus className="h-12 w-12 opacity-50" />
               </div>
             )}
-            <div className="absolute top-2 left-2 flex gap-2">
+            <div className="absolute top-2 start-2 flex gap-2">
               <Button 
                 size="sm" 
                 variant="secondary" 
@@ -236,7 +231,7 @@ const ProfileForm = () => {
                 className="shadow-lg"
               >
                 {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-                <span className="mr-1">تغيير الغلاف</span>
+                <span className="mx-1">{t('profile.changeCover')}</span>
               </Button>
               {profile.cover_url && (
                 <Button 
@@ -250,13 +245,12 @@ const ProfileForm = () => {
               )}
             </div>
             
-            {/* Avatar */}
-            <div className="absolute -bottom-12 right-6">
+            <div className="absolute -bottom-12 end-6">
               <div className="relative">
                 {profile.avatar_url ? (
                   <img 
                     src={profile.avatar_url} 
-                    alt="صورة البروفايل" 
+                    alt="" 
                     className="w-24 h-24 rounded-2xl object-cover border-4 border-background shadow-xl"
                   />
                 ) : (
@@ -269,7 +263,7 @@ const ProfileForm = () => {
                   variant="secondary" 
                   onClick={() => avatarInputRef.current?.click()}
                   disabled={uploading}
-                  className="absolute -bottom-2 -left-2 h-8 w-8 rounded-full shadow-lg"
+                  className="absolute -bottom-2 -start-2 h-8 w-8 rounded-full shadow-lg"
                 >
                   {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
                 </Button>
@@ -278,7 +272,7 @@ const ProfileForm = () => {
                     size="icon" 
                     variant="destructive" 
                     onClick={removeAvatar}
-                    className="absolute -top-2 -left-2 h-6 w-6 rounded-full shadow-lg"
+                    className="absolute -top-2 -start-2 h-6 w-6 rounded-full shadow-lg"
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -289,23 +283,22 @@ const ProfileForm = () => {
         </CardHeader>
         <CardContent className="pt-16 pb-6">
           <p className="text-sm text-muted-foreground">
-            صورة البروفايل والغلاف ستظهر في صفحتك العامة. يتم ضغط الصور تلقائياً.
+            {t('profile.imagesNote')}
           </p>
         </CardContent>
       </Card>
 
-      {/* Page Status Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>حالة الصفحة</span>
+            <span>{t('profile.pageStatus')}</span>
             <Switch
               checked={profile.page_enabled}
               onCheckedChange={(checked) => setProfile({ ...profile, page_enabled: checked })}
             />
           </CardTitle>
           <CardDescription>
-            {profile.page_enabled ? 'صفحتك مفعّلة ومرئية للزوار' : 'صفحتك معطّلة وغير مرئية'}
+            {profile.page_enabled ? t('profile.pageEnabled') : t('profile.pageDisabled')}
           </CardDescription>
         </CardHeader>
         {profile.page_enabled && profile.page_slug && (
@@ -327,18 +320,17 @@ const ProfileForm = () => {
         )}
       </Card>
 
-      {/* Profile Info Card */}
       <Card>
         <CardHeader>
-          <CardTitle>معلومات الملف الشخصي</CardTitle>
-          <CardDescription>هذه المعلومات ستظهر في صفحتك العامة</CardDescription>
+          <CardTitle>{t('profile.profileInfo')}</CardTitle>
+          <CardDescription>{t('profile.profileInfoDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="display_name">اسم العرض</Label>
+            <Label htmlFor="display_name">{t('profile.displayName')}</Label>
             <Input
               id="display_name"
-              placeholder="اسمك أو اسم مشروعك"
+              placeholder={t('profile.displayNamePlaceholder')}
               value={profile.display_name || ''}
               onChange={(e) => setProfile({ ...profile, display_name: e.target.value })}
               maxLength={100}
@@ -346,10 +338,10 @@ const ProfileForm = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">نبذة عنك</Label>
+            <Label htmlFor="bio">{t('profile.bio')}</Label>
             <Textarea
               id="bio"
-              placeholder="وصف مختصر عن مشروعك أو خدماتك..."
+              placeholder={t('profile.bioPlaceholder')}
               value={profile.bio || ''}
               onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
               rows={3}
@@ -358,7 +350,7 @@ const ProfileForm = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="page_slug">رابط الصفحة</Label>
+            <Label htmlFor="page_slug">{t('profile.pageLink')}</Label>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">/p/</span>
               <Input
@@ -374,25 +366,24 @@ const ProfileForm = () => {
         </CardContent>
       </Card>
 
-      {/* Contact Info Card */}
       <Card>
         <CardHeader>
-          <CardTitle>معلومات التواصل</CardTitle>
+          <CardTitle>{t('profile.contactInfo')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="phone">رقم الهاتف</Label>
+            <Label htmlFor="phone">{t('profile.phone')}</Label>
             <Input
               id="phone"
               value={profile.phone}
               disabled
               className="bg-muted"
             />
-            <p className="text-xs text-muted-foreground">لا يمكن تغيير رقم الهاتف</p>
+            <p className="text-xs text-muted-foreground">{t('profile.phoneCantChange')}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="whatsapp">رقم واتساب</Label>
+            <Label htmlFor="whatsapp">{t('profile.whatsapp')}</Label>
             <Input
               id="whatsapp"
               type="tel"
@@ -405,8 +396,8 @@ const ProfileForm = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <Label>يوجد توصيل</Label>
-              <p className="text-sm text-muted-foreground">هل تقدم خدمة التوصيل؟</p>
+              <Label>{t('profile.hasDelivery')}</Label>
+              <p className="text-sm text-muted-foreground">{t('profile.deliveryQuestion')}</p>
             </div>
             <Switch
               checked={profile.has_delivery}
@@ -419,11 +410,11 @@ const ProfileForm = () => {
       <Button onClick={handleSave} disabled={saving} className="w-full">
         {saving ? (
           <>
-            <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-            جاري الحفظ...
+            <Loader2 className="mx-2 h-4 w-4 animate-spin" />
+            {t('profile.saving')}
           </>
         ) : (
-          'حفظ التغييرات'
+          t('profile.saveChanges')
         )}
       </Button>
     </div>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useLanguage } from '@/hooks/useLanguage';
 import { MessageCircle, X, Send, Loader2, Sparkles, Bot, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,9 +16,10 @@ interface Message {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-guide`;
 
 const AIGuide = () => {
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'مرحباً! أنا مرشد المنصة الذكي 👋\n\nكيف يمكنني مساعدتك اليوم؟' }
+    { role: 'assistant', content: t('aiGuide.welcome') }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,12 +41,19 @@ const AIGuide = () => {
       terms: '/terms',
     };
     
+    const routeNames: Record<string, string> = {
+      home: t('aiGuide.home'),
+      auth: t('aiGuide.login'),
+      dashboard: t('aiGuide.dashboard'),
+      terms: t('aiGuide.terms'),
+    };
+    
     const route = routes[page];
     if (route) {
       navigate(route);
       toast({
-        title: 'تم الانتقال',
-        description: `تم الانتقال إلى ${page === 'home' ? 'الصفحة الرئيسية' : page === 'auth' ? 'صفحة تسجيل الدخول' : page === 'dashboard' ? 'لوحة التحكم' : 'الشروط والأحكام'}`,
+        title: t('aiGuide.navigated'),
+        description: `${t('aiGuide.navigatedTo')} ${routeNames[page]}`,
       });
     }
   };
@@ -66,7 +75,7 @@ const AIGuide = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: [...messages, userMessage].slice(-10) }), // Keep last 10 messages
+        body: JSON.stringify({ messages: [...messages, userMessage].slice(-10) }),
       });
 
       if (!resp.ok || !resp.body) {
@@ -100,7 +109,6 @@ const AIGuide = () => {
             const parsed = JSON.parse(jsonStr);
             const delta = parsed.choices?.[0]?.delta;
             
-            // Handle content
             if (delta?.content) {
               assistantContent += delta.content;
               setMessages(prev => {
@@ -114,7 +122,6 @@ const AIGuide = () => {
               });
             }
 
-            // Handle tool calls
             if (delta?.tool_calls) {
               for (const toolCall of delta.tool_calls) {
                 if (toolCall.function?.arguments) {
@@ -123,7 +130,6 @@ const AIGuide = () => {
               }
             }
 
-            // Check for finished tool call
             const finishReason = parsed.choices?.[0]?.finish_reason;
             if (finishReason === 'tool_calls' && toolCallData) {
               try {
@@ -144,7 +150,7 @@ const AIGuide = () => {
       console.error('AI Guide error:', error);
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.' }
+        { role: 'assistant', content: t('aiGuide.error') }
       ]);
     } finally {
       setIsLoading(false);
@@ -159,17 +165,16 @@ const AIGuide = () => {
   };
 
   const quickQuestions = [
-    'كيف أنشئ صفحة عرض؟',
-    'كيف أضيف منتجات؟',
-    'خذني للوحة التحكم',
+    t('aiGuide.q1'),
+    t('aiGuide.q2'),
+    t('aiGuide.q3'),
   ];
 
   return (
     <>
-      {/* Floating Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-2xl shadow-primary/40 transition-all duration-300 ${
+        className={`fixed bottom-6 ${language === 'ar' ? 'left-6' : 'right-6'} z-50 h-14 w-14 rounded-full shadow-2xl shadow-primary/40 transition-all duration-300 ${
           isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
         }`}
         size="icon"
@@ -177,14 +182,12 @@ const AIGuide = () => {
         <Sparkles className="h-6 w-6" />
       </Button>
 
-      {/* Chat Window */}
       <div
-        className={`fixed bottom-6 left-6 z-50 w-[90vw] max-w-[380px] transition-all duration-300 ${
+        className={`fixed bottom-6 ${language === 'ar' ? 'left-6' : 'right-6'} z-50 w-[90vw] max-w-[380px] transition-all duration-300 ${
           isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
         }`}
       >
         <Card className="shadow-2xl border-0 overflow-hidden">
-          {/* Header */}
           <CardHeader className="bg-gradient-to-r from-primary to-red-700 text-white p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -192,8 +195,8 @@ const AIGuide = () => {
                   <Bot className="h-5 w-5" />
                 </div>
                 <div>
-                  <CardTitle className="text-base font-bold">مرشد المنصة</CardTitle>
-                  <p className="text-xs text-white/80">متصل الآن</p>
+                  <CardTitle className="text-base font-bold">{t('aiGuide.title')}</CardTitle>
+                  <p className="text-xs text-white/80">{t('aiGuide.online')}</p>
                 </div>
               </div>
               <Button
@@ -207,7 +210,6 @@ const AIGuide = () => {
             </div>
           </CardHeader>
 
-          {/* Messages */}
           <CardContent className="p-0">
             <ScrollArea className="h-[350px] p-4" ref={scrollRef}>
               <div className="space-y-4">
@@ -232,8 +234,8 @@ const AIGuide = () => {
                     <div
                       className={`rounded-2xl px-4 py-2.5 max-w-[80%] text-sm leading-relaxed ${
                         msg.role === 'user'
-                          ? 'bg-primary text-white rounded-tr-sm'
-                          : 'bg-muted rounded-tl-sm'
+                          ? `bg-primary text-white ${language === 'ar' ? 'rounded-tr-sm' : 'rounded-tl-sm'}`
+                          : `bg-muted ${language === 'ar' ? 'rounded-tl-sm' : 'rounded-tr-sm'}`
                       }`}
                     >
                       {msg.content.split('\n').map((line, i) => (
@@ -250,17 +252,16 @@ const AIGuide = () => {
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                       <Bot className="h-4 w-4" />
                     </div>
-                    <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3">
+                    <div className={`bg-muted rounded-2xl ${language === 'ar' ? 'rounded-tl-sm' : 'rounded-tr-sm'} px-4 py-3`}>
                       <Loader2 className="h-4 w-4 animate-spin" />
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Quick Questions */}
               {messages.length === 1 && (
                 <div className="mt-4 space-y-2">
-                  <p className="text-xs text-muted-foreground">أسئلة سريعة:</p>
+                  <p className="text-xs text-muted-foreground">{t('aiGuide.quickQuestions')}</p>
                   <div className="flex flex-wrap gap-2">
                     {quickQuestions.map((q, i) => (
                       <button
@@ -278,14 +279,13 @@ const AIGuide = () => {
               )}
             </ScrollArea>
 
-            {/* Input */}
             <div className="border-t p-3">
               <div className="flex gap-2">
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="اكتب سؤالك..."
+                  placeholder={t('aiGuide.placeholder')}
                   className="flex-1 h-10"
                   disabled={isLoading}
                 />
