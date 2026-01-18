@@ -307,6 +307,7 @@ const translations: Translations = {
   'items.descriptionPlaceholder': { ar: 'وصف مختصر...', en: 'Brief description...' },
   'items.price': { ar: 'السعر', en: 'Price' },
   'items.pricePositive': { ar: 'السعر يجب أن يكون رقماً موجباً', en: 'Price must be a positive number' },
+  'items.priceMax': { ar: 'السعر كبير جداً (الحد الأقصى 99,999,999)', en: 'Price is too large (maximum 99,999,999)' },
   'items.saving': { ar: 'جاري الحفظ...', en: 'Saving...' },
   'items.noItems': { ar: 'لا توجد عناصر', en: 'No items' },
   'items.startAdding': { ar: 'ابدأ بإضافة منتجاتك أو خدماتك', en: 'Start adding your products or services' },
