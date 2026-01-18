@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
-import { User, LogIn, ShoppingCart, Store } from "lucide-react";
+import { User, ShoppingCart } from "lucide-react";
 
 const Header = () => {
   const { user, loading } = useAuth();
@@ -21,14 +21,6 @@ const Header = () => {
         </Link>
 
         <nav className="flex items-center gap-2">
-          {/* Shop Link */}
-          <Button variant="ghost" asChild>
-            <Link to="/shop">
-              <Store className="ml-1 h-4 w-4" />
-              <span className="hidden sm:inline">تصفح</span>
-            </Link>
-          </Button>
-
           {/* Cart */}
           <Button variant="ghost" className="relative" asChild>
             <Link to="/cart">
@@ -53,9 +45,7 @@ const Header = () => {
           ) : (
             <Button asChild>
               <Link to="/auth">
-                <LogIn className="ml-2 h-4 w-4 sm:hidden" />
-                <span className="hidden sm:inline">للتجار</span>
-                <span className="sm:hidden">دخول</span>
+                <span>للتجار</span>
               </Link>
             </Button>
           )}
