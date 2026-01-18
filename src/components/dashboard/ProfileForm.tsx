@@ -133,6 +133,16 @@ const ProfileForm = () => {
   const handleSave = async () => {
     if (!profile || !user) return;
 
+    // Validate whatsapp number if page is enabled
+    if (profile.page_enabled && !profile.whatsapp_number?.trim()) {
+      toast({
+        title: t('profile.error'),
+        description: t('profile.whatsappRequired'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setSaving(true);
     const { error } = await supabase
       .from('profiles')
