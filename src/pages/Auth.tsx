@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
@@ -19,6 +20,9 @@ const registerSchema = z.object({
   phone: z.string().min(8, 'رقم الهاتف غير صالح').max(20, 'رقم الهاتف طويل جداً'),
   password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
   confirmPassword: z.string(),
+  agreeToTerms: z.boolean().refine((val) => val === true, {
+    message: 'يجب الموافقة على الشروط والأحكام',
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'كلمات المرور غير متطابقة',
   path: ['confirmPassword'],
@@ -35,7 +39,8 @@ const Auth = () => {
     email: '', 
     phone: '', 
     password: '', 
-    confirmPassword: '' 
+    confirmPassword: '',
+    agreeToTerms: false
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -212,6 +217,33 @@ const Auth = () => {
                   />
                   {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
                 </div>
+                
+                <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                  <Checkbox
+                    id="agree-terms"
+                    checked={registerData.agreeToTerms}
+                    onCheckedChange={(checked) => 
+                      setRegisterData({ ...registerData, agreeToTerms: checked === true })
+                    }
+                    className="mt-0.5"
+                  />
+                  <div className="space-y-1">
+                    <Label htmlFor="agree-terms" className="text-sm font-medium cursor-pointer">
+                      أوافق على{' '}
+                      <Link 
+                        to="/terms" 
+                        target="_blank"
+                        className="text-primary hover:underline font-semibold"
+                      >
+                        الشروط والأحكام وسياسة الخصوصية
+                      </Link>
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      بما في ذلك إخلاء المسؤولية وشروط الاشتراك
+                    </p>
+                  </div>
+                </div>
+                {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}
                 
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
