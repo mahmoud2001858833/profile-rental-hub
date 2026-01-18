@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import { User, LogIn } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { User, LogIn, ShoppingCart, Store } from "lucide-react";
 
 const Header = () => {
   const { user, loading } = useAuth();
+  const { getItemCount } = useCart();
+  const cartCount = getItemCount();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -16,29 +20,44 @@ const Header = () => {
           <span className="font-bold text-lg hidden sm:block">صفحات العرض</span>
         </Link>
 
-        <nav className="flex items-center gap-3">
+        <nav className="flex items-center gap-2">
+          {/* Shop Link */}
+          <Button variant="ghost" asChild>
+            <Link to="/shop">
+              <Store className="ml-1 h-4 w-4" />
+              <span className="hidden sm:inline">تصفح</span>
+            </Link>
+          </Button>
+
+          {/* Cart */}
+          <Button variant="ghost" className="relative" asChild>
+            <Link to="/cart">
+              <ShoppingCart className="h-5 w-5" />
+              {cartCount > 0 && (
+                <Badge className="absolute -top-1 -left-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                  {cartCount}
+                </Badge>
+              )}
+            </Link>
+          </Button>
+
           {loading ? (
             <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
           ) : user ? (
             <Button asChild>
               <Link to="/dashboard">
                 <User className="ml-2 h-4 w-4" />
-                لوحة التحكم
+                <span className="hidden sm:inline">لوحة التحكم</span>
               </Link>
             </Button>
           ) : (
-            <>
-              <Button variant="ghost" asChild className="hidden sm:flex">
-                <Link to="/auth">تسجيل الدخول</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/auth">
-                  <LogIn className="ml-2 h-4 w-4 sm:hidden" />
-                  <span className="hidden sm:inline">ابدأ الآن</span>
-                  <span className="sm:hidden">دخول</span>
-                </Link>
-              </Button>
-            </>
+            <Button asChild>
+              <Link to="/auth">
+                <LogIn className="ml-2 h-4 w-4 sm:hidden" />
+                <span className="hidden sm:inline">للتجار</span>
+                <span className="sm:hidden">دخول</span>
+              </Link>
+            </Button>
           )}
         </nav>
       </div>
