@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Phone, MessageCircle, Truck, Loader2, Package } from 'lucide-react';
+import ImageGallery from '@/components/ui/image-gallery';
 
 interface Profile {
   display_name: string | null;
@@ -17,12 +18,19 @@ interface Profile {
   user_id: string;
 }
 
+interface ItemImage {
+  id: string;
+  image_url: string;
+  sort_order: number;
+}
+
 interface Item {
   id: string;
   title: string;
   description: string | null;
   price: number;
   image_url: string | null;
+  gallery_images?: ItemImage[];
 }
 
 const PublicPage = () => {
@@ -63,7 +71,24 @@ const PublicPage = () => {
       .eq('is_active', true)
       .order('sort_order', { ascending: true });
 
-    setItems(itemsData || []);
+    if (itemsData) {
+      // Fetch gallery images for all items
+      const itemIds = itemsData.map(item => item.id);
+      const { data: galleryData } = await supabase
+        .from('item_images')
+        .select('id, item_id, image_url, sort_order')
+        .in('item_id', itemIds)
+        .order('sort_order', { ascending: true });
+
+      // Map gallery images to items
+      const itemsWithGallery = itemsData.map(item => ({
+        ...item,
+        gallery_images: galleryData?.filter(img => img.item_id === item.id) || [],
+      }));
+
+      setItems(itemsWithGallery);
+    }
+    
     setLoading(false);
   };
 
@@ -185,34 +210,37 @@ const PublicPage = () => {
           </Card>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {items.map((item) => (
-              <Card key={item.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
-                {/* Image */}
-                <div className="aspect-square bg-muted relative overflow-hidden">
-                  {item.image_url ? (
-                    <img
-                      src={item.image_url}
+            {items.map((item) => {
+              const galleryUrls = item.gallery_images?.map(img => img.image_url) || [];
+              const hasGallery = galleryUrls.length > 0 || item.image_url;
+              
+              return (
+                <Card key={item.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+                  {/* Image Gallery or Placeholder */}
+                  {hasGallery ? (
+                    <ImageGallery
+                      mainImage={item.image_url}
+                      images={galleryUrls}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                    <div className="aspect-square bg-muted flex items-center justify-center">
                       <Package className="h-12 w-12 text-muted-foreground/30" />
                     </div>
                   )}
-                </div>
-                {/* Content */}
-                <CardContent className="p-3">
-                  <h3 className="font-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
-                  {item.description && (
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2 leading-relaxed">
-                      {item.description}
-                    </p>
-                  )}
-                  <p className="text-accent font-bold">{item.price.toFixed(2)} ر.س</p>
-                </CardContent>
-              </Card>
-            ))}
+                  {/* Content */}
+                  <CardContent className="p-3">
+                    <h3 className="font-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
+                    {item.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2 leading-relaxed">
+                        {item.description}
+                      </p>
+                    )}
+                    <p className="text-accent font-bold">{item.price.toFixed(2)} ر.س</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </section>

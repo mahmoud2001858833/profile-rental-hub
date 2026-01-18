@@ -57,7 +57,7 @@ export const useImageUpload = (options: UseImageUploadOptions = {}) => {
   const uploadImage = async (
     file: File,
     userId: string,
-    folder: 'avatars' | 'covers' | 'products'
+    folder: string
   ): Promise<string | null> => {
     if (!file) return null;
 

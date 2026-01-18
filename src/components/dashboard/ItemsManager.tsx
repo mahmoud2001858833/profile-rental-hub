@@ -9,8 +9,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, Images } from 'lucide-react';
 import { z } from 'zod';
+import ItemGallery from './ItemGallery';
 
 interface Item {
   id: string;
@@ -20,6 +21,7 @@ interface Item {
   image_url: string | null;
   is_active: boolean;
   sort_order: number;
+  gallery_count?: number;
 }
 
 const itemSchema = z.object({
@@ -334,6 +336,13 @@ const ItemsManager = () => {
                 />
                 {errors.price && <p className="text-sm text-destructive">{errors.price}</p>}
               </div>
+
+              {/* Gallery for existing items */}
+              {editingItem && user && (
+                <div className="pt-4 border-t border-border">
+                  <ItemGallery itemId={editingItem.id} userId={user.id} />
+                </div>
+              )}
 
               <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
                 {saving ? (
