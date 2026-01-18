@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
+import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +16,6 @@ import {
   Store, 
   CheckCircle, 
   XCircle,
-  AlertTriangle,
   Eye,
   ShieldCheck
 } from 'lucide-react';
@@ -55,6 +55,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { isAdmin, loading: adminLoading } = useAdmin();
+  const { t, language, dir } = useLanguage();
   
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
@@ -69,10 +70,10 @@ const Admin = () => {
 
   useEffect(() => {
     if (!adminLoading && !isAdmin && user) {
-      toast.error('ليس لديك صلاحية الوصول لهذه الصفحة');
+      toast.error(t('common.error'));
       navigate('/dashboard');
     }
-  }, [isAdmin, adminLoading, user, navigate]);
+  }, [isAdmin, adminLoading, user, navigate, t]);
 
   useEffect(() => {
     if (isAdmin) {
@@ -112,7 +113,7 @@ const Admin = () => {
 
           return {
             ...receipt,
-            merchant_name: profile?.display_name || 'بدون اسم',
+            merchant_name: profile?.display_name || t('common.noName'),
             merchant_phone: profile?.phone || ''
           };
         })
@@ -121,7 +122,7 @@ const Admin = () => {
       setReceipts(enrichedReceipts);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('حدث خطأ في تحميل البيانات');
+      toast.error(t('common.error'));
     } finally {
       setLoadingData(false);
     }
@@ -136,11 +137,11 @@ const Admin = () => {
 
       if (error) throw error;
       
-      toast.success(merchant.page_enabled ? 'تم إغلاق المتجر' : 'تم تفعيل المتجر');
+      toast.success(merchant.page_enabled ? t('admin.storeClosed') : t('admin.storeActivated'));
       fetchData();
     } catch (error) {
       console.error('Error toggling store:', error);
-      toast.error('حدث خطأ');
+      toast.error(t('common.error'));
     }
   };
 
@@ -168,12 +169,12 @@ const Admin = () => {
         }
       }
 
-      toast.success(approved ? 'تم قبول الوصل' : 'تم رفض الوصل');
+      toast.success(approved ? t('admin.receiptApproved') : t('admin.receiptRejected'));
       setSelectedReceipt(null);
       fetchData();
     } catch (error) {
       console.error('Error reviewing receipt:', error);
-      toast.error('حدث خطأ');
+      toast.error(t('common.error'));
     }
   };
 
@@ -197,26 +198,26 @@ const Admin = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-500">مقبول</Badge>;
+        return <Badge className="bg-green-500">{t('admin.approved')}</Badge>;
       case 'rejected':
-        return <Badge variant="destructive">مرفوض</Badge>;
+        return <Badge variant="destructive">{t('admin.rejected')}</Badge>;
       default:
-        return <Badge variant="secondary">قيد المراجعة</Badge>;
+        return <Badge variant="secondary">{t('admin.pending')}</Badge>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background" dir="rtl">
+    <div className="min-h-screen bg-background" dir={dir}>
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-6 w-6 text-primary" />
-            <h1 className="font-bold text-lg">لوحة الأدمن</h1>
+            <h1 className="font-bold text-lg">{t('admin.title')}</h1>
           </div>
           <Button variant="ghost" onClick={handleSignOut}>
-            <LogOut className="ml-2 h-4 w-4" />
-            تسجيل الخروج
+            <LogOut className="mx-2 h-4 w-4" />
+            {t('dashboard.logout')}
           </Button>
         </div>
       </header>
@@ -227,7 +228,7 @@ const Admin = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                إجمالي التجار
+                {t('admin.totalMerchants')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -241,7 +242,7 @@ const Admin = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                المتاجر النشطة
+                {t('admin.activeStores')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -257,7 +258,7 @@ const Admin = () => {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                وصولات قيد المراجعة
+                {t('admin.pendingReceipts')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -275,19 +276,19 @@ const Admin = () => {
           <TabsList className="grid w-full max-w-lg grid-cols-2 mb-6">
             <TabsTrigger value="merchants" className="gap-2">
               <Store className="h-4 w-4" />
-              التجار
+              {t('admin.merchants')}
             </TabsTrigger>
             <TabsTrigger value="payments" className="gap-2">
               <CreditCard className="h-4 w-4" />
-              المدفوعات
+              {t('admin.payments')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="merchants">
             <Card>
               <CardHeader>
-                <CardTitle>إدارة التجار</CardTitle>
-                <CardDescription>عرض وإدارة جميع التجار المسجلين</CardDescription>
+                <CardTitle>{t('admin.manageMerchants')}</CardTitle>
+                <CardDescription>{t('admin.viewManageMerchants')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {loadingData ? (
@@ -295,22 +296,22 @@ const Admin = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   </div>
                 ) : merchants.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">لا يوجد تجار</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noMerchants')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>الاسم</TableHead>
-                        <TableHead>الهاتف</TableHead>
-                        <TableHead>الرابط</TableHead>
-                        <TableHead>الحالة</TableHead>
-                        <TableHead>الإجراءات</TableHead>
+                        <TableHead>{t('admin.name')}</TableHead>
+                        <TableHead>{t('admin.phone')}</TableHead>
+                        <TableHead>{t('admin.link')}</TableHead>
+                        <TableHead>{t('admin.status')}</TableHead>
+                        <TableHead>{t('admin.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {merchants.map((merchant) => (
                         <TableRow key={merchant.id}>
-                          <TableCell>{merchant.display_name || 'بدون اسم'}</TableCell>
+                          <TableCell>{merchant.display_name || t('common.noName')}</TableCell>
                           <TableCell dir="ltr">{merchant.phone}</TableCell>
                           <TableCell>
                             {merchant.page_slug ? (
@@ -325,9 +326,9 @@ const Admin = () => {
                           </TableCell>
                           <TableCell>
                             {merchant.page_enabled ? (
-                              <Badge className="bg-green-500">نشط</Badge>
+                              <Badge className="bg-green-500">{t('admin.active')}</Badge>
                             ) : (
-                              <Badge variant="secondary">مغلق</Badge>
+                              <Badge variant="secondary">{t('admin.closed')}</Badge>
                             )}
                           </TableCell>
                           <TableCell>
@@ -338,13 +339,13 @@ const Admin = () => {
                             >
                               {merchant.page_enabled ? (
                                 <>
-                                  <XCircle className="h-4 w-4 ml-1" />
-                                  إغلاق
+                                  <XCircle className="h-4 w-4 mx-1" />
+                                  {t('admin.close')}
                                 </>
                               ) : (
                                 <>
-                                  <CheckCircle className="h-4 w-4 ml-1" />
-                                  تفعيل
+                                  <CheckCircle className="h-4 w-4 mx-1" />
+                                  {t('admin.activate')}
                                 </>
                               )}
                             </Button>
@@ -361,8 +362,8 @@ const Admin = () => {
           <TabsContent value="payments">
             <Card>
               <CardHeader>
-                <CardTitle>إدارة المدفوعات</CardTitle>
-                <CardDescription>مراجعة وصولات الدفع من التجار</CardDescription>
+                <CardTitle>{t('admin.managePayments')}</CardTitle>
+                <CardDescription>{t('admin.reviewReceipts')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {loadingData ? (
@@ -370,17 +371,17 @@ const Admin = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   </div>
                 ) : receipts.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">لا توجد وصولات</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noReceipts')}</p>
                 ) : (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>التاجر</TableHead>
-                        <TableHead>الهاتف</TableHead>
-                        <TableHead>المبلغ</TableHead>
-                        <TableHead>الشهر</TableHead>
-                        <TableHead>الحالة</TableHead>
-                        <TableHead>الإجراءات</TableHead>
+                        <TableHead>{t('admin.merchant')}</TableHead>
+                        <TableHead>{t('admin.phone')}</TableHead>
+                        <TableHead>{t('admin.amount')}</TableHead>
+                        <TableHead>{t('admin.month')}</TableHead>
+                        <TableHead>{t('admin.status')}</TableHead>
+                        <TableHead>{t('admin.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -390,7 +391,7 @@ const Admin = () => {
                           <TableCell dir="ltr">{receipt.merchant_phone}</TableCell>
                           <TableCell>{receipt.amount} {receipt.currency}</TableCell>
                           <TableCell>
-                            {new Date(receipt.payment_month).toLocaleDateString('ar-JO', { month: 'long', year: 'numeric' })}
+                            {new Date(receipt.payment_month).toLocaleDateString(language === 'ar' ? 'ar-JO' : 'en-US', { month: 'long', year: 'numeric' })}
                           </TableCell>
                           <TableCell>{getStatusBadge(receipt.status)}</TableCell>
                           <TableCell>
@@ -437,14 +438,14 @@ const Admin = () => {
       <Dialog open={!!selectedReceipt} onOpenChange={() => setSelectedReceipt(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>معاينة الوصل</DialogTitle>
-            <DialogDescription>صورة وصل الدفع المرفوعة من التاجر</DialogDescription>
+            <DialogTitle>{t('admin.previewReceipt')}</DialogTitle>
+            <DialogDescription>{t('admin.receiptImage')}</DialogDescription>
           </DialogHeader>
           {selectedReceipt && (
             <div className="flex justify-center">
               <img 
                 src={selectedReceipt} 
-                alt="وصل الدفع" 
+                alt={t('admin.previewReceipt')} 
                 className="max-w-full max-h-[60vh] object-contain rounded-lg"
               />
             </div>

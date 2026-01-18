@@ -9,48 +9,50 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useCart, CartItem } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Loader2, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, Loader2, CheckCircle } from 'lucide-react';
 import { z } from 'zod';
-
-const orderSchema = z.object({
-  name: z.string().min(2, 'الاسم مطلوب').max(200),
-  phone: z.string()
-    .min(7, 'رقم الهاتف قصير جداً')
-    .max(20, 'رقم الهاتف طويل جداً')
-    .regex(/^[\d\s+\-()]+$/, 'رقم الهاتف غير صحيح'),
-  notes: z.string().max(500).optional(),
-});
 
 const Cart = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, userType } = useAuth();
   const { items, updateQuantity, removeItem, clearMerchantItems, getTotal } = useCart();
   const { toast } = useToast();
+  const { t, language } = useLanguage();
   const [orderForm, setOrderForm] = useState({ name: '', phone: '', notes: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
 
+  const orderSchema = z.object({
+    name: z.string().min(2, t('cart.nameRequired')).max(200),
+    phone: z.string()
+      .min(7, t('cart.phoneTooShort'))
+      .max(20, t('cart.phoneTooLong'))
+      .regex(/^[\d\s+\-()]+$/, t('cart.phoneInvalid')),
+    notes: z.string().max(500).optional(),
+  });
+
   // Redirect if not logged in as customer
   useEffect(() => {
     if (!authLoading && !user) {
       toast({
-        title: 'سجل دخولك أولاً',
-        description: 'يجب تسجيل الدخول لإتمام الطلب',
+        title: t('auth.loginRequired'),
+        description: t('auth.loginToCart'),
       });
       navigate('/auth?type=customer');
     }
     if (!authLoading && userType === 'merchant') {
       toast({
-        title: 'غير متاح للتجار',
-        description: 'سجل كعميل للتسوق',
+        title: t('auth.notForMerchants'),
+        description: t('auth.merchantCantBuy'),
         variant: 'destructive',
       });
       navigate('/');
     }
-  }, [user, authLoading, userType, navigate, toast]);
+  }, [user, authLoading, userType, navigate, toast, t]);
 
   // Group items by merchant
   const groupedItems = items.reduce((acc, item) => {
@@ -119,8 +121,8 @@ const Cart = () => {
       setOrderSuccess(true);
 
       toast({
-        title: 'تم إرسال الطلب',
-        description: `سيتواصل معك ${merchantGroup.merchant_name} قريباً`,
+        title: t('cart.orderSent'),
+        description: `${t('cart.willContact')} ${merchantGroup.merchant_name} ${t('cart.soon')}`,
       });
 
       // Reset form
@@ -130,14 +132,16 @@ const Cart = () => {
     } catch (error) {
       console.error('Error creating order:', error);
       toast({
-        title: 'خطأ',
-        description: 'فشل في إرسال الطلب، حاول مرة أخرى',
+        title: t('common.error'),
+        description: t('cart.orderFailed'),
         variant: 'destructive',
       });
     }
 
     setSubmitting(false);
   };
+
+  const ArrowIcon = language === 'ar' ? ArrowRight : ArrowLeft;
 
   if (orderSuccess && items.length === 0) {
     return (
@@ -149,12 +153,12 @@ const Cart = () => {
               <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="h-10 w-10 text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">تم إرسال طلبك بنجاح!</h2>
+              <h2 className="text-2xl font-bold mb-2">{t('cart.orderSuccess')}</h2>
               <p className="text-muted-foreground mb-6">
-                سيتواصل معك التاجر قريباً لتأكيد الطلب
+                {t('cart.merchantWillContact')}
               </p>
               <Button asChild>
-                <Link to="/">متابعة التسوق</Link>
+                <Link to="/">{t('cart.continueShopping')}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -171,10 +175,10 @@ const Cart = () => {
           <Card className="max-w-md mx-auto text-center">
             <CardContent className="py-12">
               <ShoppingCart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h2 className="text-xl font-bold mb-2">السلة فارغة</h2>
-              <p className="text-muted-foreground mb-6">لم تضف أي منتجات بعد</p>
+              <h2 className="text-xl font-bold mb-2">{t('cart.empty')}</h2>
+              <p className="text-muted-foreground mb-6">{t('cart.noProducts')}</p>
               <Button asChild>
-                <Link to="/">تصفح المنتجات</Link>
+                <Link to="/">{t('cart.browseProducts')}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -191,13 +195,13 @@ const Cart = () => {
         <div className="flex items-center gap-2 mb-6">
           <Button variant="ghost" size="sm" asChild>
             <Link to="/">
-              <ArrowRight className="h-4 w-4 ml-1" />
-              متابعة التسوق
+              <ArrowIcon className="h-4 w-4 mx-1" />
+              {t('cart.continueShopping')}
             </Link>
           </Button>
         </div>
 
-        <h1 className="text-2xl font-bold mb-6">سلة التسوق</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('cart.title')}</h1>
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Cart Items */}
@@ -228,7 +232,7 @@ const Cart = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold truncate">{item.title}</h4>
-                        <p className="text-primary font-bold">{item.price.toFixed(2)} ر.س</p>
+                        <p className="text-primary font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button
                             size="icon"
@@ -250,22 +254,22 @@ const Cart = () => {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 text-destructive mr-auto"
+                            className="h-7 w-7 text-destructive ms-auto"
                             onClick={() => removeItem(item.id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
-                      <div className="text-left">
-                        <p className="font-bold">{(item.price * item.quantity).toFixed(2)} ر.س</p>
+                      <div className="text-end">
+                        <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {t('common.currency')}</p>
                       </div>
                     </div>
                   ))}
                   <Separator />
                   <div className="flex items-center justify-between font-bold">
-                    <span>المجموع:</span>
-                    <span className="text-primary text-lg">{group.total.toFixed(2)} ر.س</span>
+                    <span>{t('cart.subtotal')}:</span>
+                    <span className="text-primary text-lg">{group.total.toFixed(2)} {t('common.currency')}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -276,14 +280,14 @@ const Cart = () => {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle>بيانات الطلب</CardTitle>
+                <CardTitle>{t('cart.orderData')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">الاسم *</Label>
+                  <Label htmlFor="name">{t('cart.name')} *</Label>
                   <Input
                     id="name"
-                    placeholder="اسمك الكامل"
+                    placeholder={t('cart.namePlaceholder')}
                     value={orderForm.name}
                     onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
                     maxLength={200}
@@ -292,7 +296,7 @@ const Cart = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">رقم الجوال *</Label>
+                  <Label htmlFor="phone">{t('cart.phone')} *</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -302,15 +306,15 @@ const Cart = () => {
                     maxLength={20}
                     dir="ltr"
                   />
-                  <p className="text-xs text-muted-foreground">يقبل أرقام الأردن، السعودية، الإمارات</p>
+                  <p className="text-xs text-muted-foreground">{t('cart.acceptsPhones')}</p>
                   {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="notes">ملاحظات</Label>
+                  <Label htmlFor="notes">{t('cart.notes')}</Label>
                   <Textarea
                     id="notes"
-                    placeholder="ملاحظات إضافية للطلب..."
+                    placeholder={t('cart.notesPlaceholder')}
                     value={orderForm.notes}
                     onChange={(e) => setOrderForm({ ...orderForm, notes: e.target.value })}
                     rows={3}
@@ -322,8 +326,8 @@ const Cart = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-lg font-bold">
-                    <span>الإجمالي:</span>
-                    <span className="text-primary">{getTotal().toFixed(2)} ر.س</span>
+                    <span>{t('cart.total')}:</span>
+                    <span className="text-primary">{getTotal().toFixed(2)} {t('common.currency')}</span>
                   </div>
 
                   {Object.entries(groupedItems).map(([merchantId, group]) => (
@@ -335,18 +339,18 @@ const Cart = () => {
                     >
                       {submitting ? (
                         <>
-                          <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                          جاري الإرسال...
+                          <Loader2 className="mx-2 h-4 w-4 animate-spin" />
+                          {t('cart.sending')}
                         </>
                       ) : (
-                        `إرسال طلب لـ ${group.merchant_name}`
+                        `${t('cart.sendOrder')} ${group.merchant_name}`
                       )}
                     </Button>
                   ))}
                 </div>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  سيتواصل معك التاجر لتأكيد الطلب وترتيب الدفع والتوصيل
+                  {t('cart.merchantContact')}
                 </p>
               </CardContent>
             </Card>
