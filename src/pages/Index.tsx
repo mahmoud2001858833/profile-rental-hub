@@ -1,139 +1,187 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Store, MessageCircle, Shield, Zap, Clock, CheckCircle, ArrowLeft } from "lucide-react";
+import { Store, MessageCircle, Shield, Zap, Clock, CheckCircle, ArrowLeft, Sparkles, Users, TrendingUp, Globe, Smartphone, Edit3, ToggleRight, Truck, Headphones, Star } from "lucide-react";
 import Header from "@/components/Header";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-hidden">
       <Header />
 
-      {/* Disclaimer Banner */}
-      <div className="bg-card/50 border-b border-border py-2.5 px-4">
-        <p className="text-center text-sm text-muted-foreground">
-          ✨ المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا
-        </p>
-      </div>
-
-      {/* Hero Section */}
-      <section className="container py-16 md:py-24 lg:py-32">
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 animate-fade-in">
-            <Zap className="h-4 w-4" />
-            <span>صفحة عرض احترافية خلال دقائق</span>
-          </div>
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-fade-in">
-            اعرض منتجاتك وخدماتك
-            <br />
-            <span className="text-primary">بكل سهولة واحترافية</span>
-          </h1>
-          
-          <p className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto animate-fade-in">
-            احصل على صفحة عرض رقمية خاصة بك لعرض منتجاتك أو خدماتك مع الأسعار ووسائل التواصل.
-            عملاؤك يتواصلون معك مباشرة بدون أي وسيط.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
-            <Button size="lg" className="text-lg px-8 py-6 h-auto w-full sm:w-auto shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all" asChild>
-              <Link to="/auth">
-                ابدأ الآن مجاناً
-                <ArrowLeft className="mr-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <p className="text-sm text-muted-foreground">
-              اشتراك شهري بسيط • إلغاء في أي وقت
+      {/* Hero Section with Background Pattern */}
+      <section className="relative min-h-[90vh] flex items-center justify-center pattern-dots">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+        
+        {/* Floating shapes */}
+        <div className="absolute top-32 left-[15%] w-16 h-16 bg-primary/20 rounded-2xl rotate-12 animate-float hidden lg:block" />
+        <div className="absolute top-48 right-[20%] w-12 h-12 bg-accent/20 rounded-full animate-float stagger-2 hidden lg:block" />
+        <div className="absolute bottom-32 right-[15%] w-20 h-20 bg-primary/15 rounded-3xl -rotate-12 animate-float stagger-3 hidden lg:block" />
+        
+        <div className="container relative z-10 py-16 md:py-24">
+          <div className="text-center max-w-5xl mx-auto">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-8 animate-fade-in border border-primary/20">
+              <Sparkles className="h-4 w-4" />
+              <span>انطلق بمشروعك للعالم الرقمي</span>
+              <Sparkles className="h-4 w-4" />
+            </div>
+            
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight animate-fade-in stagger-1">
+              صفحة عرض احترافية
+              <br />
+              <span className="gradient-text">لمنتجاتك وخدماتك</span>
+            </h1>
+            
+            {/* Subheading */}
+            <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mb-12 leading-relaxed max-w-3xl mx-auto animate-fade-in stagger-2">
+              احصل على صفحة عرض رقمية خاصة بك لعرض منتجاتك أو خدماتك مع الأسعار ووسائل التواصل المباشر
             </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in stagger-3 mb-12">
+              <Button 
+                size="lg" 
+                className="text-lg px-10 py-7 h-auto w-full sm:w-auto shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:scale-105 transition-all duration-300 rounded-2xl font-bold animate-pulse-glow" 
+                asChild
+              >
+                <Link to="/auth">
+                  ابدأ الآن مجاناً
+                  <ArrowLeft className="mr-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <p className="text-sm text-muted-foreground bg-card/80 px-4 py-2 rounded-full">
+                ✨ اشتراك شهري بسيط • إلغاء في أي وقت
+              </p>
+            </div>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap justify-center gap-6 animate-fade-in stagger-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Shield className="w-5 h-5 text-primary" />
+                <span>آمن 100%</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Zap className="w-5 h-5 text-accent" />
+                <span>تفعيل فوري</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <span>تجربة مميزة</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="container pb-16">
-        <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
-          <StatCard number="25" label="منتج لكل صفحة" />
-          <StatCard number="∞" label="زوار بلا حدود" />
-          <StatCard number="24/7" label="متاحة دائماً" />
+      <section className="container py-16 relative -mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <StatCard number="25+" label="منتج لكل صفحة" icon={<Store className="w-6 h-6" />} delay="stagger-1" />
+          <StatCard number="∞" label="زوار بلا حدود" icon={<Users className="w-6 h-6" />} delay="stagger-2" />
+          <StatCard number="24/7" label="متاحة دائماً" icon={<Globe className="w-6 h-6" />} delay="stagger-3" />
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="bg-card py-20">
-        <div className="container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <section className="py-24 relative">
+        <div className="absolute inset-0 pattern-grid opacity-50" />
+        <div className="container relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-primary font-semibold text-sm tracking-wide mb-2 block">المميزات</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
               لماذا صفحة العرض الرقمية؟
             </h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              كل ما تحتاجه لعرض منتجاتك وخدماتك بشكل احترافي
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              كل ما تحتاجه لعرض منتجاتك وخدماتك بشكل احترافي وجذاب
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <FeatureCard
               icon={<Store className="w-8 h-8" />}
               title="صفحة عرض خاصة بك"
               description="اعرض حتى 25 منتج أو خدمة مع الصور والأسعار ووصف مختصر لكل عنصر"
+              gradient="from-primary to-emerald-600"
+              delay="stagger-1"
             />
             <FeatureCard
               icon={<MessageCircle className="w-8 h-8" />}
               title="تواصل مباشر"
               description="عملاؤك يتواصلون معك مباشرة عبر الهاتف أو واتساب بنقرة واحدة"
+              gradient="from-blue-500 to-cyan-500"
+              delay="stagger-2"
             />
             <FeatureCard
               icon={<Shield className="w-8 h-8" />}
               title="حريتك الكاملة"
               description="أنت تدير البيع والدفع والتوصيل بنفسك، المنصة للعرض فقط"
+              gradient="from-accent to-orange-500"
+              delay="stagger-3"
             />
           </div>
         </div>
       </section>
 
       {/* How it Works */}
-      <section className="container py-20">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            كيف تعمل المنصة؟
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            أربع خطوات بسيطة للبدء
-          </p>
-        </div>
-        
-        <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          <StepCard 
-            number={1} 
-            title="سجّل حسابك" 
-            description="برقم هاتفك وكلمة مرور"
-            icon={<div className="text-2xl">📱</div>}
-          />
-          <StepCard 
-            number={2} 
-            title="اشترك" 
-            description="اشتراك شهري بسيط"
-            icon={<div className="text-2xl">💳</div>}
-          />
-          <StepCard 
-            number={3} 
-            title="أنشئ صفحتك" 
-            description="أضف منتجاتك وبياناتك"
-            icon={<div className="text-2xl">✏️</div>}
-          />
-          <StepCard 
-            number={4} 
-            title="شارك رابطك" 
-            description="وابدأ استقبال العملاء"
-            icon={<div className="text-2xl">🚀</div>}
-          />
+      <section className="py-24 bg-card relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary" />
+        <div className="container relative z-10">
+          <div className="text-center mb-16">
+            <span className="text-accent font-semibold text-sm tracking-wide mb-2 block">كيف تبدأ</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              أربع خطوات بسيطة
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              ابدأ في دقائق معدودة
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto relative">
+            {/* Connecting line */}
+            <div className="hidden md:block absolute top-16 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-primary via-accent to-primary opacity-30" />
+            
+            <StepCard 
+              number={1} 
+              title="سجّل حسابك" 
+              description="بالبريد الإلكتروني وكلمة مرور"
+              emoji="📱"
+              delay="stagger-1"
+            />
+            <StepCard 
+              number={2} 
+              title="اشترك" 
+              description="اشتراك شهري بسيط ومرن"
+              emoji="💳"
+              delay="stagger-2"
+            />
+            <StepCard 
+              number={3} 
+              title="أنشئ صفحتك" 
+              description="أضف منتجاتك وبياناتك"
+              emoji="✏️"
+              delay="stagger-3"
+            />
+            <StepCard 
+              number={4} 
+              title="شارك رابطك" 
+              description="وابدأ استقبال العملاء"
+              emoji="🚀"
+              delay="stagger-4"
+            />
+          </div>
         </div>
       </section>
 
       {/* Target Audience */}
-      <section className="bg-card py-20">
+      <section className="py-24 relative">
         <div className="container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-16">
+            <span className="text-primary font-semibold text-sm tracking-wide mb-2 block">لمن هذه الخدمة</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
               مناسبة لـ
             </h2>
             <p className="text-muted-foreground text-lg">
@@ -141,46 +189,66 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-            <AudienceTag emoji="🏠">أصحاب المشاريع المنزلية</AudienceTag>
-            <AudienceTag emoji="🎨">الحرفيون والمصممون</AudienceTag>
-            <AudienceTag emoji="🛠️">مقدمو الخدمات</AudienceTag>
-            <AudienceTag emoji="📱">تجار السوشيال ميديا</AudienceTag>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
+            <AudienceCard emoji="🏠" title="أصحاب المشاريع المنزلية" delay="stagger-1" />
+            <AudienceCard emoji="🎨" title="الحرفيون والمصممون" delay="stagger-2" />
+            <AudienceCard emoji="🛠️" title="مقدمو الخدمات" delay="stagger-3" />
+            <AudienceCard emoji="📱" title="تجار السوشيال ميديا" delay="stagger-4" />
           </div>
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="container py-20">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              مميزات إضافية
-            </h2>
-          </div>
-          
-          <div className="grid sm:grid-cols-2 gap-4">
-            <BenefitItem text="رابط فريد خاص بك" />
-            <BenefitItem text="تصميم متجاوب للجوال" />
-            <BenefitItem text="تعديل المحتوى في أي وقت" />
-            <BenefitItem text="إيقاف وتشغيل الصفحة" />
-            <BenefitItem text="عرض خيار التوصيل" />
-            <BenefitItem text="دعم فني متواصل" />
+      <section className="py-24 bg-card relative">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <span className="text-accent font-semibold text-sm tracking-wide mb-2 block">لماذا نحن</span>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                مميزات إضافية
+              </h2>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <BenefitItem icon={<Globe className="w-5 h-5" />} text="رابط فريد خاص بك" delay="stagger-1" />
+              <BenefitItem icon={<Smartphone className="w-5 h-5" />} text="تصميم متجاوب للجوال" delay="stagger-2" />
+              <BenefitItem icon={<Edit3 className="w-5 h-5" />} text="تعديل المحتوى في أي وقت" delay="stagger-3" />
+              <BenefitItem icon={<ToggleRight className="w-5 h-5" />} text="إيقاف وتشغيل الصفحة" delay="stagger-4" />
+              <BenefitItem icon={<Truck className="w-5 h-5" />} text="عرض خيار التوصيل" delay="stagger-5" />
+              <BenefitItem icon={<Headphones className="w-5 h-5" />} text="دعم فني متواصل" delay="stagger-6" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-emerald-700" />
+        <div className="absolute inset-0 pattern-dots opacity-10" />
+        
+        {/* Decorative shapes */}
+        <div className="absolute top-10 right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-10 left-10 w-60 h-60 bg-white/5 rounded-full blur-3xl" />
+        
+        <div className="container relative z-10">
+          <div className="text-center max-w-3xl mx-auto text-white">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white/90 text-sm font-medium mb-8 backdrop-blur-sm">
+              <TrendingUp className="h-4 w-4" />
+              <span>انضم لآلاف المستخدمين</span>
+            </div>
+            
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-8">
               جاهز لعرض منتجاتك؟
             </h2>
-            <p className="text-primary-foreground/80 mb-8 text-lg">
-              ابدأ الآن واحصل على صفحة عرض احترافية خلال دقائق
+            <p className="text-white/80 mb-10 text-lg md:text-xl">
+              ابدأ الآن واحصل على صفحة عرض احترافية خلال دقائق معدودة
             </p>
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-6 h-auto shadow-lg" asChild>
+            <Button 
+              size="lg" 
+              variant="secondary" 
+              className="text-lg px-10 py-7 h-auto shadow-2xl hover:scale-105 transition-all duration-300 rounded-2xl font-bold" 
+              asChild
+            >
               <Link to="/auth">
                 اشترك الآن
                 <ArrowLeft className="mr-2 h-5 w-5" />
@@ -191,33 +259,35 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-10">
+      <footer className="border-t border-border py-16 bg-card">
         <div className="container">
-          <div className="text-center space-y-6">
+          <div className="text-center space-y-8">
             <div className="flex justify-center">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-2xl">ص</span>
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-lg shadow-primary/30">
+                <span className="text-white font-black text-3xl">ص</span>
               </div>
             </div>
             
-            <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+            <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
               المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا.
               <br />
               جميع عمليات البيع والدفع والتوصيل تتم مباشرة بين صاحب الصفحة والعميل.
             </p>
             
-            <div className="flex justify-center gap-6 text-sm">
-              <a href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+            <div className="flex justify-center gap-8 text-sm">
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 الشروط والأحكام
-              </a>
-              <a href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 سياسة الخصوصية
-              </a>
+              </Link>
             </div>
             
-            <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} جميع الحقوق محفوظة
-            </p>
+            <div className="pt-6 border-t border-border">
+              <p className="text-xs text-muted-foreground">
+                © {new Date().getFullYear()} جميع الحقوق محفوظة
+              </p>
+            </div>
           </div>
         </div>
       </footer>
@@ -226,57 +296,60 @@ const Index = () => {
 };
 
 // Stat Card Component
-const StatCard = ({ number, label }: { number: string; label: string }) => (
-  <div className="text-center p-4 rounded-2xl bg-card border border-border">
-    <div className="text-2xl md:text-3xl font-bold text-primary mb-1">{number}</div>
-    <div className="text-sm text-muted-foreground">{label}</div>
+const StatCard = ({ number, label, icon, delay }: { number: string; label: string; icon: React.ReactNode; delay: string }) => (
+  <div className={`text-center p-8 rounded-3xl bg-white shadow-xl shadow-primary/5 border border-border hover-lift animate-scale-in ${delay}`}>
+    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 text-primary">
+      {icon}
+    </div>
+    <div className="text-4xl md:text-5xl font-black text-primary mb-2">{number}</div>
+    <div className="text-muted-foreground font-medium">{label}</div>
   </div>
 );
 
 // Feature Card Component
-const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <Card className="text-center p-6 bg-background border-border hover:border-primary/50 transition-colors group">
+const FeatureCard = ({ icon, title, description, gradient, delay }: { icon: React.ReactNode; title: string; description: string; gradient: string; delay: string }) => (
+  <Card className={`text-center p-8 bg-white border-0 shadow-xl shadow-primary/5 hover-lift group animate-slide-up ${delay}`}>
     <CardContent className="pt-4">
-      <div className="flex justify-center mb-4">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+      <div className="flex justify-center mb-6">
+        <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
           {icon}
         </div>
       </div>
-      <h3 className="font-bold text-lg mb-2">{title}</h3>
-      <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
+      <h3 className="font-bold text-xl mb-3">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">{description}</p>
     </CardContent>
   </Card>
 );
 
 // Step Card Component
-const StepCard = ({ number, title, description, icon }: { number: number; title: string; description: string; icon: React.ReactNode }) => (
-  <div className="text-center relative">
-    <div className="w-16 h-16 rounded-2xl bg-card border-2 border-primary flex items-center justify-center mx-auto mb-4 relative">
-      {icon}
-      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+const StepCard = ({ number, title, description, emoji, delay }: { number: number; title: string; description: string; emoji: string; delay: string }) => (
+  <div className={`text-center relative animate-fade-in ${delay}`}>
+    <div className="w-24 h-24 rounded-3xl bg-white border-2 border-primary/20 flex items-center justify-center mx-auto mb-6 relative shadow-lg hover:shadow-xl hover:border-primary/50 transition-all duration-300 hover:-translate-y-1">
+      <span className="text-4xl">{emoji}</span>
+      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-lg">
         {number}
       </div>
     </div>
-    <h3 className="font-bold mb-1">{title}</h3>
+    <h3 className="font-bold text-lg mb-2">{title}</h3>
     <p className="text-sm text-muted-foreground">{description}</p>
   </div>
 );
 
-// Audience Tag Component
-const AudienceTag = ({ children, emoji }: { children: React.ReactNode; emoji: string }) => (
-  <div className="bg-background text-foreground px-4 py-4 rounded-xl text-center border border-border hover:border-primary/50 transition-colors">
-    <div className="text-2xl mb-2">{emoji}</div>
-    <div className="text-sm font-medium">{children}</div>
+// Audience Card Component
+const AudienceCard = ({ title, emoji, delay }: { title: string; emoji: string; delay: string }) => (
+  <div className={`bg-white text-foreground p-6 rounded-3xl text-center border border-border hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group animate-scale-in ${delay}`}>
+    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{emoji}</div>
+    <div className="text-sm font-semibold leading-relaxed">{title}</div>
   </div>
 );
 
 // Benefit Item Component
-const BenefitItem = ({ text }: { text: string }) => (
-  <div className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
-    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-      <CheckCircle className="w-4 h-4 text-primary" />
+const BenefitItem = ({ text, icon, delay }: { text: string; icon: React.ReactNode; delay: string }) => (
+  <div className={`flex items-center gap-4 p-5 rounded-2xl bg-white border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 animate-fade-in ${delay}`}>
+    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center flex-shrink-0 text-white">
+      {icon}
     </div>
-    <span className="font-medium">{text}</span>
+    <span className="font-semibold">{text}</span>
   </div>
 );
 
