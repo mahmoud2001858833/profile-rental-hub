@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Phone, MessageCircle, Truck, Loader2, Package } from 'lucide-react';
+import { Phone, MessageCircle, Truck, Loader2, Package, Copy, Check } from 'lucide-react';
 import ImageGallery from '@/components/ui/image-gallery';
+import LanguageToggle from '@/components/LanguageToggle';
+import { toast } from 'sonner';
 
 interface Profile {
   display_name: string | null;
@@ -35,10 +38,12 @@ interface Item {
 
 const PublicPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { t, dir } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [notFound, setNotFound] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (slug) {
@@ -105,6 +110,15 @@ const PublicPage = () => {
     }
   };
 
+  const copyPhone = async () => {
+    if (profile?.phone) {
+      await navigator.clipboard.writeText(profile.phone);
+      setCopied(true);
+      toast.success(dir === 'rtl' ? 'تم نسخ الرقم' : 'Phone copied');
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -115,22 +129,25 @@ const PublicPage = () => {
 
   if (notFound) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
-        <h1 className="text-2xl font-bold mb-2">الصفحة غير موجودة</h1>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4" dir={dir}>
+        <h1 className="text-2xl font-bold mb-2">{t('public.notFound')}</h1>
         <p className="text-muted-foreground text-center">
-          هذه الصفحة غير متاحة أو تم تعطيلها
+          {t('public.notAvailable')}
         </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Disclaimer */}
+    <div className="min-h-screen bg-background" dir={dir}>
+      {/* Disclaimer with Language Toggle */}
       <div className="bg-card border-b border-border py-2 px-4">
-        <p className="text-center text-xs text-muted-foreground">
-          المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا
-        </p>
+        <div className="container flex items-center justify-between">
+          <p className="text-xs text-muted-foreground flex-1">
+            {t('public.disclaimer')}
+          </p>
+          <LanguageToggle />
+        </div>
       </div>
 
       {/* Cover Image */}
@@ -138,7 +155,7 @@ const PublicPage = () => {
         {profile?.cover_url ? (
           <img
             src={profile.cover_url}
-            alt="صورة الغلاف"
+            alt="Cover"
             className="w-full h-full object-cover"
           />
         ) : (
@@ -150,7 +167,7 @@ const PublicPage = () => {
           {profile?.avatar_url ? (
             <img
               src={profile.avatar_url}
-              alt={profile.display_name || 'صورة الملف الشخصي'}
+              alt={profile.display_name || t('public.noName')}
               className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border-4 border-background shadow-xl"
             />
           ) : (
@@ -165,7 +182,7 @@ const PublicPage = () => {
       <header className="container pt-16 pb-6">
         <div className="text-center">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            {profile?.display_name || 'بدون اسم'}
+            {profile?.display_name || t('public.noName')}
           </h1>
           
           {profile?.bio && (
@@ -174,10 +191,32 @@ const PublicPage = () => {
             </p>
           )}
 
+          {/* Phone Number Display */}
+          {profile?.phone && (
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="flex items-center gap-2 bg-muted/50 px-4 py-2 rounded-lg">
+                <Phone className="h-4 w-4 text-primary" />
+                <span className="font-medium" dir="ltr">{profile.phone}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={copyPhone}
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {profile?.has_delivery && (
             <Badge variant="secondary" className="gap-1 px-4 py-1">
               <Truck className="h-3 w-3" />
-              يوجد توصيل
+              {t('public.hasDelivery')}
             </Badge>
           )}
         </div>
@@ -188,12 +227,12 @@ const PublicPage = () => {
         <div className="flex gap-4 justify-center max-w-md mx-auto">
           <Button onClick={handleCall} size="lg" className="flex-1 gap-2 shadow-lg shadow-primary/20">
             <Phone className="h-4 w-4" />
-            اتصال
+            {t('public.call')}
           </Button>
           {profile?.whatsapp_number && (
             <Button onClick={handleWhatsApp} variant="outline" size="lg" className="flex-1 gap-2">
               <MessageCircle className="h-4 w-4" />
-              واتساب
+              {t('public.whatsapp')}
             </Button>
           )}
         </div>
@@ -201,11 +240,11 @@ const PublicPage = () => {
 
       {/* Items */}
       <section className="container pb-12">
-        <h2 className="text-lg font-bold mb-4 text-center">المنتجات والخدمات</h2>
+        <h2 className="text-lg font-bold mb-4 text-center">{t('public.productsServices')}</h2>
         {items.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">لا توجد عناصر للعرض حالياً</p>
+              <p className="text-muted-foreground">{t('public.noItems')}</p>
             </CardContent>
           </Card>
         ) : (
@@ -236,7 +275,7 @@ const PublicPage = () => {
                         {item.description}
                       </p>
                     )}
-                    <p className="text-accent font-bold">{item.price.toFixed(2)} ر.س</p>
+                    <p className="text-accent font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
                   </CardContent>
                 </Card>
               );
@@ -248,7 +287,7 @@ const PublicPage = () => {
       {/* Footer */}
       <footer className="border-t border-border py-6 bg-card">
         <p className="text-center text-sm text-muted-foreground">
-          جميع عمليات البيع والدفع والتوصيل تتم مباشرة مع صاحب الصفحة
+          {t('public.salesDisclaimer')}
         </p>
       </footer>
     </div>
