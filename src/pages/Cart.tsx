@@ -16,7 +16,10 @@ import { z } from 'zod';
 
 const orderSchema = z.object({
   name: z.string().min(2, 'الاسم مطلوب').max(200),
-  phone: z.string().regex(/^05\d{8}$/, 'رقم الجوال غير صحيح (05xxxxxxxx)'),
+  phone: z.string()
+    .min(7, 'رقم الهاتف قصير جداً')
+    .max(20, 'رقم الهاتف طويل جداً')
+    .regex(/^[\d\s+\-()]+$/, 'رقم الهاتف غير صحيح'),
   notes: z.string().max(500).optional(),
 });
 
@@ -293,12 +296,13 @@ const Cart = () => {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="05xxxxxxxx"
+                    placeholder="+962 7XX XXX XXX"
                     value={orderForm.phone}
                     onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })}
-                    maxLength={10}
+                    maxLength={20}
                     dir="ltr"
                   />
+                  <p className="text-xs text-muted-foreground">يقبل أرقام الأردن، السعودية، الإمارات</p>
                   {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                 </div>
 
