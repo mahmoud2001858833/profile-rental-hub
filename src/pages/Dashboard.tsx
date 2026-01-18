@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, User, Package } from 'lucide-react';
+import { LogOut, User, Package, ShoppingBag } from 'lucide-react';
 import ProfileForm from '@/components/dashboard/ProfileForm';
 import ItemsManager from '@/components/dashboard/ItemsManager';
+import OrdersManager from '@/components/dashboard/OrdersManager';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -49,24 +50,32 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="container py-6">
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
-            <TabsTrigger value="profile" className="gap-2">
-              <User className="h-4 w-4" />
-              الملف الشخصي
+        <Tabs defaultValue="orders" className="w-full">
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-6">
+            <TabsTrigger value="orders" className="gap-2">
+              <ShoppingBag className="h-4 w-4" />
+              الطلبات
             </TabsTrigger>
             <TabsTrigger value="items" className="gap-2">
               <Package className="h-4 w-4" />
-              العناصر
+              المنتجات
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="gap-2">
+              <User className="h-4 w-4" />
+              الملف
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="profile" className="max-w-2xl mx-auto">
-            <ProfileForm />
+          <TabsContent value="orders" className="max-w-2xl mx-auto">
+            <OrdersManager />
           </TabsContent>
 
           <TabsContent value="items" className="max-w-2xl mx-auto">
             <ItemsManager />
+          </TabsContent>
+
+          <TabsContent value="profile" className="max-w-2xl mx-auto">
+            <ProfileForm />
           </TabsContent>
         </Tabs>
       </main>
