@@ -17,7 +17,9 @@ import {
   CheckCircle, 
   XCircle,
   Eye,
-  ShieldCheck
+  ShieldCheck,
+  Package,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -51,6 +53,17 @@ interface PaymentReceipt {
   merchant_phone?: string;
 }
 
+interface Product {
+  id: string;
+  title: string;
+  price: number;
+  image_url: string | null;
+  user_id: string;
+  is_active: boolean;
+  merchant_name?: string;
+  merchant_phone?: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
@@ -59,6 +72,7 @@ const Admin = () => {
   
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedReceipt, setSelectedReceipt] = useState<string | null>(null);
 
@@ -120,6 +134,33 @@ const Admin = () => {
       );
 
       setReceipts(enrichedReceipts);
+
+      // Fetch all products
+      const { data: productsData, error: productsError } = await supabase
+        .from('items')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (productsError) throw productsError;
+
+      // Enrich products with merchant info
+      const enrichedProducts = await Promise.all(
+        (productsData || []).map(async (product) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('display_name, phone')
+            .eq('user_id', product.user_id)
+            .single();
+
+          return {
+            ...product,
+            merchant_name: profile?.display_name || t('common.noName'),
+            merchant_phone: profile?.phone || ''
+          };
+        })
+      );
+
+      setProducts(enrichedProducts);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error(t('common.error'));
@@ -174,6 +215,25 @@ const Admin = () => {
       fetchData();
     } catch (error) {
       console.error('Error reviewing receipt:', error);
+      toast.error(t('common.error'));
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm(t('admin.confirmDelete'))) return;
+    
+    try {
+      const { error } = await supabase
+        .from('items')
+        .delete()
+        .eq('id', productId);
+
+      if (error) throw error;
+      
+      toast.success(t('admin.productDeleted'));
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting product:', error);
       toast.error(t('common.error'));
     }
   };
@@ -273,10 +333,14 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="merchants" className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-2 mb-6">
+          <TabsList className="grid w-full max-w-lg grid-cols-3 mb-6">
             <TabsTrigger value="merchants" className="gap-2">
               <Store className="h-4 w-4" />
               {t('admin.merchants')}
+            </TabsTrigger>
+            <TabsTrigger value="products" className="gap-2">
+              <Package className="h-4 w-4" />
+              {t('admin.productsTab')}
             </TabsTrigger>
             <TabsTrigger value="payments" className="gap-2">
               <CreditCard className="h-4 w-4" />
@@ -348,6 +412,77 @@ const Admin = () => {
                                   {t('admin.activate')}
                                 </>
                               )}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="products">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('admin.manageProducts')}</CardTitle>
+                <CardDescription>{t('admin.deleteProducts')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingData ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : products.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noProducts')}</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t('admin.product')}</TableHead>
+                        <TableHead>{t('admin.owner')}</TableHead>
+                        <TableHead>{t('admin.price')}</TableHead>
+                        <TableHead>{t('admin.status')}</TableHead>
+                        <TableHead>{t('admin.actions')}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {products.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {product.image_url ? (
+                                <img 
+                                  src={product.image_url} 
+                                  alt={product.title}
+                                  className="w-10 h-10 rounded object-cover"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                                  <Package className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
+                              <span className="font-medium">{product.title}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{product.merchant_name}</TableCell>
+                          <TableCell>{product.price} {t('common.currency')}</TableCell>
+                          <TableCell>
+                            {product.is_active ? (
+                              <Badge className="bg-green-500">{t('admin.active')}</Badge>
+                            ) : (
+                              <Badge variant="secondary">{t('admin.closed')}</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteProduct(product.id)}
+                            >
+                              <Trash2 className="h-4 w-4 mx-1" />
+                              {t('admin.deleteProduct')}
                             </Button>
                           </TableCell>
                         </TableRow>

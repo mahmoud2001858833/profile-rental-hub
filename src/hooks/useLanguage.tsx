@@ -185,6 +185,16 @@ const translations: Translations = {
   'admin.storeActivated': { ar: 'تم تفعيل المتجر', en: 'Store activated' },
   'admin.receiptApproved': { ar: 'تم قبول الوصل', en: 'Receipt approved' },
   'admin.receiptRejected': { ar: 'تم رفض الوصل', en: 'Receipt rejected' },
+  'admin.productsTab': { ar: 'المنتجات', en: 'Products' },
+  'admin.manageProducts': { ar: 'إدارة المنتجات', en: 'Manage Products' },
+  'admin.deleteProducts': { ar: 'حذف أي منتج من جميع التجار', en: 'Delete any product from all merchants' },
+  'admin.noProducts': { ar: 'لا توجد منتجات', en: 'No products' },
+  'admin.product': { ar: 'المنتج', en: 'Product' },
+  'admin.price': { ar: 'السعر', en: 'Price' },
+  'admin.owner': { ar: 'صاحب المنتج', en: 'Owner' },
+  'admin.deleteProduct': { ar: 'حذف', en: 'Delete' },
+  'admin.productDeleted': { ar: 'تم حذف المنتج', en: 'Product deleted' },
+  'admin.confirmDelete': { ar: 'هل أنت متأكد من حذف هذا المنتج؟', en: 'Are you sure you want to delete this product?' },
   
   // Common
   'common.loading': { ar: 'جاري التحميل...', en: 'Loading...' },
@@ -273,6 +283,7 @@ const translations: Translations = {
   'profile.deliveryQuestion': { ar: 'هل تقدم خدمة التوصيل؟', en: 'Do you offer delivery service?' },
   'profile.saving': { ar: 'جاري الحفظ...', en: 'Saving...' },
   'profile.saveChanges': { ar: 'حفظ التغييرات', en: 'Save Changes' },
+  'profile.whatsappRequired': { ar: 'رقم الواتساب مطلوب لتفعيل الصفحة', en: 'WhatsApp number is required to enable the page' },
   
   // Items Manager
   'items.title': { ar: 'العناصر', en: 'Items' },
