@@ -9,55 +9,55 @@
 
 @layer base {
   :root {
-    /* Deep warm background */
-    --background: 40 30% 98%;
-    --foreground: 25 20% 12%;
+    /* Creamy warm background */
+    --background: 35 45% 96%;
+    --foreground: 25 25% 15%;
 
-    /* Card - elegant soft */
-    --card: 40 40% 96%;
-    --card-foreground: 25 20% 12%;
+    /* Card - soft cream */
+    --card: 35 50% 94%;
+    --card-foreground: 25 25% 15%;
 
-    --popover: 40 30% 98%;
-    --popover-foreground: 25 20% 12%;
+    --popover: 35 45% 96%;
+    --popover-foreground: 25 25% 15%;
 
-    /* Primary - Rich Emerald Green */
-    --primary: 158 64% 38%;
+    /* Primary - Rich Red (for buttons and CTAs) */
+    --primary: 0 75% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Warm Sand */
-    --secondary: 38 40% 92%;
-    --secondary-foreground: 25 20% 12%;
+    /* Secondary - Warm Cream */
+    --secondary: 35 50% 90%;
+    --secondary-foreground: 25 25% 15%;
 
-    --muted: 38 25% 90%;
-    --muted-foreground: 25 15% 45%;
+    --muted: 35 35% 88%;
+    --muted-foreground: 25 20% 45%;
 
-    /* Accent - Coral/Orange for highlights */
-    --accent: 16 85% 58%;
+    /* Accent - Deep Red for highlights */
+    --accent: 0 70% 45%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive - Deep Red */
-    --destructive: 0 72% 51%;
+    /* Destructive - Dark Red */
+    --destructive: 0 80% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 38 30% 88%;
-    --input: 38 30% 88%;
-    --ring: 158 64% 38%;
+    --border: 35 30% 85%;
+    --input: 35 35% 90%;
+    --ring: 0 75% 50%;
 
     --radius: 1rem;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(158 64% 38%), hsl(158 64% 28%));
-    --gradient-accent: linear-gradient(135deg, hsl(16 85% 58%), hsl(16 85% 48%));
-    --gradient-hero: linear-gradient(180deg, hsl(40 30% 98%) 0%, hsl(38 40% 94%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(0 75% 50%), hsl(0 70% 40%));
+    --gradient-accent: linear-gradient(135deg, hsl(0 70% 45%), hsl(0 65% 35%));
+    --gradient-hero: linear-gradient(180deg, hsl(35 45% 96%) 0%, hsl(35 50% 92%) 100%);
 
-    --sidebar-background: 40 40% 96%;
-    --sidebar-foreground: 25 20% 12%;
-    --sidebar-primary: 158 64% 38%;
+    --sidebar-background: 35 50% 94%;
+    --sidebar-foreground: 25 25% 15%;
+    --sidebar-primary: 0 75% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 38 40% 92%;
-    --sidebar-accent-foreground: 25 20% 12%;
-    --sidebar-border: 38 30% 88%;
-    --sidebar-ring: 158 64% 38%;
+    --sidebar-accent: 35 50% 90%;
+    --sidebar-accent-foreground: 25 25% 15%;
+    --sidebar-border: 35 30% 85%;
+    --sidebar-ring: 0 75% 50%;
   }
 }
 
@@ -105,7 +105,7 @@
     inset: 0;
     padding: 2px;
     border-radius: inherit;
-    background: linear-gradient(135deg, hsl(158 64% 38%), hsl(16 85% 58%));
+    background: linear-gradient(135deg, hsl(0 75% 50%), hsl(0 70% 40%));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -147,10 +147,10 @@
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px hsl(158 64% 38% / 0.3);
+    box-shadow: 0 0 20px hsl(0 75% 50% / 0.3);
   }
   50% {
-    box-shadow: 0 0 40px hsl(158 64% 38% / 0.5);
+    box-shadow: 0 0 40px hsl(0 75% 50% / 0.5);
   }
 }
 
@@ -234,7 +234,7 @@
 
 /* Decorative patterns */
 .pattern-dots {
-  background-image: radial-gradient(hsl(158 64% 38% / 0.1) 1px, transparent 1px);
+  background-image: radial-gradient(hsl(0 75% 50% / 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -247,11 +247,11 @@
 
 /* Glow effects */
 .glow-primary {
-  box-shadow: 0 0 30px hsl(158 64% 38% / 0.2);
+  box-shadow: 0 0 30px hsl(0 75% 50% / 0.2);
 }
 
 .glow-accent {
-  box-shadow: 0 0 30px hsl(16 85% 58% / 0.2);
+  box-shadow: 0 0 30px hsl(0 70% 45% / 0.2);
 }
 
 /* Smooth scrollbar */
@@ -269,5 +269,5 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(158 64% 28%);
+  background: hsl(0 70% 40%);
 }
