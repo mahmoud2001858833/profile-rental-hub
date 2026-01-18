@@ -17,7 +17,8 @@ import {
   Clock, 
   Loader2,
   FileImage,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 
 interface PaymentReceipt {
@@ -152,6 +153,39 @@ const PaymentManager = () => {
 
   return (
     <div className="space-y-6">
+      {/* Stripe Payment Option - Disabled */}
+      <Card className="border-muted bg-muted/30">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
+              <CreditCard className="h-5 w-5" />
+              {t('payment.stripeTitle')}
+            </CardTitle>
+            <Badge variant="secondary" className="flex items-center gap-1">
+              <Lock className="h-3 w-3" />
+              {t('payment.stripeClosed')}
+            </Badge>
+          </div>
+          <CardDescription>{t('payment.stripeDesc')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-background rounded-lg p-4 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">{t('payment.amount')}:</span>
+              <div className="text-end">
+                <span className="font-bold text-muted-foreground text-lg line-through">$14</span>
+                <span className="text-sm text-muted-foreground mx-2">=</span>
+                <span className="font-bold text-primary text-lg">10 {t('payment.jod')}</span>
+              </div>
+            </div>
+          </div>
+          <Button className="w-full mt-4" disabled>
+            <Lock className="mx-2 h-4 w-4" />
+            {t('payment.stripePay')}
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* CliQ Payment Info */}
       <Card className="border-primary/20 bg-primary/5">
         <CardHeader className="pb-2">

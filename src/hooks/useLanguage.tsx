@@ -135,6 +135,10 @@ const translations: Translations = {
   'payment.uploadFailed': { ar: 'فشل في رفع الوصل', en: 'Failed to upload receipt' },
   'payment.fileTooLarge': { ar: 'الملف كبير جداً', en: 'File is too large' },
   'payment.maxSize': { ar: 'الحد الأقصى 5 ميجابايت', en: 'Maximum size is 5MB' },
+  'payment.stripeTitle': { ar: 'الدفع عبر Stripe', en: 'Pay via Stripe' },
+  'payment.stripeDesc': { ar: 'ادفع اشتراكك الشهري ببطاقتك الائتمانية', en: 'Pay your monthly subscription with your credit card' },
+  'payment.stripeClosed': { ar: 'مغلق حالياً', en: 'Currently closed' },
+  'payment.stripePay': { ar: 'ادفع الآن', en: 'Pay Now' },
   
   // Public Page
   'public.disclaimer': { ar: 'المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا', en: 'This platform only rents digital display pages, it is not an e-commerce store' },
