@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      customer_profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           created_at: string | null
@@ -153,6 +180,7 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          customer_id: string | null
           customer_name: string
           customer_notes: string | null
           customer_phone: string
@@ -164,6 +192,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          customer_id?: string | null
           customer_name: string
           customer_notes?: string | null
           customer_phone: string
@@ -175,6 +204,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          customer_id?: string | null
           customer_name?: string
           customer_notes?: string | null
           customer_phone?: string
@@ -200,6 +230,7 @@ export type Database = {
           phone: string
           updated_at: string | null
           user_id: string
+          user_type: string
           whatsapp_number: string | null
         }
         Insert: {
@@ -215,6 +246,7 @@ export type Database = {
           phone: string
           updated_at?: string | null
           user_id: string
+          user_type?: string
           whatsapp_number?: string | null
         }
         Update: {
@@ -230,6 +262,7 @@ export type Database = {
           phone?: string
           updated_at?: string | null
           user_id?: string
+          user_type?: string
           whatsapp_number?: string | null
         }
         Relationships: []

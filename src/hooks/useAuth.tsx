@@ -2,11 +2,15 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
+type UserType = 'customer' | 'merchant' | null;
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  userType: UserType;
   signUp: (email: string, password: string, phone: string) => Promise<{ error: Error | null }>;
+  signUpCustomer: (email: string, password: string, phone: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -17,26 +21,66 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userType, setUserType] = useState<UserType>(null);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Check user type after auth state change
+        if (session?.user) {
+          setTimeout(() => {
+            checkUserType(session.user.id);
+          }, 0);
+        } else {
+          setUserType(null);
+        }
       }
     );
 
-    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      if (session?.user) {
+        checkUserType(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkUserType = async (userId: string) => {
+    // Check if user is a merchant
+    const { data: merchantProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', userId)
+      .single();
+
+    if (merchantProfile) {
+      setUserType('merchant');
+      return;
+    }
+
+    // Check if user is a customer
+    const { data: customerProfile } = await supabase
+      .from('customer_profiles')
+      .select('id')
+      .eq('user_id', userId)
+      .single();
+
+    if (customerProfile) {
+      setUserType('customer');
+      return;
+    }
+
+    setUserType(null);
+  };
 
   const signUp = async (email: string, password: string, phone: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -46,17 +90,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { phone }
+        data: { phone, user_type: 'merchant' }
       }
     });
 
     if (!error && data.user) {
-      // Create profile after signup
       const { error: profileError } = await supabase.from('profiles').insert({
         user_id: data.user.id,
         phone: phone,
         display_name: '',
-        page_slug: `user-${Date.now()}`
+        page_slug: `user-${Date.now()}`,
+        user_type: 'merchant'
+      });
+      
+      if (profileError) {
+        return { error: new Error(profileError.message) };
+      }
+    }
+
+    return { error: error ? new Error(error.message) : null };
+  };
+
+  const signUpCustomer = async (email: string, password: string, phone: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: { phone, user_type: 'customer' }
+      }
+    });
+
+    if (!error && data.user) {
+      const { error: profileError } = await supabase.from('customer_profiles').insert({
+        user_id: data.user.id,
+        phone: phone,
+        display_name: ''
       });
       
       if (profileError) {
@@ -77,10 +148,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setUserType(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, userType, signUp, signUpCustomer, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

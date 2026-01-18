@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { Search, ShoppingCart, Package, Plus, Store, Loader2, Sparkles } from 'lucide-react';
+import { Search, ShoppingCart, Package, Plus, Store, Loader2, Sparkles, LogIn } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -27,14 +28,15 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const { addItem, getItemCount } = useCart();
+  const { user, userType } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
-    // Fetch active items from merchants with enabled pages
     const { data: items, error } = await supabase
       .from('items')
       .select(`
@@ -54,7 +56,6 @@ const Index = () => {
       return;
     }
 
-    // Get merchant profiles for these items
     const merchantIds = [...new Set(items?.map(i => i.user_id) || [])];
     
     if (merchantIds.length === 0) {
@@ -88,6 +89,25 @@ const Index = () => {
   };
 
   const handleAddToCart = (product: Product) => {
+    // Check if user is logged in as customer
+    if (!user) {
+      toast({
+        title: 'سجل دخولك أولاً',
+        description: 'يجب تسجيل الدخول لإضافة منتجات للسلة',
+      });
+      navigate('/auth?type=customer');
+      return;
+    }
+
+    if (userType === 'merchant') {
+      toast({
+        title: 'غير متاح للتجار',
+        description: 'حساب التاجر لا يمكنه الشراء. سجل كعميل للتسوق.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     addItem({
       id: product.id,
       title: product.title,
@@ -123,9 +143,17 @@ const Index = () => {
             <span>تصفح منتجات التجار</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">اكتشف أفضل المنتجات</h1>
-          <p className="text-white/80 max-w-xl mx-auto">
+          <p className="text-white/80 max-w-xl mx-auto mb-6">
             تصفح منتجات من مختلف التجار واطلب مباشرة
           </p>
+          {!user && (
+            <Button variant="secondary" asChild>
+              <Link to="/auth?type=customer">
+                <LogIn className="ml-2 h-4 w-4" />
+                سجل لتبدأ التسوق
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
 
@@ -179,7 +207,7 @@ const Index = () => {
               </p>
               <p className="text-sm text-muted-foreground">
                 هل أنت تاجر؟{' '}
-                <Link to="/auth" className="text-primary hover:underline font-medium">
+                <Link to="/auth?type=merchant" className="text-primary hover:underline font-medium">
                   سجل الآن وأضف منتجاتك
                 </Link>
               </p>
@@ -212,7 +240,6 @@ const Index = () => {
                 <CardContent className="p-3">
                   <h3 className="font-semibold text-sm truncate mb-1">{product.title}</h3>
                   
-                  {/* Merchant Link */}
                   {product.merchant_slug ? (
                     <Link 
                       to={`/p/${product.merchant_slug}`}
@@ -264,12 +291,15 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-card mt-8">
         <div className="container text-center space-y-4">
-          <p className="text-sm text-muted-foreground">
-            هل أنت تاجر؟{' '}
-            <Link to="/auth" className="text-primary hover:underline font-medium">
-              سجل الآن وأضف منتجاتك
+          <div className="flex justify-center gap-4">
+            <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">
+              سجل كعميل
             </Link>
-          </p>
+            <span className="text-muted-foreground">|</span>
+            <Link to="/auth?type=merchant" className="text-sm text-primary hover:underline font-medium">
+              سجل كتاجر
+            </Link>
+          </div>
           <div className="flex justify-center gap-6 text-sm">
             <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
               الشروط والأحكام
