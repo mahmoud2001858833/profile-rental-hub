@@ -105,21 +105,21 @@ const Index = () => {
               icon={<Store className="w-8 h-8" />}
               title="صفحة عرض خاصة بك"
               description="اعرض حتى 25 منتج أو خدمة مع الصور والأسعار ووصف مختصر لكل عنصر"
-              gradient="from-primary to-emerald-600"
+              gradient="from-primary to-red-700"
               delay="stagger-1"
             />
             <FeatureCard
               icon={<MessageCircle className="w-8 h-8" />}
               title="تواصل مباشر"
               description="عملاؤك يتواصلون معك مباشرة عبر الهاتف أو واتساب بنقرة واحدة"
-              gradient="from-blue-500 to-cyan-500"
+              gradient="from-red-600 to-rose-700"
               delay="stagger-2"
             />
             <FeatureCard
               icon={<Shield className="w-8 h-8" />}
               title="حريتك الكاملة"
               description="أنت تدير البيع والدفع والتوصيل بنفسك، المنصة للعرض فقط"
-              gradient="from-accent to-orange-500"
+              gradient="from-accent to-red-800"
               delay="stagger-3"
             />
           </div>
@@ -223,7 +223,7 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary to-emerald-700" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-red-800" />
         <div className="absolute inset-0 pattern-dots opacity-10" />
         
         {/* Decorative shapes */}
@@ -263,7 +263,7 @@ const Index = () => {
         <div className="container">
           <div className="text-center space-y-8">
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center shadow-lg shadow-primary/30">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center shadow-lg shadow-primary/30">
                 <span className="text-white font-black text-3xl">ص</span>
               </div>
             </div>
@@ -325,8 +325,8 @@ const FeatureCard = ({ icon, title, description, gradient, delay }: { icon: Reac
 const StepCard = ({ number, title, description, emoji, delay }: { number: number; title: string; description: string; emoji: string; delay: string }) => (
   <div className={`text-center relative animate-fade-in ${delay}`}>
     <div className="w-24 h-24 rounded-3xl bg-white border-2 border-primary/20 flex items-center justify-center mx-auto mb-6 relative shadow-lg hover:shadow-xl hover:border-primary/50 transition-all duration-300 hover:-translate-y-1">
-      <span className="text-4xl">{emoji}</span>
-      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-emerald-600 text-white flex items-center justify-center text-sm font-bold shadow-lg">
+    <span className="text-4xl">{emoji}</span>
+      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-red-700 text-white flex items-center justify-center text-sm font-bold shadow-lg">
         {number}
       </div>
     </div>
@@ -346,7 +346,7 @@ const AudienceCard = ({ title, emoji, delay }: { title: string; emoji: string; d
 // Benefit Item Component
 const BenefitItem = ({ text, icon, delay }: { text: string; icon: React.ReactNode; delay: string }) => (
   <div className={`flex items-center gap-4 p-5 rounded-2xl bg-white border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 animate-fade-in ${delay}`}>
-    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-600 flex items-center justify-center flex-shrink-0 text-white">
+    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center flex-shrink-0 text-white">
       {icon}
     </div>
     <span className="font-semibold">{text}</span>
