@@ -13,7 +13,6 @@ import { toast } from 'sonner';
 interface Profile {
   display_name: string | null;
   bio: string | null;
-  phone: string;
   whatsapp_number: string | null;
   has_delivery: boolean;
   avatar_url: string | null;
@@ -52,12 +51,11 @@ const PublicPage = () => {
   }, [slug]);
 
   const fetchPageData = async () => {
-    // Fetch profile
+    // Fetch profile from public_profiles view (excludes sensitive phone field)
     const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('display_name, bio, phone, whatsapp_number, has_delivery, avatar_url, cover_url, user_id')
+      .from('public_profiles')
+      .select('display_name, bio, whatsapp_number, has_delivery, avatar_url, cover_url, user_id')
       .eq('page_slug', slug)
-      .eq('page_enabled', true)
       .maybeSingle();
 
     if (profileError || !profileData) {
@@ -98,8 +96,9 @@ const PublicPage = () => {
   };
 
   const handleCall = () => {
-    if (profile?.phone) {
-      window.location.href = `tel:${profile.phone}`;
+    if (profile?.whatsapp_number) {
+      const cleanNumber = profile.whatsapp_number.replace(/[^0-9]/g, '');
+      window.location.href = `tel:+${cleanNumber}`;
     }
   };
 
@@ -111,8 +110,8 @@ const PublicPage = () => {
   };
 
   const copyPhone = async () => {
-    if (profile?.phone) {
-      await navigator.clipboard.writeText(profile.phone);
+    if (profile?.whatsapp_number) {
+      await navigator.clipboard.writeText(profile.whatsapp_number);
       setCopied(true);
       toast.success(dir === 'rtl' ? 'تم نسخ الرقم' : 'Phone copied');
       setTimeout(() => setCopied(false), 2000);
@@ -191,12 +190,12 @@ const PublicPage = () => {
             </p>
           )}
 
-          {/* Phone Number Display */}
-          {profile?.phone && (
+          {/* WhatsApp Number Display (phone field is private for auth only) */}
+          {profile?.whatsapp_number && (
             <div className="flex items-center justify-center gap-2 mb-4">
               <div className="flex items-center gap-2 bg-muted/50 px-4 py-2 rounded-lg">
                 <Phone className="h-4 w-4 text-primary" />
-                <span className="font-medium" dir="ltr">{profile.phone}</span>
+                <span className="font-medium" dir="ltr">{profile.whatsapp_number}</span>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -222,21 +221,21 @@ const PublicPage = () => {
         </div>
       </header>
 
-      {/* Contact Buttons */}
-      <div className="container pb-8">
-        <div className="flex gap-4 justify-center max-w-md mx-auto">
-          <Button onClick={handleCall} size="lg" className="flex-1 gap-2 shadow-lg shadow-primary/20">
-            <Phone className="h-4 w-4" />
-            {t('public.call')}
-          </Button>
-          {profile?.whatsapp_number && (
+      {/* Contact Buttons - Only show if whatsapp_number is set */}
+      {profile?.whatsapp_number && (
+        <div className="container pb-8">
+          <div className="flex gap-4 justify-center max-w-md mx-auto">
+            <Button onClick={handleCall} size="lg" className="flex-1 gap-2 shadow-lg shadow-primary/20">
+              <Phone className="h-4 w-4" />
+              {t('public.call')}
+            </Button>
             <Button onClick={handleWhatsApp} variant="outline" size="lg" className="flex-1 gap-2">
               <MessageCircle className="h-4 w-4" />
               {t('public.whatsapp')}
             </Button>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Items */}
       <section className="container pb-12">
