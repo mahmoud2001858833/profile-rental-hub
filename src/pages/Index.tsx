@@ -148,17 +148,17 @@ const Index = () => {
         <div className="container relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sm font-medium mb-6 shadow-lg">
             <Sparkles className="h-4 w-4" />
-            <span>تصفح منتجات التجار</span>
+            <span>{t('index.browseProducts')}</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">اكتشف أفضل المنتجات</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">{t('index.discoverBest')}</h1>
           <p className="text-white/90 max-w-xl mx-auto mb-8 text-lg">
-            تصفح منتجات من مختلف التجار واطلب مباشرة
+            {t('index.browseDesc')}
           </p>
           {!user && (
             <Button variant="secondary" size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
               <Link to="/auth?type=customer">
                 <LogIn className="ml-2 h-5 w-5" />
-                سجل لتبدأ التسوق
+                {t('index.loginToShop')}
               </Link>
             </Button>
           )}
@@ -172,7 +172,7 @@ const Index = () => {
             <div className="relative flex-1 max-w-md">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="ابحث عن منتج أو تاجر..."
+                placeholder={t('index.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pr-10 bg-white/50 dark:bg-card/50 backdrop-blur-sm border-white/30"
@@ -195,9 +195,9 @@ const Index = () => {
       {/* Products Grid */}
       <main className="container py-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">المنتجات</h2>
+          <h2 className="text-xl font-bold">{t('index.products')}</h2>
           <p className="text-muted-foreground text-sm">
-            {filteredProducts.length} منتج
+            {filteredProducts.length} {t('index.product')}
           </p>
         </div>
 
@@ -209,14 +209,14 @@ const Index = () => {
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-16 text-center">
               <Package className="h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="font-semibold text-lg mb-2">لا توجد منتجات</h3>
+              <h3 className="font-semibold text-lg mb-2">{t('index.noProducts')}</h3>
               <p className="text-muted-foreground mb-4">
-                {searchQuery ? 'جرب البحث بكلمات مختلفة' : 'لم يتم إضافة منتجات بعد'}
+                {searchQuery ? t('index.tryDifferent') : t('index.noProductsYet')}
               </p>
               <p className="text-sm text-muted-foreground">
-                هل أنت تاجر؟{' '}
+                {t('index.areMerchant')}{' '}
                 <Link to="/auth?type=merchant" className="text-primary hover:underline font-medium">
-                  سجل الآن وأضف منتجاتك
+                  {t('index.registerNow')}
                 </Link>
               </p>
             </CardContent>
@@ -286,7 +286,7 @@ const Index = () => {
                       onClick={() => handleAddToCart(product)}
                     >
                       <Plus className="h-3 w-3 ml-1" />
-                      أضف
+                      {t('index.add')}
                     </Button>
                   </div>
                 </CardContent>
@@ -301,20 +301,20 @@ const Index = () => {
         <div className="container text-center space-y-4">
           <div className="flex justify-center gap-4">
             <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">
-              سجل كعميل
+              {t('index.registerCustomer')}
             </Link>
             <span className="text-muted-foreground">|</span>
             <Link to="/auth?type=merchant" className="text-sm text-primary hover:underline font-medium">
-              سجل كتاجر
+              {t('index.registerMerchant')}
             </Link>
           </div>
           <div className="flex justify-center gap-6 text-sm">
             <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
-              الشروط والأحكام
+              {t('index.termsConditions')}
             </Link>
           </div>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} جميع الحقوق محفوظة
+            © {new Date().getFullYear()} {t('index.allRights')}
           </p>
         </div>
       </footer>
