@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 type Language = 'ar' | 'en';
 
+
 interface Translations {
   [key: string]: {
     ar: string;
