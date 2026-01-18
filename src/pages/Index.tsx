@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import { Search, ShoppingCart, Package, Plus, Store, Loader2, Sparkles, LogIn } from 'lucide-react';
@@ -29,6 +30,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { addItem, getItemCount } = useCart();
   const { user, userType } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -89,11 +91,10 @@ const Index = () => {
   };
 
   const handleAddToCart = (product: Product) => {
-    // Check if user is logged in as customer
     if (!user) {
       toast({
-        title: 'سجل دخولك أولاً',
-        description: 'يجب تسجيل الدخول لإضافة منتجات للسلة',
+        title: t('auth.loginRequired'),
+        description: t('auth.loginToCart'),
       });
       navigate('/auth?type=customer');
       return;
@@ -101,8 +102,8 @@ const Index = () => {
 
     if (userType === 'merchant') {
       toast({
-        title: 'غير متاح للتجار',
-        description: 'حساب التاجر لا يمكنه الشراء. سجل كعميل للتسوق.',
+        title: t('auth.notForMerchants'),
+        description: t('auth.merchantCantBuy'),
         variant: 'destructive',
       });
       return;
@@ -117,8 +118,8 @@ const Index = () => {
       merchant_name: product.merchant_name,
     });
     toast({
-      title: 'تمت الإضافة',
-      description: `تم إضافة "${product.title}" للسلة`,
+      title: t('cart.added'),
+      description: `${t('cart.addedTo')} "${product.title}" ${t('cart.toCart')}`,
     });
   };
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,23 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Store, ShoppingBag } from 'lucide-react';
 import { z } from 'zod';
-
-const loginSchema = z.object({
-  phone: z.string().min(8, 'رقم الهاتف غير صالح').max(20, 'رقم الهاتف طويل جداً'),
-  password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
-});
-
-const registerSchema = z.object({
-  phone: z.string().min(8, 'رقم الهاتف غير صالح').max(20, 'رقم الهاتف طويل جداً'),
-  password: z.string().min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
-  confirmPassword: z.string(),
-  agreeToTerms: z.boolean().refine((val) => val === true, {
-    message: 'يجب الموافقة على الشروط والأحكام',
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'كلمات المرور غير متطابقة',
-  path: ['confirmPassword'],
-});
+import LanguageToggle from '@/components/LanguageToggle';
 
 type UserType = 'customer' | 'merchant';
 
@@ -34,7 +19,25 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, signIn, signUp, signUpCustomer, loading } = useAuth();
+  const { t } = useLanguage();
   const { toast } = useToast();
+  
+  const loginSchema = z.object({
+    phone: z.string().min(8, t('auth.phoneInvalid')).max(20, t('auth.phoneTooLong')),
+    password: z.string().min(6, t('auth.passwordMin')),
+  });
+
+  const registerSchema = z.object({
+    phone: z.string().min(8, t('auth.phoneInvalid')).max(20, t('auth.phoneTooLong')),
+    password: z.string().min(6, t('auth.passwordMin')),
+    confirmPassword: z.string(),
+    agreeToTerms: z.boolean().refine((val) => val === true, {
+      message: t('auth.agreeRequired'),
+    }),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('auth.passwordMismatch'),
+    path: ['confirmPassword'],
+  });
   
   const [userType, setUserType] = useState<UserType>(
     (searchParams.get('type') as UserType) || 'customer'
@@ -51,7 +54,6 @@ const Auth = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      // Redirect based on user type - check if they have merchant profile or customer profile
       navigate(userType === 'merchant' ? '/dashboard' : '/');
     }
   }, [user, loading, navigate, userType]);
@@ -82,8 +84,8 @@ const Auth = () => {
 
     if (error) {
       toast({
-        title: 'خطأ في تسجيل الدخول',
-        description: 'رقم الهاتف أو كلمة المرور غير صحيحة',
+        title: t('auth.loginError'),
+        description: t('auth.wrongCredentials'),
         variant: 'destructive',
       });
     }
@@ -120,21 +122,21 @@ const Auth = () => {
     if (error) {
       if (error.message.includes('already registered')) {
         toast({
-          title: 'الحساب موجود مسبقاً',
-          description: 'هذا الرقم مسجل بالفعل',
+          title: t('auth.accountExists'),
+          description: t('auth.phoneExists'),
           variant: 'destructive',
         });
       } else {
         toast({
-          title: 'خطأ في التسجيل',
+          title: t('auth.registerError'),
           description: error.message,
           variant: 'destructive',
         });
       }
     } else {
       toast({
-        title: 'تم التسجيل بنجاح!',
-        description: userType === 'merchant' ? 'مرحباً بك، يمكنك الآن إضافة منتجاتك' : 'مرحباً بك، يمكنك الآن التسوق',
+        title: t('auth.registerSuccess'),
+        description: userType === 'merchant' ? t('auth.welcomeMerchant') : t('auth.welcomeCustomer'),
       });
     }
   };
@@ -149,13 +151,16 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageToggle />
+      </div>
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center pb-2">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/30">
             <span className="text-white font-black text-2xl">ص</span>
           </div>
-          <CardTitle className="text-2xl font-bold">مرحباً بك</CardTitle>
-          <CardDescription>اختر نوع حسابك</CardDescription>
+          <CardTitle className="text-2xl font-bold">{t('auth.welcome')}</CardTitle>
+          <CardDescription>{t('auth.chooseAccount')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* User Type Selection */}
@@ -170,8 +175,8 @@ const Auth = () => {
               }`}
             >
               <ShoppingBag className={`h-8 w-8 mx-auto mb-2 ${userType === 'customer' ? 'text-primary' : 'text-muted-foreground'}`} />
-              <p className={`font-semibold ${userType === 'customer' ? 'text-primary' : ''}`}>عميل</p>
-              <p className="text-xs text-muted-foreground">للتسوق والشراء</p>
+              <p className={`font-semibold ${userType === 'customer' ? 'text-primary' : ''}`}>{t('auth.customer')}</p>
+              <p className="text-xs text-muted-foreground">{t('auth.forShopping')}</p>
             </button>
             <button
               type="button"
@@ -183,25 +188,25 @@ const Auth = () => {
               }`}
             >
               <Store className={`h-8 w-8 mx-auto mb-2 ${userType === 'merchant' ? 'text-primary' : 'text-muted-foreground'}`} />
-              <p className={`font-semibold ${userType === 'merchant' ? 'text-primary' : ''}`}>تاجر</p>
-              <p className="text-xs text-muted-foreground">لعرض المنتجات</p>
+              <p className={`font-semibold ${userType === 'merchant' ? 'text-primary' : ''}`}>{t('auth.merchant')}</p>
+              <p className="text-xs text-muted-foreground">{t('auth.forProducts')}</p>
             </button>
           </div>
 
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login" className="font-semibold">تسجيل الدخول</TabsTrigger>
-              <TabsTrigger value="register" className="font-semibold">حساب جديد</TabsTrigger>
+              <TabsTrigger value="login" className="font-semibold">{t('auth.login')}</TabsTrigger>
+              <TabsTrigger value="register" className="font-semibold">{t('auth.newAccount')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="login-phone" className="font-semibold">رقم الهاتف</Label>
+                  <Label htmlFor="login-phone" className="font-semibold">{t('auth.phone')}</Label>
                   <Input
                     id="login-phone"
                     type="tel"
-                    placeholder="05XXXXXXXX"
+                    placeholder="+962 7XX XXX XXX"
                     value={loginData.phone}
                     onChange={(e) => setLoginData({ ...loginData, phone: e.target.value })}
                     className="h-12 text-base"
@@ -211,7 +216,7 @@ const Auth = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password" className="font-semibold">كلمة المرور</Label>
+                  <Label htmlFor="login-password" className="font-semibold">{t('auth.password')}</Label>
                   <Input
                     id="login-password"
                     type="password"
@@ -223,7 +228,7 @@ const Auth = () => {
                 </div>
                 
                 <Button type="submit" className="w-full h-12 text-base font-bold" disabled={isSubmitting}>
-                  {isSubmitting ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+                  {isSubmitting ? t('auth.loggingIn') : t('auth.login')}
                 </Button>
               </form>
             </TabsContent>
@@ -231,11 +236,11 @@ const Auth = () => {
             <TabsContent value="register">
               <form onSubmit={handleRegister} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="register-phone" className="font-semibold">رقم الهاتف</Label>
+                  <Label htmlFor="register-phone" className="font-semibold">{t('auth.phone')}</Label>
                   <Input
                     id="register-phone"
                     type="tel"
-                    placeholder="05XXXXXXXX"
+                    placeholder="+962 7XX XXX XXX"
                     value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                     className="h-12 text-base"
@@ -245,7 +250,7 @@ const Auth = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-password" className="font-semibold">كلمة المرور</Label>
+                  <Label htmlFor="register-password" className="font-semibold">{t('auth.password')}</Label>
                   <Input
                     id="register-password"
                     type="password"
@@ -257,7 +262,7 @@ const Auth = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="register-confirm" className="font-semibold">تأكيد كلمة المرور</Label>
+                  <Label htmlFor="register-confirm" className="font-semibold">{t('auth.confirmPassword')}</Label>
                   <Input
                     id="register-confirm"
                     type="password"
@@ -279,13 +284,13 @@ const Auth = () => {
                   />
                   <div className="space-y-1">
                     <Label htmlFor="agree-terms" className="text-sm font-medium cursor-pointer">
-                      أوافق على{' '}
+                      {t('auth.agreeTerms')}{' '}
                       <Link 
                         to="/terms" 
                         target="_blank"
                         className="text-primary hover:underline font-semibold"
                       >
-                        الشروط والأحكام وسياسة الخصوصية
+                        {t('auth.termsLink')}
                       </Link>
                     </Label>
                   </div>
@@ -293,7 +298,7 @@ const Auth = () => {
                 {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}
                 
                 <Button type="submit" className="w-full h-12 text-base font-bold" disabled={isSubmitting}>
-                  {isSubmitting ? 'جاري إنشاء الحساب...' : `إنشاء حساب ${userType === 'merchant' ? 'تاجر' : 'عميل'}`}
+                  {isSubmitting ? t('auth.creatingAccount') : `${t('auth.createAccount')} ${userType === 'merchant' ? t('auth.merchant') : t('auth.customer')}`}
                 </Button>
               </form>
             </TabsContent>
@@ -301,7 +306,7 @@ const Auth = () => {
 
           <div className="text-center">
             <Link to="/" className="text-sm text-muted-foreground hover:text-primary">
-              ← العودة للصفحة الرئيسية
+              ← {t('auth.backHome')}
             </Link>
           </div>
         </CardContent>
