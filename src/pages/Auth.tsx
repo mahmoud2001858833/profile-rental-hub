@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
+import { Store, ShoppingBag } from 'lucide-react';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -27,11 +28,17 @@ const registerSchema = z.object({
   path: ['confirmPassword'],
 });
 
+type UserType = 'customer' | 'merchant';
+
 const Auth = () => {
   const navigate = useNavigate();
-  const { user, signIn, signUp, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { user, signIn, signUp, signUpCustomer, loading } = useAuth();
   const { toast } = useToast();
   
+  const [userType, setUserType] = useState<UserType>(
+    (searchParams.get('type') as UserType) || 'customer'
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginData, setLoginData] = useState({ phone: '', password: '' });
   const [registerData, setRegisterData] = useState({ 
@@ -44,14 +51,14 @@ const Auth = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/dashboard');
+      // Redirect based on user type - check if they have merchant profile or customer profile
+      navigate(userType === 'merchant' ? '/dashboard' : '/');
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, userType]);
 
-  // Generate email from phone number
-  const phoneToEmail = (phone: string) => {
+  const phoneToEmail = (phone: string, type: UserType) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
-    return `${cleanPhone}@phone.local`;
+    return `${cleanPhone}.${type}@phone.local`;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -69,7 +76,7 @@ const Auth = () => {
     }
 
     setIsSubmitting(true);
-    const email = phoneToEmail(loginData.phone);
+    const email = phoneToEmail(loginData.phone, userType);
     const { error } = await signIn(email, loginData.password);
     setIsSubmitting(false);
 
@@ -97,8 +104,17 @@ const Auth = () => {
     }
 
     setIsSubmitting(true);
-    const email = phoneToEmail(registerData.phone);
-    const { error } = await signUp(email, registerData.password, registerData.phone);
+    const email = phoneToEmail(registerData.phone, userType);
+    
+    let error;
+    if (userType === 'merchant') {
+      const result = await signUp(email, registerData.password, registerData.phone);
+      error = result.error;
+    } else {
+      const result = await signUpCustomer(email, registerData.password, registerData.phone);
+      error = result.error;
+    }
+    
     setIsSubmitting(false);
 
     if (error) {
@@ -118,7 +134,7 @@ const Auth = () => {
     } else {
       toast({
         title: 'تم التسجيل بنجاح!',
-        description: 'مرحباً بك في المنصة',
+        description: userType === 'merchant' ? 'مرحباً بك، يمكنك الآن إضافة منتجاتك' : 'مرحباً بك، يمكنك الآن التسوق',
       });
     }
   };
@@ -139,9 +155,39 @@ const Auth = () => {
             <span className="text-white font-black text-2xl">ص</span>
           </div>
           <CardTitle className="text-2xl font-bold">مرحباً بك</CardTitle>
-          <CardDescription>سجّل دخولك أو أنشئ حساباً جديداً</CardDescription>
+          <CardDescription>اختر نوع حسابك</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          {/* User Type Selection */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setUserType('customer')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                userType === 'customer'
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-primary/50'
+              }`}
+            >
+              <ShoppingBag className={`h-8 w-8 mx-auto mb-2 ${userType === 'customer' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <p className={`font-semibold ${userType === 'customer' ? 'text-primary' : ''}`}>عميل</p>
+              <p className="text-xs text-muted-foreground">للتسوق والشراء</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setUserType('merchant')}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                userType === 'merchant'
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-primary/50'
+              }`}
+            >
+              <Store className={`h-8 w-8 mx-auto mb-2 ${userType === 'merchant' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <p className={`font-semibold ${userType === 'merchant' ? 'text-primary' : ''}`}>تاجر</p>
+              <p className="text-xs text-muted-foreground">لعرض المنتجات</p>
+            </button>
+          </div>
+
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login" className="font-semibold">تسجيل الدخول</TabsTrigger>
@@ -242,19 +288,22 @@ const Auth = () => {
                         الشروط والأحكام وسياسة الخصوصية
                       </Link>
                     </Label>
-                    <p className="text-xs text-muted-foreground">
-                      بما في ذلك إخلاء المسؤولية وشروط الاشتراك
-                    </p>
                   </div>
                 </div>
                 {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}
                 
                 <Button type="submit" className="w-full h-12 text-base font-bold" disabled={isSubmitting}>
-                  {isSubmitting ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
+                  {isSubmitting ? 'جاري إنشاء الحساب...' : `إنشاء حساب ${userType === 'merchant' ? 'تاجر' : 'عميل'}`}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
+
+          <div className="text-center">
+            <Link to="/" className="text-sm text-muted-foreground hover:text-primary">
+              ← العودة للصفحة الرئيسية
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useCart, CartItem } from '@/hooks/useCart';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, Package, Loader2, CheckCircle } from 'lucide-react';
@@ -21,12 +22,32 @@ const orderSchema = z.object({
 
 const Cart = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading, userType } = useAuth();
   const { items, updateQuantity, removeItem, clearMerchantItems, getTotal } = useCart();
   const { toast } = useToast();
   const [orderForm, setOrderForm] = useState({ name: '', phone: '', notes: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  // Redirect if not logged in as customer
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast({
+        title: 'سجل دخولك أولاً',
+        description: 'يجب تسجيل الدخول لإتمام الطلب',
+      });
+      navigate('/auth?type=customer');
+    }
+    if (!authLoading && userType === 'merchant') {
+      toast({
+        title: 'غير متاح للتجار',
+        description: 'سجل كعميل للتسوق',
+        variant: 'destructive',
+      });
+      navigate('/');
+    }
+  }, [user, authLoading, userType, navigate, toast]);
 
   // Group items by merchant
   const groupedItems = items.reduce((acc, item) => {
@@ -64,6 +85,7 @@ const Cart = () => {
         .from('orders')
         .insert({
           merchant_id: merchantId,
+          customer_id: user?.id,
           customer_name: orderForm.name.trim(),
           customer_phone: orderForm.phone.trim(),
           customer_notes: orderForm.notes?.trim() || null,
