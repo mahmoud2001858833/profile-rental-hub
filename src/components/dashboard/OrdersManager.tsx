@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,20 +28,21 @@ interface Order {
   items?: OrderItem[];
 }
 
-const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  pending: { label: 'جديد', color: 'bg-yellow-500', icon: <Clock className="h-3 w-3" /> },
-  confirmed: { label: 'مؤكد', color: 'bg-blue-500', icon: <CheckCircle className="h-3 w-3" /> },
-  completed: { label: 'مكتمل', color: 'bg-green-500', icon: <CheckCircle className="h-3 w-3" /> },
-  cancelled: { label: 'ملغي', color: 'bg-red-500', icon: <XCircle className="h-3 w-3" /> },
-};
-
 const OrdersManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t, language } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+
+  const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
+    pending: { label: t('orders.new'), color: 'bg-yellow-500', icon: <Clock className="h-3 w-3" /> },
+    confirmed: { label: t('orders.confirmed'), color: 'bg-blue-500', icon: <CheckCircle className="h-3 w-3" /> },
+    completed: { label: t('orders.completed'), color: 'bg-green-500', icon: <CheckCircle className="h-3 w-3" /> },
+    cancelled: { label: t('orders.cancelled'), color: 'bg-red-500', icon: <XCircle className="h-3 w-3" /> },
+  };
 
   useEffect(() => {
     if (user) {
@@ -59,8 +61,8 @@ const OrdersManager = () => {
 
     if (error) {
       toast({
-        title: 'خطأ',
-        description: 'فشل في تحميل الطلبات',
+        title: t('common.error'),
+        description: t('orders.loadError'),
         variant: 'destructive',
       });
     } else {
@@ -91,24 +93,24 @@ const OrdersManager = () => {
 
     if (error) {
       toast({
-        title: 'خطأ',
-        description: 'فشل في تحديث حالة الطلب',
+        title: t('common.error'),
+        description: t('orders.updateError'),
         variant: 'destructive',
       });
     } else {
-      toast({ title: 'تم التحديث', description: 'تم تحديث حالة الطلب' });
+      toast({ title: t('orders.updated'), description: t('orders.statusUpdated') });
       fetchOrders();
     }
   };
 
   const openWhatsApp = (phone: string, orderDetails: string) => {
-    const message = encodeURIComponent(`مرحباً، بخصوص طلبك:\n${orderDetails}`);
+    const message = encodeURIComponent(`${t('orders.hello')}\n${orderDetails}`);
     window.open(`https://wa.me/966${phone.slice(1)}?text=${message}`, '_blank');
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-SA', {
+    return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -128,16 +130,16 @@ const OrdersManager = () => {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-semibold">الطلبات ({orders.length})</h3>
-        <p className="text-sm text-muted-foreground">إدارة طلبات العملاء</p>
+        <h3 className="font-semibold">{t('orders.title')} ({orders.length})</h3>
+        <p className="text-sm text-muted-foreground">{t('orders.manageOrders')}</p>
       </div>
 
       {orders.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center p-8 text-center">
             <Package className="h-12 w-12 text-muted-foreground mb-4" />
-            <h4 className="font-semibold mb-2">لا توجد طلبات</h4>
-            <p className="text-sm text-muted-foreground">ستظهر الطلبات هنا عندما يطلب العملاء منتجاتك</p>
+            <h4 className="font-semibold mb-2">{t('orders.noOrders')}</h4>
+            <p className="text-sm text-muted-foreground">{t('orders.ordersAppear')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -157,7 +159,7 @@ const OrdersManager = () => {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{formatDate(order.created_at)}</p>
-                      <p className="text-primary font-bold mt-1">{order.total_amount.toFixed(2)} ر.س</p>
+                      <p className="text-primary font-bold mt-1">{order.total_amount.toFixed(2)} {t('common.currency')}</p>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -169,10 +171,10 @@ const OrdersManager = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">جديد</SelectItem>
-                          <SelectItem value="confirmed">مؤكد</SelectItem>
-                          <SelectItem value="completed">مكتمل</SelectItem>
-                          <SelectItem value="cancelled">ملغي</SelectItem>
+                          <SelectItem value="pending">{t('orders.new')}</SelectItem>
+                          <SelectItem value="confirmed">{t('orders.confirmed')}</SelectItem>
+                          <SelectItem value="completed">{t('orders.completed')}</SelectItem>
+                          <SelectItem value="cancelled">{t('orders.cancelled')}</SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -199,7 +201,7 @@ const OrdersManager = () => {
                           size="icon"
                           variant="outline"
                           className="h-8 w-8 text-green-600"
-                          onClick={() => openWhatsApp(order.customer_phone, `الإجمالي: ${order.total_amount.toFixed(2)} ر.س`)}
+                          onClick={() => openWhatsApp(order.customer_phone, `${t('orders.total')}: ${order.total_amount.toFixed(2)} ${t('common.currency')}`)}
                         >
                           <MessageCircle className="h-4 w-4" />
                         </Button>
@@ -213,30 +215,29 @@ const OrdersManager = () => {
         </div>
       )}
 
-      {/* Order Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>تفاصيل الطلب</DialogTitle>
+            <DialogTitle>{t('orders.details')}</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-4">
               <div>
-                <h4 className="font-semibold mb-1">بيانات العميل</h4>
-                <p className="text-sm">الاسم: {selectedOrder.customer_name}</p>
-                <p className="text-sm">الجوال: {selectedOrder.customer_phone}</p>
+                <h4 className="font-semibold mb-1">{t('orders.customerData')}</h4>
+                <p className="text-sm">{t('orders.name')}: {selectedOrder.customer_name}</p>
+                <p className="text-sm">{t('orders.phone')}: {selectedOrder.customer_phone}</p>
                 {selectedOrder.customer_notes && (
-                  <p className="text-sm">ملاحظات: {selectedOrder.customer_notes}</p>
+                  <p className="text-sm">{t('orders.notes')}: {selectedOrder.customer_notes}</p>
                 )}
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">المنتجات</h4>
+                <h4 className="font-semibold mb-2">{t('orders.products')}</h4>
                 <div className="space-y-2">
                   {selectedOrder.items?.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
                       <span>{item.item_title} × {item.quantity}</span>
-                      <span className="font-medium">{(item.item_price * item.quantity).toFixed(2)} ر.س</span>
+                      <span className="font-medium">{(item.item_price * item.quantity).toFixed(2)} {t('common.currency')}</span>
                     </div>
                   ))}
                 </div>
@@ -244,8 +245,8 @@ const OrdersManager = () => {
 
               <div className="border-t pt-2">
                 <div className="flex justify-between font-bold">
-                  <span>الإجمالي:</span>
-                  <span className="text-primary">{selectedOrder.total_amount.toFixed(2)} ر.س</span>
+                  <span>{t('orders.total')}:</span>
+                  <span className="text-primary">{selectedOrder.total_amount.toFixed(2)} {t('common.currency')}</span>
                 </div>
               </div>
 
@@ -256,19 +257,19 @@ const OrdersManager = () => {
                   asChild
                 >
                   <a href={`tel:${selectedOrder.customer_phone}`}>
-                    <Phone className="ml-2 h-4 w-4" />
-                    اتصال
+                    <Phone className="mx-2 h-4 w-4" />
+                    {t('orders.call')}
                   </a>
                 </Button>
                 <Button
                   className="flex-1 bg-green-600 hover:bg-green-700"
                   onClick={() => openWhatsApp(
                     selectedOrder.customer_phone,
-                    selectedOrder.items?.map(i => `${i.item_title} × ${i.quantity}`).join('\n') + `\nالإجمالي: ${selectedOrder.total_amount.toFixed(2)} ر.س`
+                    selectedOrder.items?.map(i => `${i.item_title} × ${i.quantity}`).join('\n') + `\n${t('orders.total')}: ${selectedOrder.total_amount.toFixed(2)} ${t('common.currency')}`
                   )}
                 >
-                  <MessageCircle className="ml-2 h-4 w-4" />
-                  واتساب
+                  <MessageCircle className="mx-2 h-4 w-4" />
+                  {t('orders.whatsapp')}
                 </Button>
               </div>
             </div>
