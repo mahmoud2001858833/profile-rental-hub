@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,50 +9,50 @@
 
 @layer base {
   :root {
-    /* Cream background */
-    --background: 48 100% 96%;
-    --foreground: 0 0% 15%;
+    /* Warm Cream background */
+    --background: 45 100% 97%;
+    --foreground: 30 10% 15%;
 
-    /* Card - slightly darker cream */
-    --card: 48 80% 94%;
-    --card-foreground: 0 0% 15%;
+    /* Card - elegant cream */
+    --card: 45 80% 95%;
+    --card-foreground: 30 10% 15%;
 
-    --popover: 48 100% 96%;
-    --popover-foreground: 0 0% 15%;
+    --popover: 45 100% 97%;
+    --popover-foreground: 30 10% 15%;
 
-    /* Primary - Green for buttons */
-    --primary: 122 39% 49%;
+    /* Primary - Rich Green for buttons */
+    --primary: 142 50% 42%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary */
-    --secondary: 48 60% 90%;
-    --secondary-foreground: 0 0% 15%;
+    /* Secondary - Soft cream */
+    --secondary: 45 50% 92%;
+    --secondary-foreground: 30 10% 15%;
 
-    --muted: 48 40% 90%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 45 30% 90%;
+    --muted-foreground: 30 10% 45%;
 
-    /* Accent - Red for prices/highlights */
-    --accent: 354 70% 54%;
+    /* Accent - Vibrant Red for prices/highlights */
+    --accent: 0 75% 55%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive - also red */
-    --destructive: 354 70% 54%;
+    /* Destructive - Red */
+    --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 48 30% 85%;
-    --input: 48 30% 85%;
-    --ring: 122 39% 49%;
+    --border: 45 25% 88%;
+    --input: 45 25% 88%;
+    --ring: 142 50% 42%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    --sidebar-background: 48 80% 94%;
-    --sidebar-foreground: 0 0% 15%;
-    --sidebar-primary: 122 39% 49%;
+    --sidebar-background: 45 80% 95%;
+    --sidebar-foreground: 30 10% 15%;
+    --sidebar-primary: 142 50% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 48 60% 88%;
-    --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-border: 48 30% 85%;
-    --sidebar-ring: 122 39% 49%;
+    --sidebar-accent: 45 50% 90%;
+    --sidebar-accent-foreground: 30 10% 15%;
+    --sidebar-border: 45 25% 88%;
+    --sidebar-ring: 142 50% 42%;
   }
 }
 
@@ -63,10 +63,11 @@
 
   html {
     font-family: 'Cairo', sans-serif;
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Cairo', sans-serif;
   }
 }
@@ -77,3 +78,24 @@
     @apply text-accent font-bold;
   }
 }
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-fade-in:nth-child(1) { animation-delay: 0s; }
+.animate-fade-in:nth-child(2) { animation-delay: 0.1s; }
+.animate-fade-in:nth-child(3) { animation-delay: 0.2s; }
+.animate-fade-in:nth-child(4) { animation-delay: 0.3s; }
