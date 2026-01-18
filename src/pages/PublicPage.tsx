@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Phone, MessageCircle, Truck, Loader2 } from 'lucide-react';
+import { Phone, MessageCircle, Truck, Loader2, Package } from 'lucide-react';
 
 interface Profile {
   display_name: string | null;
@@ -13,6 +13,7 @@ interface Profile {
   whatsapp_number: string | null;
   has_delivery: boolean;
   avatar_url: string | null;
+  cover_url: string | null;
   user_id: string;
 }
 
@@ -41,7 +42,7 @@ const PublicPage = () => {
     // Fetch profile
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('display_name, bio, phone, whatsapp_number, has_delivery, avatar_url, user_id')
+      .select('display_name, bio, phone, whatsapp_number, has_delivery, avatar_url, cover_url, user_id')
       .eq('page_slug', slug)
       .eq('page_enabled', true)
       .maybeSingle();
@@ -52,7 +53,7 @@ const PublicPage = () => {
       return;
     }
 
-    setProfile(profileData);
+    setProfile(profileData as Profile);
 
     // Fetch items
     const { data: itemsData } = await supabase
@@ -107,33 +108,49 @@ const PublicPage = () => {
         </p>
       </div>
 
-      {/* Profile Header */}
-      <header className="container py-8">
-        <div className="text-center">
+      {/* Cover Image */}
+      <div className="relative h-48 md:h-64 bg-gradient-to-br from-primary/20 to-accent/20">
+        {profile?.cover_url ? (
+          <img
+            src={profile.cover_url}
+            alt="صورة الغلاف"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10" />
+        )}
+        
+        {/* Avatar overlapping cover */}
+        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
           {profile?.avatar_url ? (
             <img
               src={profile.avatar_url}
               alt={profile.display_name || 'صورة الملف الشخصي'}
-              className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-card"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover border-4 border-background shadow-xl"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-card flex items-center justify-center border-4 border-border">
-              <span className="text-3xl">👤</span>
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-card flex items-center justify-center border-4 border-background shadow-xl">
+              <span className="text-4xl">👤</span>
             </div>
           )}
-          
-          <h1 className="text-2xl font-bold mb-2">
+        </div>
+      </div>
+
+      {/* Profile Header */}
+      <header className="container pt-16 pb-6">
+        <div className="text-center">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">
             {profile?.display_name || 'بدون اسم'}
           </h1>
           
           {profile?.bio && (
-            <p className="text-muted-foreground max-w-md mx-auto mb-4">
+            <p className="text-muted-foreground max-w-md mx-auto mb-4 leading-relaxed">
               {profile.bio}
             </p>
           )}
 
           {profile?.has_delivery && (
-            <Badge variant="secondary" className="gap-1">
+            <Badge variant="secondary" className="gap-1 px-4 py-1">
               <Truck className="h-3 w-3" />
               يوجد توصيل
             </Badge>
@@ -142,14 +159,14 @@ const PublicPage = () => {
       </header>
 
       {/* Contact Buttons */}
-      <div className="container pb-6">
+      <div className="container pb-8">
         <div className="flex gap-4 justify-center max-w-md mx-auto">
-          <Button onClick={handleCall} className="flex-1 gap-2">
+          <Button onClick={handleCall} size="lg" className="flex-1 gap-2 shadow-lg shadow-primary/20">
             <Phone className="h-4 w-4" />
             اتصال
           </Button>
           {profile?.whatsapp_number && (
-            <Button onClick={handleWhatsApp} variant="outline" className="flex-1 gap-2">
+            <Button onClick={handleWhatsApp} variant="outline" size="lg" className="flex-1 gap-2">
               <MessageCircle className="h-4 w-4" />
               واتساب
             </Button>
@@ -158,7 +175,8 @@ const PublicPage = () => {
       </div>
 
       {/* Items */}
-      <section className="container pb-8">
+      <section className="container pb-12">
+        <h2 className="text-lg font-bold mb-4 text-center">المنتجات والخدمات</h2>
         {items.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
@@ -166,32 +184,32 @@ const PublicPage = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {items.map((item) => (
-              <Card key={item.id} className="overflow-hidden">
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
-                    {item.image_url ? (
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
-                        <span className="text-2xl">📦</span>
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold mb-1 truncate">{item.title}</h3>
-                      {item.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-                          {item.description}
-                        </p>
-                      )}
-                      <p className="text-accent font-bold">{item.price.toFixed(2)} ر.س</p>
+              <Card key={item.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+                {/* Image */}
+                <div className="aspect-square bg-muted relative overflow-hidden">
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                      <Package className="h-12 w-12 text-muted-foreground/30" />
                     </div>
-                  </div>
+                  )}
+                </div>
+                {/* Content */}
+                <CardContent className="p-3">
+                  <h3 className="font-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
+                  {item.description && (
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2 leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
+                  <p className="text-accent font-bold">{item.price.toFixed(2)} ر.س</p>
                 </CardContent>
               </Card>
             ))}
@@ -200,7 +218,7 @@ const PublicPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-6">
+      <footer className="border-t border-border py-6 bg-card">
         <p className="text-center text-sm text-muted-foreground">
           جميع عمليات البيع والدفع والتوصيل تتم مباشرة مع صاحب الصفحة
         </p>

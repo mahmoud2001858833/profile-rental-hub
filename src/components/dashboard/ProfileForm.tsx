@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Copy, ExternalLink } from 'lucide-react';
+import { useImageUpload } from '@/hooks/useImageUpload';
+import { Loader2, Copy, ExternalLink, Camera, ImagePlus, X } from 'lucide-react';
 
 interface Profile {
   id: string;
@@ -20,14 +21,19 @@ interface Profile {
   page_enabled: boolean;
   page_slug: string | null;
   avatar_url: string | null;
+  cover_url: string | null;
 }
 
 const ProfileForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 1200, maxHeight: 600, quality: 0.8 });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
+  
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -51,9 +57,79 @@ const ProfileForm = () => {
         variant: 'destructive',
       });
     } else {
-      setProfile(data);
+      setProfile(data as Profile);
     }
     setLoading(false);
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !profile) return;
+
+    // Delete old avatar if exists
+    if (profile.avatar_url) {
+      await deleteImage(profile.avatar_url);
+    }
+
+    const url = await uploadImage(file, user.id, 'avatars');
+    if (url) {
+      setProfile({ ...profile, avatar_url: url });
+      // Save immediately
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: url })
+        .eq('user_id', user.id);
+      
+      toast({ title: 'تم رفع الصورة', description: 'تم تحديث صورة البروفايل' });
+    }
+  };
+
+  const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !profile) return;
+
+    // Delete old cover if exists
+    if (profile.cover_url) {
+      await deleteImage(profile.cover_url);
+    }
+
+    const url = await uploadImage(file, user.id, 'covers');
+    if (url) {
+      setProfile({ ...profile, cover_url: url });
+      // Save immediately
+      await supabase
+        .from('profiles')
+        .update({ cover_url: url })
+        .eq('user_id', user.id);
+      
+      toast({ title: 'تم رفع الصورة', description: 'تم تحديث صورة الغلاف' });
+    }
+  };
+
+  const removeAvatar = async () => {
+    if (!user || !profile?.avatar_url) return;
+    
+    await deleteImage(profile.avatar_url);
+    setProfile({ ...profile, avatar_url: null });
+    await supabase
+      .from('profiles')
+      .update({ avatar_url: null })
+      .eq('user_id', user.id);
+    
+    toast({ title: 'تم الحذف', description: 'تم حذف صورة البروفايل' });
+  };
+
+  const removeCover = async () => {
+    if (!user || !profile?.cover_url) return;
+    
+    await deleteImage(profile.cover_url);
+    setProfile({ ...profile, cover_url: null });
+    await supabase
+      .from('profiles')
+      .update({ cover_url: null })
+      .eq('user_id', user.id);
+    
+    toast({ title: 'تم الحذف', description: 'تم حذف صورة الغلاف' });
   };
 
   const handleSave = async () => {
@@ -119,6 +195,105 @@ const ProfileForm = () => {
 
   return (
     <div className="space-y-6">
+      {/* Hidden file inputs */}
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleAvatarChange}
+      />
+      <input
+        ref={coverInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleCoverChange}
+      />
+
+      {/* Profile Images Card */}
+      <Card className="overflow-hidden">
+        <CardHeader className="p-0">
+          {/* Cover Image */}
+          <div className="relative h-40 bg-gradient-to-br from-primary/20 to-accent/20">
+            {profile.cover_url ? (
+              <img 
+                src={profile.cover_url} 
+                alt="صورة الغلاف" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                <ImagePlus className="h-12 w-12 opacity-50" />
+              </div>
+            )}
+            <div className="absolute top-2 left-2 flex gap-2">
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploading}
+                className="shadow-lg"
+              >
+                {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                <span className="mr-1">تغيير الغلاف</span>
+              </Button>
+              {profile.cover_url && (
+                <Button 
+                  size="icon" 
+                  variant="destructive" 
+                  onClick={removeCover}
+                  className="shadow-lg h-8 w-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            
+            {/* Avatar */}
+            <div className="absolute -bottom-12 right-6">
+              <div className="relative">
+                {profile.avatar_url ? (
+                  <img 
+                    src={profile.avatar_url} 
+                    alt="صورة البروفايل" 
+                    className="w-24 h-24 rounded-2xl object-cover border-4 border-background shadow-xl"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-card border-4 border-background shadow-xl flex items-center justify-center">
+                    <span className="text-4xl">👤</span>
+                  </div>
+                )}
+                <Button 
+                  size="icon" 
+                  variant="secondary" 
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploading}
+                  className="absolute -bottom-2 -left-2 h-8 w-8 rounded-full shadow-lg"
+                >
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                </Button>
+                {profile.avatar_url && (
+                  <Button 
+                    size="icon" 
+                    variant="destructive" 
+                    onClick={removeAvatar}
+                    className="absolute -top-2 -left-2 h-6 w-6 rounded-full shadow-lg"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-16 pb-6">
+          <p className="text-sm text-muted-foreground">
+            صورة البروفايل والغلاف ستظهر في صفحتك العامة. يتم ضغط الصور تلقائياً.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Page Status Card */}
       <Card>
         <CardHeader>

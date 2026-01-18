@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Pencil, Trash2, Package } from 'lucide-react';
+import { useImageUpload } from '@/hooks/useImageUpload';
+import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X } from 'lucide-react';
 import { z } from 'zod';
 
 interface Item {
@@ -30,6 +31,7 @@ const itemSchema = z.object({
 const ItemsManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 400, maxHeight: 400, quality: 0.75 });
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -39,8 +41,11 @@ const ItemsManager = () => {
     title: '',
     description: '',
     price: '',
+    image_url: null as string | null,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -71,7 +76,7 @@ const ItemsManager = () => {
 
   const openAddDialog = () => {
     setEditingItem(null);
-    setFormData({ title: '', description: '', price: '' });
+    setFormData({ title: '', description: '', price: '', image_url: null });
     setErrors({});
     setDialogOpen(true);
   };
@@ -82,9 +87,32 @@ const ItemsManager = () => {
       title: item.title,
       description: item.description || '',
       price: item.price.toString(),
+      image_url: item.image_url,
     });
     setErrors({});
     setDialogOpen(true);
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Delete old image if editing and has existing image
+    if (formData.image_url) {
+      await deleteImage(formData.image_url);
+    }
+
+    const url = await uploadImage(file, user.id, 'products');
+    if (url) {
+      setFormData({ ...formData, image_url: url });
+    }
+  };
+
+  const removeImage = async () => {
+    if (formData.image_url) {
+      await deleteImage(formData.image_url);
+      setFormData({ ...formData, image_url: null });
+    }
   };
 
   const handleSave = async () => {
@@ -108,13 +136,14 @@ const ItemsManager = () => {
     setSaving(true);
 
     if (editingItem) {
-      // Update existing item
+      // If image changed and old one exists, it was already deleted in handleImageChange
       const { error } = await supabase
         .from('items')
         .update({
           title: formData.title,
           description: formData.description || null,
           price: parseFloat(formData.price),
+          image_url: formData.image_url,
         })
         .eq('id', editingItem.id);
 
@@ -130,12 +159,12 @@ const ItemsManager = () => {
         fetchItems();
       }
     } else {
-      // Create new item
       const { error } = await supabase.from('items').insert({
         user_id: user.id,
         title: formData.title,
         description: formData.description || null,
         price: parseFloat(formData.price),
+        image_url: formData.image_url,
         sort_order: items.length,
       });
 
@@ -163,8 +192,13 @@ const ItemsManager = () => {
     setSaving(false);
   };
 
-  const handleDelete = async (itemId: string) => {
-    const { error } = await supabase.from('items').delete().eq('id', itemId);
+  const handleDelete = async (item: Item) => {
+    // Delete image from storage first
+    if (item.image_url) {
+      await deleteImage(item.image_url);
+    }
+
+    const { error } = await supabase.from('items').delete().eq('id', item.id);
 
     if (error) {
       toast({
@@ -188,10 +222,19 @@ const ItemsManager = () => {
 
   return (
     <div className="space-y-4">
+      {/* Hidden file input */}
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageChange}
+      />
+
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold">العناصر ({items.length}/25)</h3>
-          <p className="text-sm text-muted-foreground">أضف منتجاتك أو خدماتك</p>
+          <p className="text-sm text-muted-foreground">أضف منتجاتك أو خدماتك مع صورها</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
@@ -200,11 +243,60 @@ const ItemsManager = () => {
               إضافة عنصر
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>{editingItem ? 'تعديل العنصر' : 'إضافة عنصر جديد'}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
+              {/* Image Upload */}
+              <div className="space-y-2">
+                <Label>صورة المنتج</Label>
+                <div className="flex items-center gap-4">
+                  {formData.image_url ? (
+                    <div className="relative">
+                      <img 
+                        src={formData.image_url} 
+                        alt="صورة المنتج" 
+                        className="w-20 h-20 rounded-xl object-cover border border-border"
+                      />
+                      <Button 
+                        size="icon" 
+                        variant="destructive" 
+                        onClick={removeImage}
+                        disabled={uploading}
+                        className="absolute -top-2 -left-2 h-6 w-6 rounded-full"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div 
+                      onClick={() => imageInputRef.current?.click()}
+                      className="w-20 h-20 rounded-xl border-2 border-dashed border-border hover:border-primary/50 flex items-center justify-center cursor-pointer transition-colors bg-muted/50"
+                    >
+                      {uploading ? (
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                      ) : (
+                        <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                      )}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => imageInputRef.current?.click()}
+                      disabled={uploading}
+                    >
+                      {uploading ? 'جاري الرفع...' : formData.image_url ? 'تغيير الصورة' : 'رفع صورة'}
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      يتم ضغط الصور تلقائياً لتوفير المساحة
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="item-title">العنوان *</Label>
                 <Input
@@ -243,7 +335,7 @@ const ItemsManager = () => {
                 {errors.price && <p className="text-sm text-destructive">{errors.price}</p>}
               </div>
 
-              <Button onClick={handleSave} disabled={saving} className="w-full">
+              <Button onClick={handleSave} disabled={saving || uploading} className="w-full">
                 {saving ? (
                   <>
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
@@ -273,29 +365,50 @@ const ItemsManager = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3 sm:grid-cols-2">
           {items.map((item) => (
-            <Card key={item.id}>
-              <CardContent className="flex items-center justify-between p-4">
-                <div className="flex-1">
-                  <h4 className="font-semibold">{item.title}</h4>
-                  {item.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
-                  )}
-                  <p className="text-accent font-bold mt-1">{item.price.toFixed(2)} ر.س</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button size="icon" variant="ghost" onClick={() => openEditDialog(item)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="text-destructive"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+            <Card key={item.id} className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="flex">
+                  {/* Image */}
+                  <div className="w-24 h-24 flex-shrink-0 bg-muted">
+                    {item.image_url ? (
+                      <img 
+                        src={item.image_url} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="h-8 w-8 text-muted-foreground/50" />
+                      </div>
+                    )}
+                  </div>
+                  {/* Content */}
+                  <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
+                    <div>
+                      <h4 className="font-semibold text-sm truncate">{item.title}</h4>
+                      {item.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} ر.س</p>
+                      <div className="flex items-center gap-1">
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditDialog(item)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-destructive h-7 w-7"
+                          onClick={() => handleDelete(item)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
