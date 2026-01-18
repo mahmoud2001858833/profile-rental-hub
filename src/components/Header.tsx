@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
-import { User, ShoppingCart, Store, LogIn } from "lucide-react";
+import { User, ShoppingCart, Store, LogIn, ShieldCheck } from "lucide-react";
 
 const Header = () => {
   const { user, loading, userType } = useAuth();
+  const { isAdmin } = useAdmin();
   const { getItemCount } = useCart();
   const cartCount = getItemCount();
 
@@ -21,6 +23,16 @@ const Header = () => {
         </Link>
 
         <nav className="flex items-center gap-2">
+          {/* Admin Link - only for admins */}
+          {isAdmin && (
+            <Button variant="default" size="sm" className="bg-primary" asChild>
+              <Link to="/admin">
+                <ShieldCheck className="ml-2 h-4 w-4" />
+                <span className="hidden sm:inline">لوحة الأدمن</span>
+              </Link>
+            </Button>
+          )}
+
           {/* Cart - only for customers */}
           {(!user || userType === 'customer') && (
             <Button variant="ghost" className="relative" asChild>

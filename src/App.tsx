@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
+import Admin from "./pages/Admin";
 import PublicPage from "./pages/PublicPage";
 import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customer" element={<Customer />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/p/:slug" element={<PublicPage />} />
