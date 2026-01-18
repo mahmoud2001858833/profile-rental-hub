@@ -48,7 +48,7 @@ const ItemsManager = () => {
   const itemSchema = z.object({
     title: z.string().min(1, t('items.titleRequired')).max(200),
     description: z.string().max(1000).optional(),
-    price: z.number().min(0, t('items.pricePositive')),
+    price: z.number().min(0, t('items.pricePositive')).max(99999999, t('items.priceMax')),
   });
 
   useEffect(() => {
