@@ -1,21 +1,25 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Shield, FileText, AlertCircle, CreditCard } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { ArrowRight, ArrowLeft, Shield, FileText, AlertCircle, CreditCard } from 'lucide-react';
 
 const Terms = () => {
+  const { t, language, dir } = useLanguage();
+  const ArrowIcon = language === 'ar' ? ArrowRight : ArrowLeft;
+
   return (
-    <div className="min-h-screen bg-background" dir="rtl">
+    <div className="min-h-screen bg-background" dir={dir}>
       {/* Header */}
       <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="text-2xl font-bold text-primary">
-            صفحتي
+            {language === 'ar' ? 'صفحتي' : 'Safhati'}
           </Link>
           <Button variant="outline" asChild>
             <Link to="/auth" className="flex items-center gap-2">
-              <ArrowRight className="w-4 h-4" />
-              العودة
+              <ArrowIcon className="w-4 h-4" />
+              {t('common.back')}
             </Link>
           </Button>
         </div>
@@ -25,10 +29,10 @@ const Terms = () => {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            الشروط والأحكام وسياسة الخصوصية
+            {t('terms.title')}
           </h1>
           <p className="text-muted-foreground text-lg">
-            يرجى قراءة الشروط التالية بعناية قبل استخدام المنصة
+            {t('terms.readCarefully')}
           </p>
         </div>
 
@@ -39,13 +43,10 @@ const Terms = () => {
               <div className="p-3 rounded-full bg-primary/10">
                 <FileText className="w-6 h-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">طبيعة الخدمة</CardTitle>
+              <CardTitle className="text-xl">{t('terms.serviceNature')}</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
-              <p>
-                أقرّ بأن المنصة تؤجّر صفحات عرض رقمية باشتراك شهري، ولا تتدخل في البيع أو الدفع أو التوصيل، 
-                وأي تعامل يتم مباشرة بين صاحب الصفحة والزوار.
-              </p>
+              <p>{t('terms.serviceNatureDesc')}</p>
             </CardContent>
           </Card>
 
@@ -55,12 +56,10 @@ const Terms = () => {
               <div className="p-3 rounded-full bg-primary/10">
                 <CreditCard className="w-6 h-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">الاشتراك والتجديد</CardTitle>
+              <CardTitle className="text-xl">{t('terms.subscription')}</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
-              <p>
-                في حال عدم تجديد الاشتراك يتم إيقاف الصفحة مؤقتًا، وتُعاد تفعيلها تلقائيًا عند تجديد الاشتراك.
-              </p>
+              <p>{t('terms.subscriptionDesc')}</p>
             </CardContent>
           </Card>
 
@@ -70,13 +69,10 @@ const Terms = () => {
               <div className="p-3 rounded-full bg-primary/10">
                 <Shield className="w-6 h-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">سياسة الخصوصية</CardTitle>
+              <CardTitle className="text-xl">{t('terms.privacy')}</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
-              <p>
-                أوافق على استخدام بياناتي فقط لتشغيل المنصة وإدارة الاشتراك، 
-                دون مشاركتها مع أطراف ثالثة إلا عند الطلب القانوني.
-              </p>
+              <p>{t('terms.privacyDesc')}</p>
             </CardContent>
           </Card>
 
@@ -86,34 +82,27 @@ const Terms = () => {
               <div className="p-3 rounded-full bg-primary/10">
                 <AlertCircle className="w-6 h-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">إخلاء المسؤولية</CardTitle>
+              <CardTitle className="text-xl">{t('terms.disclaimer')}</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground leading-relaxed">
-              <p>
-                المنصة غير مسؤولة عن أي معاملات تجارية تتم بين أصحاب الصفحات والزوار. 
-                جميع التعاملات تتم على مسؤولية الأطراف المعنية.
-              </p>
+              <p>{t('terms.disclaimerDesc')}</p>
             </CardContent>
           </Card>
 
           {/* Summary */}
           <Card className="bg-muted/50 border-2 border-primary/30">
             <CardHeader>
-              <CardTitle className="text-xl text-center">ملخص الموافقة</CardTitle>
+              <CardTitle className="text-xl text-center">{t('terms.summary')}</CardTitle>
             </CardHeader>
             <CardContent className="text-foreground leading-relaxed">
-              <p className="text-center font-medium">
-                بالتسجيل في المنصة، أوافق على الشروط والأحكام وسياسة الخصوصية وإخلاء المسؤولية المذكورة أعلاه.
-              </p>
+              <p className="text-center font-medium">{t('terms.summaryDesc')}</p>
             </CardContent>
           </Card>
 
           {/* Back Button */}
           <div className="text-center pt-8">
             <Button size="lg" asChild>
-              <Link to="/auth">
-                العودة للتسجيل
-              </Link>
+              <Link to="/auth">{t('terms.backToRegister')}</Link>
             </Button>
           </div>
         </div>
@@ -122,7 +111,7 @@ const Terms = () => {
       {/* Footer */}
       <footer className="border-t border-border/40 py-8 mt-12">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2024 صفحتي - جميع الحقوق محفوظة</p>
+          <p>© 2024 {language === 'ar' ? 'صفحتي' : 'Safhati'} - {t('terms.allRights')}</p>
         </div>
       </footer>
     </div>

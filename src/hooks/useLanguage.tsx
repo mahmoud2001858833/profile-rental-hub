@@ -195,6 +195,43 @@ const translations: Translations = {
   'common.view': { ar: 'عرض', en: 'View' },
   'common.approve': { ar: 'قبول', en: 'Approve' },
   'common.reject': { ar: 'رفض', en: 'Reject' },
+  'common.noName': { ar: 'بدون اسم', en: 'No name' },
+  
+  // Customer page
+  'customer.myAccount': { ar: 'حسابي', en: 'My Account' },
+  'customer.logout': { ar: 'تسجيل الخروج', en: 'Logout' },
+  'customer.profile': { ar: 'الملف الشخصي', en: 'Profile' },
+  'customer.name': { ar: 'الاسم', en: 'Name' },
+  'customer.namePlaceholder': { ar: 'اسمك', en: 'Your name' },
+  'customer.phone': { ar: 'رقم الهاتف', en: 'Phone Number' },
+  'customer.saving': { ar: 'جاري الحفظ...', en: 'Saving...' },
+  'customer.save': { ar: 'حفظ', en: 'Save' },
+  'customer.myOrders': { ar: 'طلباتي', en: 'My Orders' },
+  'customer.noOrders': { ar: 'لا توجد طلبات بعد', en: 'No orders yet' },
+  'customer.browseProducts': { ar: 'تصفح المنتجات', en: 'Browse Products' },
+  'customer.saveError': { ar: 'فشل في حفظ البيانات', en: 'Failed to save data' },
+  'customer.saved': { ar: 'تم الحفظ', en: 'Saved' },
+  'customer.dataUpdated': { ar: 'تم تحديث بياناتك', en: 'Your data has been updated' },
+  'customer.pending': { ar: 'قيد الانتظار', en: 'Pending' },
+  'customer.confirmed': { ar: 'مؤكد', en: 'Confirmed' },
+  'customer.completed': { ar: 'مكتمل', en: 'Completed' },
+  'customer.cancelled': { ar: 'ملغي', en: 'Cancelled' },
+  
+  // Terms page
+  'terms.title': { ar: 'الشروط والأحكام وسياسة الخصوصية', en: 'Terms & Conditions and Privacy Policy' },
+  'terms.readCarefully': { ar: 'يرجى قراءة الشروط التالية بعناية قبل استخدام المنصة', en: 'Please read the following terms carefully before using the platform' },
+  'terms.serviceNature': { ar: 'طبيعة الخدمة', en: 'Nature of Service' },
+  'terms.serviceNatureDesc': { ar: 'أقرّ بأن المنصة تؤجّر صفحات عرض رقمية باشتراك شهري، ولا تتدخل في البيع أو الدفع أو التوصيل، وأي تعامل يتم مباشرة بين صاحب الصفحة والزوار.', en: 'I acknowledge that the platform rents digital display pages on a monthly subscription basis, and does not interfere in sales, payments, or delivery. Any transactions are made directly between the page owner and visitors.' },
+  'terms.subscription': { ar: 'الاشتراك والتجديد', en: 'Subscription & Renewal' },
+  'terms.subscriptionDesc': { ar: 'في حال عدم تجديد الاشتراك يتم إيقاف الصفحة مؤقتًا، وتُعاد تفعيلها تلقائيًا عند تجديد الاشتراك.', en: 'If the subscription is not renewed, the page will be temporarily suspended and will be automatically reactivated upon renewal.' },
+  'terms.privacy': { ar: 'سياسة الخصوصية', en: 'Privacy Policy' },
+  'terms.privacyDesc': { ar: 'أوافق على استخدام بياناتي فقط لتشغيل المنصة وإدارة الاشتراك، دون مشاركتها مع أطراف ثالثة إلا عند الطلب القانوني.', en: 'I agree that my data will only be used to operate the platform and manage the subscription, without sharing it with third parties except when legally required.' },
+  'terms.disclaimer': { ar: 'إخلاء المسؤولية', en: 'Disclaimer' },
+  'terms.disclaimerDesc': { ar: 'المنصة غير مسؤولة عن أي معاملات تجارية تتم بين أصحاب الصفحات والزوار. جميع التعاملات تتم على مسؤولية الأطراف المعنية.', en: 'The platform is not responsible for any commercial transactions between page owners and visitors. All transactions are the responsibility of the parties involved.' },
+  'terms.summary': { ar: 'ملخص الموافقة', en: 'Agreement Summary' },
+  'terms.summaryDesc': { ar: 'بالتسجيل في المنصة، أوافق على الشروط والأحكام وسياسة الخصوصية وإخلاء المسؤولية المذكورة أعلاه.', en: 'By registering on the platform, I agree to the terms and conditions, privacy policy, and disclaimer mentioned above.' },
+  'terms.backToRegister': { ar: 'العودة للتسجيل', en: 'Back to Register' },
+  'terms.allRights': { ar: 'جميع الحقوق محفوظة', en: 'All rights reserved' },
 };
 
 interface LanguageContextType {

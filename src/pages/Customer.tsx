@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,22 +24,23 @@ interface Order {
   merchant_name?: string;
 }
 
-const statusLabels: Record<string, string> = {
-  pending: 'قيد الانتظار',
-  confirmed: 'مؤكد',
-  completed: 'مكتمل',
-  cancelled: 'ملغي',
-};
-
 const Customer = () => {
   const navigate = useNavigate();
   const { user, loading, signOut, userType } = useAuth();
   const { toast } = useToast();
+  const { t, language } = useLanguage();
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [saving, setSaving] = useState(false);
   const [displayName, setDisplayName] = useState('');
+
+  const statusLabels: Record<string, string> = {
+    pending: t('customer.pending'),
+    confirmed: t('customer.confirmed'),
+    completed: t('customer.completed'),
+    cancelled: t('customer.cancelled'),
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -95,12 +97,12 @@ const Customer = () => {
 
     if (error) {
       toast({
-        title: 'خطأ',
-        description: 'فشل في حفظ البيانات',
+        title: t('common.error'),
+        description: t('customer.saveError'),
         variant: 'destructive',
       });
     } else {
-      toast({ title: 'تم الحفظ', description: 'تم تحديث بياناتك' });
+      toast({ title: t('customer.saved'), description: t('customer.dataUpdated') });
     }
     setSaving(false);
   };
@@ -128,10 +130,10 @@ const Customer = () => {
 
       <main className="container py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">حسابي</h1>
+          <h1 className="text-2xl font-bold">{t('customer.myAccount')}</h1>
           <Button variant="ghost" onClick={handleSignOut}>
-            <LogOut className="ml-2 h-4 w-4" />
-            تسجيل الخروج
+            <LogOut className="mx-2 h-4 w-4" />
+            {t('customer.logout')}
           </Button>
         </div>
 
@@ -141,24 +143,24 @@ const Customer = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                الملف الشخصي
+                {t('customer.profile')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>الاسم</Label>
+                <Label>{t('customer.name')}</Label>
                 <Input
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="اسمك"
+                  placeholder={t('customer.namePlaceholder')}
                 />
               </div>
               <div className="space-y-2">
-                <Label>رقم الهاتف</Label>
+                <Label>{t('customer.phone')}</Label>
                 <Input value={profile.phone} disabled dir="ltr" />
               </div>
               <Button onClick={handleSave} disabled={saving} className="w-full">
-                {saving ? 'جاري الحفظ...' : 'حفظ'}
+                {saving ? t('customer.saving') : t('customer.save')}
               </Button>
             </CardContent>
           </Card>
@@ -169,16 +171,16 @@ const Customer = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <ShoppingBag className="h-5 w-5" />
-                  طلباتي ({orders.length})
+                  {t('customer.myOrders')} ({orders.length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {orders.length === 0 ? (
                   <div className="text-center py-8">
                     <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">لا توجد طلبات بعد</p>
+                    <p className="text-muted-foreground">{t('customer.noOrders')}</p>
                     <Button asChild className="mt-4">
-                      <Link to="/">تصفح المنتجات</Link>
+                      <Link to="/">{t('customer.browseProducts')}</Link>
                     </Button>
                   </div>
                 ) : (
@@ -189,9 +191,9 @@ const Customer = () => {
                         className="flex items-center justify-between p-4 rounded-lg border border-border"
                       >
                         <div>
-                          <p className="font-semibold">{order.total_amount.toFixed(2)} ر.س</p>
+                          <p className="font-semibold">{order.total_amount.toFixed(2)} {t('common.currency')}</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(order.created_at).toLocaleDateString('ar-SA')}
+                            {new Date(order.created_at).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US')}
                           </p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm ${
