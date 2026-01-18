@@ -129,7 +129,7 @@ const Cart = () => {
                 سيتواصل معك التاجر قريباً لتأكيد الطلب
               </p>
               <Button asChild>
-                <Link to="/shop">متابعة التسوق</Link>
+                <Link to="/">متابعة التسوق</Link>
               </Button>
             </CardContent>
           </Card>
@@ -149,7 +149,7 @@ const Cart = () => {
               <h2 className="text-xl font-bold mb-2">السلة فارغة</h2>
               <p className="text-muted-foreground mb-6">لم تضف أي منتجات بعد</p>
               <Button asChild>
-                <Link to="/shop">تصفح المنتجات</Link>
+                <Link to="/">تصفح المنتجات</Link>
               </Button>
             </CardContent>
           </Card>
@@ -165,7 +165,7 @@ const Cart = () => {
       <main className="container py-8">
         <div className="flex items-center gap-2 mb-6">
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/shop">
+            <Link to="/">
               <ArrowRight className="h-4 w-4 ml-1" />
               متابعة التسوق
             </Link>

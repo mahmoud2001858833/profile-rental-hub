@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import PublicPage from "./pages/PublicPage";
-import Shop from "./pages/Shop";
 import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
@@ -29,7 +28,6 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/p/:slug" element={<PublicPage />} />
