@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Phone, MessageCircle, Store, Users, Shield, Clock } from "lucide-react";
+import { Store, MessageCircle, Shield } from "lucide-react";
 
 const Index = () => {
   return (
@@ -25,8 +26,8 @@ const Index = () => {
             <br />
             تواصل مباشر مع عملائك بدون وسيط.
           </p>
-          <Button size="lg" className="text-lg px-8 py-6 h-auto">
-            اشترك الآن
+          <Button size="lg" className="text-lg px-8 py-6 h-auto" asChild>
+            <Link to="/auth">اشترك الآن</Link>
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">
             اشتراك شهري بسيط • إلغاء في أي وقت
@@ -97,8 +98,8 @@ const Index = () => {
           <p className="text-muted-foreground mb-8">
             ابدأ الآن واحصل على صفحة عرض احترافية خلال دقائق
           </p>
-          <Button size="lg" className="text-lg px-8 py-6 h-auto">
-            اشترك الآن
+          <Button size="lg" className="text-lg px-8 py-6 h-auto" asChild>
+            <Link to="/auth">اشترك الآن</Link>
           </Button>
         </div>
       </section>
