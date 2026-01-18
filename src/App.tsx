@@ -14,6 +14,7 @@ import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import AIGuide from "./components/AIGuide";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <AIGuide />
+            <WhatsAppButton />
           </BrowserRouter>
         </TooltipProvider>
       </CartProvider>
