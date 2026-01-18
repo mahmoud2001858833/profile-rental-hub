@@ -134,22 +134,29 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Banner */}
-      <section className="bg-gradient-to-br from-primary to-red-800 text-white py-12 relative overflow-hidden">
+      {/* Hero Banner with Glass Effect */}
+      <section className="bg-gradient-to-br from-primary via-primary/90 to-accent text-white py-16 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots opacity-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        
+        {/* Glass Cards Decoration */}
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 rotate-45 hidden lg:block" />
+        
         <div className="container relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sm font-medium mb-6 shadow-lg">
             <Sparkles className="h-4 w-4" />
             <span>تصفح منتجات التجار</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">اكتشف أفضل المنتجات</h1>
-          <p className="text-white/80 max-w-xl mx-auto mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">اكتشف أفضل المنتجات</h1>
+          <p className="text-white/90 max-w-xl mx-auto mb-8 text-lg">
             تصفح منتجات من مختلف التجار واطلب مباشرة
           </p>
           {!user && (
-            <Button variant="secondary" asChild>
+            <Button variant="secondary" size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
               <Link to="/auth?type=customer">
-                <LogIn className="ml-2 h-4 w-4" />
+                <LogIn className="ml-2 h-5 w-5" />
                 سجل لتبدأ التسوق
               </Link>
             </Button>
@@ -157,8 +164,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Search Bar */}
-      <div className="sticky top-16 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+      {/* Search Bar with Glass Effect */}
+      <div className="sticky top-16 z-40 bg-white/70 dark:bg-card/70 backdrop-blur-lg border-b border-white/20 shadow-sm">
         <div className="container py-4">
           <div className="flex items-center gap-4">
             <div className="relative flex-1 max-w-md">
@@ -167,10 +174,10 @@ const Index = () => {
                 placeholder="ابحث عن منتج أو تاجر..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10"
+                className="pr-10 bg-white/50 dark:bg-card/50 backdrop-blur-sm border-white/30"
               />
             </div>
-            <Button variant="outline" className="relative" asChild>
+            <Button variant="outline" className="relative bg-white/50 dark:bg-card/50 backdrop-blur-sm border-white/30 hover:bg-white/70" asChild>
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -216,7 +223,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+              <Card key={product.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-white/30 hover:bg-white/90 dark:hover:bg-card/90">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img
