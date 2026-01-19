@@ -443,6 +443,15 @@ export type Database = {
     }
     Functions: {
       disable_expired_merchant_pages: { Args: never; Returns: undefined }
+      get_merchant_public_info: {
+        Args: { merchant_ids: string[] }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          page_slug: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
