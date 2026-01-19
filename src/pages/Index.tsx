@@ -218,39 +218,55 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Products Grid - Red Cream Gradient Background */}
-      <main className="container py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">{t('index.products')}</h2>
-          <p className="text-muted-foreground text-sm">
-            {filteredProducts.length} {t('index.product')}
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      {/* Products Grid - Red Cream Gradient Background with Glass Effect */}
+      <main className="relative py-12">
+        {/* Background Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/30 to-orange-50/40" />
+        <div className="absolute inset-0 pattern-dots opacity-20" />
+        
+        {/* Decorative Glass Elements */}
+        <div className="absolute top-20 left-[5%] w-40 h-40 rounded-3xl bg-primary/5 backdrop-blur-sm border border-primary/10 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-32 right-[8%] w-32 h-32 rounded-2xl bg-primary/5 backdrop-blur-sm border border-primary/10 -rotate-6 animate-float hidden lg:block" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-1/2 right-[15%] w-20 h-20 rounded-xl bg-accent/5 backdrop-blur-sm border border-accent/10 rotate-45 hidden xl:block" />
+        
+        <div className="container relative z-10">
+          <div className="flex items-center justify-between mb-8">
+            <div className="glass-effect px-6 py-3 rounded-2xl">
+              <h2 className="text-xl font-bold gradient-text">{t('index.products')}</h2>
+            </div>
+            <div className="glass-effect px-4 py-2 rounded-full">
+              <p className="text-muted-foreground text-sm">
+                {filteredProducts.length} {t('index.product')}
+              </p>
+            </div>
           </div>
-        ) : filteredProducts.length === 0 ? (
-          <Card className="bg-white/80 backdrop-blur-sm">
-            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-              <Package className="h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="font-semibold text-lg mb-2">{t('index.noProducts')}</h3>
-              <p className="text-muted-foreground mb-4">
-                {searchQuery ? t('index.tryDifferent') : t('index.noProductsYet')}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {t('index.areMerchant')}{' '}
-                <Link to="/auth?type=merchant" className="text-primary hover:underline font-medium">
-                  {t('index.registerNow')}
-                </Link>
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {filteredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-primary/10 hover:border-primary/30">
+
+          {loading ? (
+            <div className="flex justify-center py-16">
+              <div className="glass-effect p-8 rounded-2xl">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <Card className="glass-effect border-primary/10">
+              <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                <Package className="h-16 w-16 text-muted-foreground mb-4" />
+                <h3 className="font-semibold text-lg mb-2">{t('index.noProducts')}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery ? t('index.tryDifferent') : t('index.noProductsYet')}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t('index.areMerchant')}{' '}
+                  <Link to="/auth?type=merchant" className="text-primary hover:underline font-medium">
+                    {t('index.registerNow')}
+                  </Link>
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              {filteredProducts.map((product) => (
+                <Card key={product.id} className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 glass-effect border-primary/10 hover:border-primary/30">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img
@@ -325,6 +341,7 @@ const Index = () => {
             ))}
           </div>
         )}
+        </div>
       </main>
 
       {/* Footer */}

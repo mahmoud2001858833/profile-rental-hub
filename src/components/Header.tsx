@@ -6,7 +6,8 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageToggle from "@/components/LanguageToggle";
-import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat } from "lucide-react";
+import { User, ShoppingCart, Store, LogIn, ShieldCheck } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 const Header = () => {
   const { user, loading, userType } = useAuth();
@@ -19,9 +20,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-lg" dir={dir}>
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-            <ChefHat className="h-6 w-6 text-white" />
-          </div>
+          <img src={logo} alt="طبخاتي" className="w-10 h-10 rounded-xl object-cover bg-white/20" />
           <span className="font-bold text-lg hidden sm:block">{t('header.tabkhaty')}</span>
         </Link>
 
