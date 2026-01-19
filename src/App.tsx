@@ -18,7 +18,7 @@ import NotFound from "./pages/NotFound";
 import AIGuide from "./components/AIGuide";
 import WhatsAppButton from "./components/WhatsAppButton";
 
-// Query client for React Query
+// Query client for React Query - initialized once
 const queryClient = new QueryClient();
 
 const App = () => (
