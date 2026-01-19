@@ -69,8 +69,7 @@ const Index = () => {
     const { data: profiles } = await supabase
       .from('profiles')
       .select('user_id, display_name, avatar_url, page_slug')
-      .in('user_id', merchantIds)
-      .eq('page_enabled', true);
+      .in('user_id', merchantIds);
 
     const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
 
