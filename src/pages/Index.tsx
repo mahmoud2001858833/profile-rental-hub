@@ -154,7 +154,7 @@ const Index = () => {
           {/* Logo Image */}
           <img 
             src={logoImage} 
-            alt="طبخاتي" 
+            alt="طبخات" 
             className="w-32 h-32 md:w-40 md:h-40 rounded-3xl mx-auto mb-6 shadow-2xl object-cover border-4 border-white"
           />
           
