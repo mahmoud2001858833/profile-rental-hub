@@ -372,6 +372,16 @@ const translations: Translations = {
   'notFound.title': { ar: '404', en: '404' },
   'notFound.message': { ar: 'عذراً! الصفحة غير موجودة', en: 'Oops! Page not found' },
   'notFound.backHome': { ar: 'العودة للرئيسية', en: 'Return to Home' },
+  
+  // Subscription
+  'subscription.status': { ar: 'حالة الاشتراك', en: 'Subscription Status' },
+  'subscription.days': { ar: 'يوم', en: 'days' },
+  'subscription.remaining': { ar: 'متبقي على الانتهاء', en: 'remaining' },
+  'subscription.expired': { ar: 'انتهى اشتراكك', en: 'Your subscription has expired' },
+  'subscription.renewNow': { ar: 'جدد اشتراكك للاستمرار في رفع المنتجات', en: 'Renew your subscription to continue uploading products' },
+  
+  // AI Guide
+  'aiGuide.smartGuide': { ar: 'مرشد ذكي', en: 'Smart Guide' },
 };
 
 interface LanguageContextType {

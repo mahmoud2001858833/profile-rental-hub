@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,8 @@ import {
   Loader2,
   FileImage,
   Info,
-  Lock
+  Lock,
+  Calendar
 } from 'lucide-react';
 
 interface PaymentReceipt {
@@ -36,6 +38,7 @@ const PaymentManager = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
+  const { isActive, daysRemaining, expiresAt } = useSubscription();
   const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -151,8 +154,65 @@ const PaymentManager = () => {
     );
   }
 
+  // Get countdown color based on days remaining
+  const getCountdownColor = () => {
+    if (!daysRemaining || daysRemaining <= 0) return 'text-destructive';
+    if (daysRemaining <= 3) return 'text-destructive';
+    if (daysRemaining <= 7) return 'text-amber-500';
+    return 'text-green-500';
+  };
+
+  const getCountdownBgColor = () => {
+    if (!daysRemaining || daysRemaining <= 0) return 'bg-destructive/10 border-destructive/20';
+    if (daysRemaining <= 3) return 'bg-destructive/10 border-destructive/20';
+    if (daysRemaining <= 7) return 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800';
+    return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
+  };
+
   return (
     <div className="space-y-6">
+      {/* Subscription Countdown */}
+      {isActive && daysRemaining !== null && (
+        <Card className={`border ${getCountdownBgColor()}`}>
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-full ${getCountdownBgColor()}`}>
+                  <Calendar className={`h-5 w-5 ${getCountdownColor()}`} />
+                </div>
+                <div>
+                  <p className="font-semibold">{t('subscription.status')}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {expiresAt && new Date(expiresAt).toLocaleDateString('ar-EG')}
+                  </p>
+                </div>
+              </div>
+              <div className="text-end">
+                <p className={`text-2xl font-bold ${getCountdownColor()}`}>
+                  {daysRemaining} {t('subscription.days')}
+                </p>
+                <p className="text-sm text-muted-foreground">{t('subscription.remaining')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Expired Subscription Alert */}
+      {!isActive && daysRemaining !== null && (
+        <Card className="border-destructive/20 bg-destructive/10">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-3">
+              <XCircle className="h-6 w-6 text-destructive" />
+              <div>
+                <p className="font-semibold text-destructive">{t('subscription.expired')}</p>
+                <p className="text-sm text-muted-foreground">{t('subscription.renewNow')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Stripe Payment Option - Disabled */}
       <Card className="border-muted bg-muted/30">
         <CardHeader className="pb-2">

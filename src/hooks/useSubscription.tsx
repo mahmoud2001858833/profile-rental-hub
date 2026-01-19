@@ -7,6 +7,7 @@ interface SubscriptionStatus {
   loading: boolean;
   lastPaymentDate: Date | null;
   expiresAt: Date | null;
+  daysRemaining: number | null;
 }
 
 export const useSubscription = (): SubscriptionStatus => {
@@ -15,6 +16,7 @@ export const useSubscription = (): SubscriptionStatus => {
   const [loading, setLoading] = useState(true);
   const [lastPaymentDate, setLastPaymentDate] = useState<Date | null>(null);
   const [expiresAt, setExpiresAt] = useState<Date | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -53,14 +55,20 @@ export const useSubscription = (): SubscriptionStatus => {
 
         const now = new Date();
         const active = now < expirationDate;
+        
+        // Calculate days remaining
+        const timeDiff = expirationDate.getTime() - now.getTime();
+        const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
         setIsActive(active);
         setLastPaymentDate(paymentDate);
         setExpiresAt(expirationDate);
+        setDaysRemaining(active ? days : 0);
       } else {
         setIsActive(false);
         setLastPaymentDate(null);
         setExpiresAt(null);
+        setDaysRemaining(null);
       }
     } catch (error) {
       console.error('Error checking subscription:', error);
@@ -70,5 +78,5 @@ export const useSubscription = (): SubscriptionStatus => {
     }
   };
 
-  return { isActive, loading, lastPaymentDate, expiresAt };
+  return { isActive, loading, lastPaymentDate, expiresAt, daysRemaining };
 };

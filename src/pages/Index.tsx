@@ -66,15 +66,13 @@ const Index = () => {
       return;
     }
 
+    // Use RPC function to get merchant info bypassing RLS
     const { data: profiles } = await supabase
-      .from('profiles')
-      .select('user_id, display_name, avatar_url, page_slug')
-      .in('user_id', merchantIds);
+      .rpc('get_merchant_public_info', { merchant_ids: merchantIds });
 
-    const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+    const profileMap = new Map(profiles?.map((p: { user_id: string; display_name: string | null; avatar_url: string | null; page_slug: string | null }) => [p.user_id, p]) || []);
 
     const productsWithMerchants = (items || [])
-      .filter(item => profileMap.has(item.user_id))
       .map(item => {
         const profile = profileMap.get(item.user_id);
         return {
