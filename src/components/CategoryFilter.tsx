@@ -1,0 +1,64 @@
+import { useLanguage } from '@/hooks/useLanguage';
+import { Button } from '@/components/ui/button';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { 
+  ChefHat, 
+  Salad, 
+  Cake, 
+  Coffee, 
+  Croissant, 
+  Sandwich,
+  LayoutGrid
+} from 'lucide-react';
+
+interface CategoryFilterProps {
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+}
+
+const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryFilterProps) => {
+  const { t } = useLanguage();
+
+  const categories = [
+    { id: 'all', label: t('categories.all'), icon: LayoutGrid },
+    { id: 'أطباق رئيسية', label: t('categories.mainDishes'), icon: ChefHat },
+    { id: 'مقبلات', label: t('categories.appetizers'), icon: Salad },
+    { id: 'حلويات', label: t('categories.desserts'), icon: Cake },
+    { id: 'مشروبات', label: t('categories.drinks'), icon: Coffee },
+    { id: 'معجنات', label: t('categories.pastries'), icon: Croissant },
+    { id: 'أكلات خفيفة', label: t('categories.snacks'), icon: Sandwich },
+  ];
+
+  return (
+    <div className="w-full">
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex gap-2 pb-2">
+          {categories.map((category) => {
+            const Icon = category.icon;
+            const isSelected = selectedCategory === category.id;
+            
+            return (
+              <Button
+                key={category.id}
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => onCategoryChange(category.id)}
+                className={`flex items-center gap-2 rounded-full px-4 transition-all ${
+                  isSelected 
+                    ? 'bg-primary text-primary-foreground shadow-lg' 
+                    : 'bg-white/70 hover:bg-white border-primary/20 hover:border-primary/40'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{category.label}</span>
+              </Button>
+            );
+          })}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+    </div>
+  );
+};
+
+export default CategoryFilter;
