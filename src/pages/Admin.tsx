@@ -93,23 +93,13 @@ const Admin = () => {
   const fetchData = async () => {
     setLoadingData(true);
     try {
-      const response = await supabase.functions.invoke('admin-data', {
-        headers: {
-          'x-admin-password': ADMIN_PASSWORD
-        },
-        body: null
-      });
-
-      if (response.error) throw response.error;
-
-      // Handle the query params for fetch action
       const fetchResponse = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data?action=fetch`,
         {
+          method: 'GET',
           headers: {
             'x-admin-password': ADMIN_PASSWORD,
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            'Content-Type': 'application/json'
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`
           }
         }
       );
