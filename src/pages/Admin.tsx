@@ -62,6 +62,8 @@ interface Product {
   merchant_phone?: string;
 }
 
+const ADMIN_PASSWORD = "12345678";
+
 const Admin = () => {
   const navigate = useNavigate();
   const { t, language, dir } = useLanguage();
@@ -91,69 +93,36 @@ const Admin = () => {
   const fetchData = async () => {
     setLoadingData(true);
     try {
-      // Fetch merchants
-      const { data: merchantsData, error: merchantsError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_type', 'merchant')
-        .order('created_at', { ascending: false });
+      const response = await supabase.functions.invoke('admin-data', {
+        headers: {
+          'x-admin-password': ADMIN_PASSWORD
+        },
+        body: null
+      });
 
-      if (merchantsError) throw merchantsError;
-      setMerchants(merchantsData || []);
+      if (response.error) throw response.error;
 
-      // Fetch payment receipts
-      const { data: receiptsData, error: receiptsError } = await supabase
-        .from('payment_receipts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (receiptsError) throw receiptsError;
-
-      // Enrich receipts with merchant info
-      const enrichedReceipts = await Promise.all(
-        (receiptsData || []).map(async (receipt) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name, phone')
-            .eq('user_id', receipt.user_id)
-            .single();
-
-          return {
-            ...receipt,
-            merchant_name: profile?.display_name || t('common.noName'),
-            merchant_phone: profile?.phone || ''
-          };
-        })
+      // Handle the query params for fetch action
+      const fetchResponse = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data?action=fetch`,
+        {
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
 
-      setReceipts(enrichedReceipts);
+      if (!fetchResponse.ok) {
+        throw new Error('Failed to fetch admin data');
+      }
 
-      // Fetch all products
-      const { data: productsData, error: productsError } = await supabase
-        .from('items')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (productsError) throw productsError;
-
-      // Enrich products with merchant info
-      const enrichedProducts = await Promise.all(
-        (productsData || []).map(async (product) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name, phone')
-            .eq('user_id', product.user_id)
-            .single();
-
-          return {
-            ...product,
-            merchant_name: profile?.display_name || t('common.noName'),
-            merchant_phone: profile?.phone || ''
-          };
-        })
-      );
-
-      setProducts(enrichedProducts);
+      const data = await fetchResponse.json();
+      
+      setMerchants(data.merchants || []);
+      setReceipts(data.receipts || []);
+      setProducts(data.products || []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error(t('common.error'));
@@ -164,12 +133,23 @@ const Admin = () => {
 
   const handleToggleStore = async (merchant: Merchant) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ page_enabled: !merchant.page_enabled })
-        .eq('id', merchant.id);
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: 'POST',
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'toggle_store',
+            data: { id: merchant.id, page_enabled: merchant.page_enabled }
+          })
+        }
+      );
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to toggle store');
       
       toast.success(merchant.page_enabled ? t('admin.storeClosed') : t('admin.storeActivated'));
       fetchData();
@@ -181,27 +161,25 @@ const Admin = () => {
 
   const handleReviewReceipt = async (receiptId: string, approved: boolean) => {
     try {
-      const { error } = await supabase
-        .from('payment_receipts')
-        .update({ 
-          status: approved ? 'approved' : 'rejected',
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: null
-        })
-        .eq('id', receiptId);
-
-      if (error) throw error;
-
-      // If approved, enable the merchant's store
-      if (approved) {
-        const receipt = receipts.find(r => r.id === receiptId);
-        if (receipt) {
-          await supabase
-            .from('profiles')
-            .update({ page_enabled: true })
-            .eq('user_id', receipt.user_id);
+      const receipt = receipts.find(r => r.id === receiptId);
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: 'POST',
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'review_receipt',
+            data: { id: receiptId, approved, user_id: receipt?.user_id }
+          })
         }
-      }
+      );
+
+      if (!response.ok) throw new Error('Failed to review receipt');
 
       toast.success(approved ? t('admin.receiptApproved') : t('admin.receiptRejected'));
       setSelectedReceipt(null);
@@ -216,12 +194,23 @@ const Admin = () => {
     if (!confirm(t('admin.confirmDelete'))) return;
     
     try {
-      const { error } = await supabase
-        .from('items')
-        .delete()
-        .eq('id', productId);
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: 'POST',
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'delete_product',
+            data: { id: productId }
+          })
+        }
+      );
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('Failed to delete product');
       
       toast.success(t('admin.productDeleted'));
       fetchData();
@@ -230,6 +219,7 @@ const Admin = () => {
       toast.error(t('common.error'));
     }
   };
+
 
   if (loadingData) {
     return (
