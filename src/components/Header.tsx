@@ -30,6 +30,7 @@ const Header = () => {
   const handlePasswordSubmit = () => {
     if (password === "12345678") {
       setShowPasswordDialog(false);
+      sessionStorage.setItem('adminAccess', 'true');
       navigate("/admin");
     } else {
       toast.error("كلمة المرور غير صحيحة");
