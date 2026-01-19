@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import CategoryFilter from '@/components/CategoryFilter';
 import { Search, ShoppingCart, Package, Plus, Store, Loader2, ChefHat, LogIn } from 'lucide-react';
+import logoImage from '@/assets/logo.jpg';
 
 interface Product {
   id: string;
@@ -150,6 +151,13 @@ const Index = () => {
         <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/5 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 text-center">
+          {/* Logo Image */}
+          <img 
+            src={logoImage} 
+            alt="طبخاتي" 
+            className="w-32 h-32 md:w-40 md:h-40 rounded-3xl mx-auto mb-6 shadow-2xl object-cover border-4 border-white"
+          />
+          
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
             <ChefHat className="h-4 w-4" />
             <span>{t('index.tabkhatyPlatform')}</span>
