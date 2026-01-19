@@ -323,6 +323,9 @@ const translations: Translations = {
   'items.deleteError': { ar: 'فشل في حذف العنصر', en: 'Failed to delete item' },
   'items.deleted': { ar: 'تم الحذف', en: 'Deleted' },
   'items.itemDeleted': { ar: 'تم حذف العنصر', en: 'Item deleted' },
+  'items.subscriptionRequired': { ar: 'يجب تفعيل اشتراكك أولاً', en: 'You need to activate your subscription first' },
+  'items.subscriptionRequiredDesc': { ar: 'لا يمكنك رفع منتجات حتى تدفع رسوم الاشتراك الشهري (7 دينار)', en: 'You cannot upload products until you pay the monthly subscription fee (7 JOD)' },
+  'items.goToPayment': { ar: 'الذهاب للدفع', en: 'Go to Payment' },
   
   // Orders Manager
   'orders.title': { ar: 'الطلبات', en: 'Orders' },

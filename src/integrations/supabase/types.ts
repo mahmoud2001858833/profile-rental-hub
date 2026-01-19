@@ -442,6 +442,7 @@ export type Database = {
       }
     }
     Functions: {
+      disable_expired_merchant_pages: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
