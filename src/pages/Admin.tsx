@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useAdmin } from '@/hooks/useAdmin';
 import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -66,8 +64,6 @@ interface Product {
 
 const Admin = () => {
   const navigate = useNavigate();
-  const { user, loading: authLoading, signOut } = useAuth();
-  const { isAdmin, loading: adminLoading } = useAdmin();
   const { t, language, dir } = useLanguage();
   
   const [merchants, setMerchants] = useState<Merchant[]>([]);
@@ -76,24 +72,21 @@ const Admin = () => {
   const [loadingData, setLoadingData] = useState(true);
   const [selectedReceipt, setSelectedReceipt] = useState<string | null>(null);
 
+  // Check if admin access was granted via password (stored in sessionStorage)
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (!adminLoading && !isAdmin && user) {
-      toast.error(t('common.error'));
-      navigate('/dashboard');
-    }
-  }, [isAdmin, adminLoading, user, navigate, t]);
-
-  useEffect(() => {
-    if (isAdmin) {
+    const hasAdminAccess = sessionStorage.getItem('adminAccess');
+    if (!hasAdminAccess) {
+      toast.error('غير مصرح لك بالدخول');
+      navigate('/');
+    } else {
       fetchData();
     }
-  }, [isAdmin]);
+  }, [navigate]);
+
+  const handleSignOut = () => {
+    sessionStorage.removeItem('adminAccess');
+    navigate('/');
+  };
 
   const fetchData = async () => {
     setLoadingData(true);
@@ -193,7 +186,7 @@ const Admin = () => {
         .update({ 
           status: approved ? 'approved' : 'rejected',
           reviewed_at: new Date().toISOString(),
-          reviewed_by: user?.id
+          reviewed_by: null
         })
         .eq('id', receiptId);
 
@@ -238,21 +231,12 @@ const Admin = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
-
-  if (authLoading || adminLoading) {
+  if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
-  }
-
-  if (!isAdmin) {
-    return null;
   }
 
   const getStatusBadge = (status: string) => {
