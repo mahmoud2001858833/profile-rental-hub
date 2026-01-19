@@ -106,6 +106,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (profileError) {
         return { error: new Error(profileError.message) };
       }
+
+      // Check if this is the admin phone number and assign admin role
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      if (cleanPhone === '0799126390' || cleanPhone === '962799126390' || cleanPhone === '+962799126390') {
+        await supabase.from('user_roles').insert({
+          user_id: data.user.id,
+          role: 'admin'
+        });
+      }
     }
 
     return { error: error ? new Error(error.message) : null };

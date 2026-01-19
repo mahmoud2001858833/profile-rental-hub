@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Store, ShoppingBag } from 'lucide-react';
 import { z } from 'zod';
 import LanguageToggle from '@/components/LanguageToggle';
-
+import logoImage from '@/assets/logo.jpg';
 type UserType = 'customer' | 'merchant';
 
 const Auth = () => {
@@ -156,9 +156,11 @@ const Auth = () => {
       </div>
       <Card className="w-full max-w-md shadow-xl border-0">
         <CardHeader className="text-center pb-2">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-red-700 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/30">
-            <span className="text-white font-black text-2xl">ص</span>
-          </div>
+          <img 
+            src={logoImage} 
+            alt="طبخاتي" 
+            className="w-24 h-24 rounded-2xl mx-auto mb-4 shadow-lg object-cover"
+          />
           <CardTitle className="text-2xl font-bold">{t('auth.welcome')}</CardTitle>
           <CardDescription>{t('auth.chooseAccount')}</CardDescription>
         </CardHeader>
