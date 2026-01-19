@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -14,6 +14,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { t } = useLanguage();
+  const [activeTab, setActiveTab] = useState('orders');
+
+  const handleNavigateToPayment = () => {
+    setActiveTab('payments');
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -53,7 +58,7 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="container py-6">
-        <Tabs defaultValue="orders" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full max-w-xl mx-auto grid-cols-4 mb-6">
             <TabsTrigger value="orders" className="gap-2">
               <ShoppingBag className="h-4 w-4" />
@@ -78,7 +83,7 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="items" className="max-w-2xl mx-auto">
-            <ItemsManager />
+            <ItemsManager onNavigateToPayment={handleNavigateToPayment} />
           </TabsContent>
 
           <TabsContent value="payments" className="max-w-2xl mx-auto">

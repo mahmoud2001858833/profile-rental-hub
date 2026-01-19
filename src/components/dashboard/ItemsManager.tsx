@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,9 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard } from 'lucide-react';
 import { z } from 'zod';
 import ItemGallery from './ItemGallery';
 
@@ -25,10 +27,15 @@ interface Item {
   gallery_count?: number;
 }
 
-const ItemsManager = () => {
+interface ItemsManagerProps {
+  onNavigateToPayment?: () => void;
+}
+
+const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { isActive: hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
   const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 400, maxHeight: 400, quality: 0.75 });
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
@@ -213,10 +220,72 @@ const ItemsManager = () => {
     }
   };
 
-  if (loading) {
+  if (loading || subscriptionLoading) {
     return (
       <div className="flex justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Show subscription required alert if no active subscription
+  if (!hasActiveSubscription) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold">{t('items.title')} ({items.length}/25)</h3>
+            <p className="text-sm text-muted-foreground">{t('items.addItems')}</p>
+          </div>
+        </div>
+
+        <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+          <AlertTriangle className="h-5 w-5" />
+          <AlertTitle className="text-lg font-bold">{t('items.subscriptionRequired')}</AlertTitle>
+          <AlertDescription className="mt-2">
+            <p className="mb-4">{t('items.subscriptionRequiredDesc')}</p>
+            <Button onClick={onNavigateToPayment} className="gap-2">
+              <CreditCard className="h-4 w-4" />
+              {t('items.goToPayment')}
+            </Button>
+          </AlertDescription>
+        </Alert>
+
+        {/* Show existing items but disable adding new ones */}
+        {items.length > 0 && (
+          <div className="grid gap-3 sm:grid-cols-2 opacity-60">
+            {items.map((item) => (
+              <Card key={item.id} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="flex">
+                    <div className="w-24 h-24 flex-shrink-0 bg-muted">
+                      {item.image_url ? (
+                        <img 
+                          src={item.image_url} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="h-8 w-8 text-muted-foreground/50" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
+                      <div>
+                        <h4 className="font-semibold text-sm truncate">{item.title}</h4>
+                        {item.description && (
+                          <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
+                        )}
+                      </div>
+                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} {t('common.currency')}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
