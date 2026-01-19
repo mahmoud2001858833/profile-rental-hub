@@ -158,7 +158,7 @@ const Auth = () => {
         <CardHeader className="text-center pb-2">
           <img 
             src={logoImage} 
-            alt="طبخاتي" 
+            alt="طبخات" 
             className="w-24 h-24 rounded-2xl mx-auto mb-4 shadow-lg object-cover"
           />
           <CardTitle className="text-2xl font-bold">{t('auth.welcome')}</CardTitle>
