@@ -10,7 +10,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { Search, ShoppingCart, Package, Plus, Store, Loader2, Sparkles, LogIn } from 'lucide-react';
+import CategoryFilter from '@/components/CategoryFilter';
+import { Search, ShoppingCart, Package, Plus, Store, Loader2, ChefHat, LogIn } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -19,6 +20,7 @@ interface Product {
   price: number;
   image_url: string | null;
   user_id: string;
+  category: string | null;
   merchant_name: string;
   merchant_avatar: string | null;
   merchant_slug: string | null;
@@ -28,6 +30,7 @@ const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const { addItem, getItemCount } = useCart();
   const { user, userType } = useAuth();
   const { t } = useLanguage();
@@ -47,7 +50,8 @@ const Index = () => {
         description,
         price,
         image_url,
-        user_id
+        user_id,
+        category
       `)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
@@ -77,7 +81,7 @@ const Index = () => {
         const profile = profileMap.get(item.user_id);
         return {
           ...item,
-          merchant_name: profile?.display_name || 'تاجر',
+          merchant_name: profile?.display_name || 'طباخ',
           merchant_avatar: profile?.avatar_url || null,
           merchant_slug: profile?.page_slug || null,
         };
@@ -120,51 +124,70 @@ const Index = () => {
     });
   };
 
-  const filteredProducts = products.filter(p =>
-    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.merchant_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = 
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.merchant_name.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
 
   const cartCount = getItemCount();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Header />
 
-      {/* Hero Banner with Glass Effect */}
-      <section className="bg-gradient-to-br from-primary via-primary/90 to-accent text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0 pattern-dots opacity-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+      {/* Hero Banner - White Background */}
+      <section className="bg-white py-16 relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 pattern-dots opacity-30" />
         
-        {/* Glass Cards Decoration */}
-        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 rotate-12 animate-float hidden lg:block" />
-        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 rotate-45 hidden lg:block" />
+        {/* Decorative Elements */}
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-primary/5 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/5 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sm font-medium mb-6 shadow-lg">
-            <Sparkles className="h-4 w-4" />
-            <span>{t('index.browseProducts')}</span>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+            <ChefHat className="h-4 w-4" />
+            <span>{t('index.tabkhatyPlatform')}</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg">{t('index.discoverBest')}</h1>
-          <p className="text-white/90 max-w-xl mx-auto mb-8 text-lg">
-            {t('index.browseDesc')}
+          
+          {/* Main Marketing Text */}
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 text-foreground leading-tight">
+            {t('index.heroTitle')}
+            <br />
+            <span className="gradient-text">{t('index.heroSubtitle')}</span>
+          </h1>
+          
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
+            {t('index.heroDesc')}
           </p>
+          
           {!user && (
-            <Button variant="secondary" size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
-              <Link to="/auth?type=customer">
-                <LogIn className="ml-2 h-5 w-5" />
-                {t('index.loginToShop')}
-              </Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
+                <Link to="/auth?type=merchant">
+                  <ChefHat className="ml-2 h-5 w-5" />
+                  {t('index.startNow')}
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/auth?type=customer">
+                  <LogIn className="ml-2 h-5 w-5" />
+                  {t('index.loginToShop')}
+                </Link>
+              </Button>
+            </div>
           )}
         </div>
       </section>
 
       {/* Search Bar with Glass Effect */}
-      <div className="sticky top-16 z-40 bg-white/70 dark:bg-card/70 backdrop-blur-lg border-b border-white/20 shadow-sm">
-        <div className="container py-4">
+      <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-lg border-b border-border shadow-sm">
+        <div className="container py-4 space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -172,10 +195,10 @@ const Index = () => {
                 placeholder={t('index.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 bg-white/50 dark:bg-card/50 backdrop-blur-sm border-white/30"
+                className="pr-10 bg-white border-primary/20"
               />
             </div>
-            <Button variant="outline" className="relative bg-white/50 dark:bg-card/50 backdrop-blur-sm border-white/30 hover:bg-white/70" asChild>
+            <Button variant="outline" className="relative bg-white border-primary/20 hover:bg-primary/5" asChild>
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -186,10 +209,16 @@ const Index = () => {
               </Link>
             </Button>
           </div>
+          
+          {/* Category Filter */}
+          <CategoryFilter 
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid - Red Cream Gradient Background */}
       <main className="container py-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold">{t('index.products')}</h2>
@@ -203,7 +232,7 @@ const Index = () => {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : filteredProducts.length === 0 ? (
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm">
             <CardContent className="flex flex-col items-center justify-center py-16 text-center">
               <Package className="h-16 w-16 text-muted-foreground mb-4" />
               <h3 className="font-semibold text-lg mb-2">{t('index.noProducts')}</h3>
@@ -221,7 +250,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-white/30 hover:bg-white/90 dark:hover:bg-card/90">
+              <Card key={product.id} className="overflow-hidden group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-primary/10 hover:border-primary/30">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img
@@ -241,6 +270,11 @@ const Index = () => {
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
+                  {product.category && (
+                    <Badge variant="secondary" className="absolute top-2 right-2 text-xs">
+                      {product.category}
+                    </Badge>
+                  )}
                 </div>
                 <CardContent className="p-3">
                   <h3 className="font-semibold text-sm truncate mb-1">{product.title}</h3>
@@ -275,7 +309,7 @@ const Index = () => {
                   )}
 
                   <div className="flex items-center justify-between">
-                    <p className="text-primary font-bold">{product.price.toFixed(2)} ر.س</p>
+                    <p className="text-primary font-bold">{product.price.toFixed(2)} {t('common.currency')}</p>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -294,7 +328,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-card mt-8">
+      <footer className="border-t border-border py-8 bg-white mt-8">
         <div className="container text-center space-y-4">
           <div className="flex justify-center gap-4">
             <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">
@@ -311,7 +345,7 @@ const Index = () => {
             </Link>
           </div>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} {t('index.allRights')}
+            © {new Date().getFullYear()} {t('index.tabkhatyRights')}
           </p>
         </div>
       </footer>

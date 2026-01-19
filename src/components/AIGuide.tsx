@@ -39,6 +39,7 @@ const AIGuide = () => {
       auth: '/auth',
       dashboard: '/dashboard',
       terms: '/terms',
+      cart: '/cart',
     };
     
     const routeNames: Record<string, string> = {
@@ -46,6 +47,7 @@ const AIGuide = () => {
       auth: t('aiGuide.login'),
       dashboard: t('aiGuide.dashboard'),
       terms: t('aiGuide.terms'),
+      cart: t('aiGuide.cart'),
     };
     
     const route = routes[page];
@@ -75,7 +77,7 @@ const AIGuide = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: [...messages, userMessage].slice(-10) }),
+        body: JSON.stringify({ messages: [...messages, userMessage].slice(-5) }), // Reduced for faster response
       });
 
       if (!resp.ok || !resp.body) {

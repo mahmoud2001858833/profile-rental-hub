@@ -4,20 +4,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design System - Arabic RTL Platform */
-/* Premium Modern Design with Warm Tones */
+/* Design System - طبخاتي Platform */
+/* Modern Arabic Food Platform with Red-Cream Theme */
 
 @layer base {
   :root {
-    /* Creamy warm background */
-    --background: 35 45% 96%;
+    /* White/Cream warm background */
+    --background: 0 0% 100%;
     --foreground: 25 25% 15%;
 
     /* Card - soft cream */
-    --card: 35 50% 94%;
+    --card: 35 50% 97%;
     --card-foreground: 25 25% 15%;
 
-    --popover: 35 45% 96%;
+    --popover: 0 0% 100%;
     --popover-foreground: 25 25% 15%;
 
     /* Primary - Rich Red (for buttons and CTAs) */
@@ -25,10 +25,10 @@
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Warm Cream */
-    --secondary: 35 50% 90%;
+    --secondary: 35 50% 92%;
     --secondary-foreground: 25 25% 15%;
 
-    --muted: 35 35% 88%;
+    --muted: 35 35% 90%;
     --muted-foreground: 25 20% 45%;
 
     /* Accent - Deep Red for highlights */
@@ -39,8 +39,8 @@
     --destructive: 0 80% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 30% 85%;
-    --input: 35 35% 90%;
+    --border: 35 30% 88%;
+    --input: 35 35% 92%;
     --ring: 0 75% 50%;
 
     --radius: 1rem;
@@ -48,15 +48,16 @@
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(0 75% 50%), hsl(0 70% 40%));
     --gradient-accent: linear-gradient(135deg, hsl(0 70% 45%), hsl(0 65% 35%));
-    --gradient-hero: linear-gradient(180deg, hsl(35 45% 96%) 0%, hsl(35 50% 92%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 50% 97%) 100%);
+    --gradient-page: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 96%) 30%, hsl(0 75% 50% / 0.03) 100%);
 
-    --sidebar-background: 35 50% 94%;
+    --sidebar-background: 35 50% 97%;
     --sidebar-foreground: 25 25% 15%;
     --sidebar-primary: 0 75% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 50% 90%;
+    --sidebar-accent: 35 50% 92%;
     --sidebar-accent-foreground: 25 25% 15%;
-    --sidebar-border: 35 30% 85%;
+    --sidebar-border: 35 30% 88%;
     --sidebar-ring: 0 75% 50%;
   }
 }
@@ -74,6 +75,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Cairo', sans-serif;
+    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 97%) 30%, hsl(0 75% 50% / 0.02) 100%);
+    min-height: 100vh;
   }
 }
 
@@ -110,6 +113,10 @@
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+  }
+
+  .red-cream-gradient {
+    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 97%) 50%, hsl(0 75% 50% / 0.05) 100%);
   }
 }
 

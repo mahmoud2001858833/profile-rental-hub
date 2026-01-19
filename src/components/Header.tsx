@@ -6,7 +6,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageToggle from "@/components/LanguageToggle";
-import { User, ShoppingCart, Store, LogIn, ShieldCheck } from "lucide-react";
+import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat } from "lucide-react";
 
 const Header = () => {
   const { user, loading, userType } = useAuth();
@@ -16,13 +16,13 @@ const Header = () => {
   const cartCount = getItemCount();
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border" dir={dir}>
+    <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-lg" dir={dir}>
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-xl">ص</span>
+          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+            <ChefHat className="h-6 w-6 text-white" />
           </div>
-          <span className="font-bold text-lg hidden sm:block">{t('header.displayPages')}</span>
+          <span className="font-bold text-lg hidden sm:block">{t('header.tabkhaty')}</span>
         </Link>
 
         <nav className="flex items-center gap-2">
@@ -31,7 +31,7 @@ const Header = () => {
           
           {/* Admin Link - only for admins */}
           {isAdmin && (
-            <Button variant="default" size="sm" className="bg-primary" asChild>
+            <Button variant="secondary" size="sm" asChild>
               <Link to="/admin">
                 <ShieldCheck className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                 <span className="hidden sm:inline">{t('header.adminPanel')}</span>
@@ -41,11 +41,11 @@ const Header = () => {
 
           {/* Cart - only for customers */}
           {(!user || userType === 'customer') && (
-            <Button variant="ghost" className="relative" asChild>
+            <Button variant="ghost" className="relative text-white hover:bg-white/20" asChild>
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <Badge className={`absolute -top-1 h-5 w-5 p-0 flex items-center justify-center text-xs ${dir === 'rtl' ? '-left-1' : '-right-1'}`}>
+                  <Badge className={`absolute -top-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-white text-primary ${dir === 'rtl' ? '-left-1' : '-right-1'}`}>
                     {cartCount}
                   </Badge>
                 )}
@@ -54,17 +54,17 @@ const Header = () => {
           )}
 
           {loading ? (
-            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+            <div className="w-8 h-8 rounded-full bg-white/20 animate-pulse" />
           ) : user ? (
             userType === 'merchant' ? (
-              <Button asChild>
+              <Button variant="secondary" asChild>
                 <Link to="/dashboard">
                   <Store className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   <span className="hidden sm:inline">{t('header.dashboard')}</span>
                 </Link>
               </Button>
             ) : (
-              <Button variant="outline" asChild>
+              <Button variant="secondary" asChild>
                 <Link to="/customer">
                   <User className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   <span className="hidden sm:inline">{t('header.myAccount')}</span>
@@ -72,7 +72,7 @@ const Header = () => {
               </Button>
             )
           ) : (
-            <Button asChild>
+            <Button variant="secondary" asChild>
               <Link to="/auth">
                 <LogIn className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                 <span>{t('header.login')}</span>
