@@ -15,6 +15,8 @@ import { useImageUpload } from '@/hooks/useImageUpload';
 import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard } from 'lucide-react';
 import { z } from 'zod';
 import ItemGallery from './ItemGallery';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { COUNTRIES, getCurrencySymbol } from '@/components/CountryFilter';
 
 interface Item {
   id: string;
@@ -24,6 +26,7 @@ interface Item {
   image_url: string | null;
   is_active: boolean;
   sort_order: number;
+  currency: string | null;
   gallery_count?: number;
 }
 
@@ -47,6 +50,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     description: '',
     price: '',
     image_url: null as string | null,
+    currency: 'JOD',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -87,7 +91,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
 
   const openAddDialog = () => {
     setEditingItem(null);
-    setFormData({ title: '', description: '', price: '', image_url: null });
+    setFormData({ title: '', description: '', price: '', image_url: null, currency: 'JOD' });
     setErrors({});
     setDialogOpen(true);
   };
@@ -99,6 +103,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       description: item.description || '',
       price: item.price.toString(),
       image_url: item.image_url,
+      currency: item.currency || 'JOD',
     });
     setErrors({});
     setDialogOpen(true);
@@ -153,6 +158,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
           description: formData.description || null,
           price: parseFloat(formData.price),
           image_url: formData.image_url,
+          currency: formData.currency,
         })
         .eq('id', editingItem.id);
 
@@ -174,6 +180,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
         description: formData.description || null,
         price: parseFloat(formData.price),
         image_url: formData.image_url,
+        currency: formData.currency,
         sort_order: items.length,
       });
 
@@ -278,7 +285,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                           <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
                         )}
                       </div>
-                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} {t('common.currency')}</p>
+                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} {getCurrencySymbol(item.currency || 'JOD')}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -391,15 +398,36 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
 
               <div className="space-y-2">
                 <Label htmlFor="item-price">{t('items.price')} *</Label>
-                <Input
-                  id="item-price"
-                  type="number"
-                  placeholder="0.00"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  min="0"
-                  step="0.01"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="item-price"
+                    type="number"
+                    placeholder="0.00"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    min="0"
+                    step="0.01"
+                    className="flex-1"
+                  />
+                  <Select 
+                    value={formData.currency} 
+                    onValueChange={(value) => setFormData({ ...formData, currency: value })}
+                  >
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COUNTRIES.filter(c => c.code !== 'all').map((country) => (
+                        <SelectItem key={country.code} value={country.currency}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.currency}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 {errors.price && <p className="text-sm text-destructive">{errors.price}</p>}
               </div>
 
@@ -465,7 +493,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                       )}
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} {t('common.currency')}</p>
+                      <p className="text-accent font-bold text-sm">{item.price.toFixed(2)} {getCurrencySymbol(item.currency || 'JOD')}</p>
                       <div className="flex items-center gap-1">
                         <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEditDialog(item)}>
                           <Pencil className="h-3.5 w-3.5" />

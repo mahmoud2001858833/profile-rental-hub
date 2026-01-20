@@ -53,6 +53,23 @@ const translations: Translations = {
   'categories.pastries': { ar: 'معجنات', en: 'Pastries' },
   'categories.snacks': { ar: 'أكلات خفيفة', en: 'Snacks' },
   
+  // Countries
+  'countries.all': { ar: 'الكل', en: 'All' },
+  'countries.jordan': { ar: 'الأردن', en: 'Jordan' },
+  'countries.saudiArabia': { ar: 'السعودية', en: 'Saudi Arabia' },
+  'countries.uae': { ar: 'الإمارات', en: 'UAE' },
+  'countries.egypt': { ar: 'مصر', en: 'Egypt' },
+  'countries.kuwait': { ar: 'الكويت', en: 'Kuwait' },
+  'countries.bahrain': { ar: 'البحرين', en: 'Bahrain' },
+  'countries.qatar': { ar: 'قطر', en: 'Qatar' },
+  'countries.oman': { ar: 'عُمان', en: 'Oman' },
+  'countries.morocco': { ar: 'المغرب', en: 'Morocco' },
+  'countries.lebanon': { ar: 'لبنان', en: 'Lebanon' },
+  
+  // Items - Country/Currency
+  'items.selectCountry': { ar: 'اختر البلد', en: 'Select Country' },
+  'items.currency': { ar: 'العملة', en: 'Currency' },
+  
   // Auth page
   'auth.welcome': { ar: 'مرحباً بك', en: 'Welcome' },
   'auth.chooseAccount': { ar: 'اختر نوع حسابك', en: 'Choose your account type' },

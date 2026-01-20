@@ -11,6 +11,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import CategoryFilter from '@/components/CategoryFilter';
+import CountryFilter, { COUNTRIES, getCurrencySymbol } from '@/components/CountryFilter';
+import FloatingFoodIcons from '@/components/FloatingFoodIcons';
 import { Search, ShoppingCart, Package, Plus, Store, Loader2, ChefHat, LogIn } from 'lucide-react';
 import logoImage from '@/assets/logo.jpg';
 
@@ -22,9 +24,11 @@ interface Product {
   image_url: string | null;
   user_id: string;
   category: string | null;
+  currency: string | null;
   merchant_name: string;
   merchant_avatar: string | null;
   merchant_slug: string | null;
+  merchant_country: string | null;
 }
 
 const Index = () => {
@@ -32,6 +36,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCountry, setSelectedCountry] = useState('all');
   const { addItem, getItemCount } = useCart();
   const { user, userType } = useAuth();
   const { t } = useLanguage();
@@ -52,7 +57,8 @@ const Index = () => {
         price,
         image_url,
         user_id,
-        category
+        category,
+        currency
       `)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
@@ -75,7 +81,7 @@ const Index = () => {
     const { data: profiles } = await supabase
       .rpc('get_merchant_public_info', { merchant_ids: merchantIds });
 
-    const profileMap = new Map(profiles?.map((p: { user_id: string; display_name: string | null; avatar_url: string | null; page_slug: string | null }) => [p.user_id, p]) || []);
+    const profileMap = new Map(profiles?.map((p: { user_id: string; display_name: string | null; avatar_url: string | null; page_slug: string | null; country?: string | null }) => [p.user_id, p]) || []);
 
     const productsWithMerchants = (items || [])
       .map(item => {
@@ -85,6 +91,7 @@ const Index = () => {
           merchant_name: profile?.display_name || 'طباخ',
           merchant_avatar: profile?.avatar_url || null,
           merchant_slug: profile?.page_slug || null,
+          merchant_country: profile?.country || 'JO',
         };
       });
 
@@ -132,19 +139,29 @@ const Index = () => {
       p.merchant_name.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+    const matchesCountry = selectedCountry === 'all' || p.merchant_country === selectedCountry;
     
-    return matchesSearch && matchesCategory;
+    return matchesSearch && matchesCategory && matchesCountry;
   });
 
   const cartCount = getItemCount();
+
+  // Get country flag for product
+  const getCountryFlag = (countryCode: string | null) => {
+    const country = COUNTRIES.find(c => c.code === countryCode);
+    return country?.flag || '🌍';
+  };
 
   return (
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Banner - White Background */}
+      {/* Hero Banner - White Background with Floating Icons */}
       <section className="bg-white py-16 relative overflow-hidden border-b border-border">
         <div className="absolute inset-0 pattern-dots opacity-30" />
+        
+        {/* Floating Food Icons */}
+        <FloatingFoodIcons />
         
         {/* Decorative Elements */}
         <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-primary/5 rotate-12 animate-float hidden lg:block" />
@@ -164,8 +181,8 @@ const Index = () => {
           </div>
           
           {/* Main Marketing Text */}
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 text-foreground leading-tight">
-            {t('index.heroTitle')}
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+            <span className="text-primary">{t('index.heroTitle')}</span>
             <br />
             <span className="gradient-text">{t('index.heroSubtitle')}</span>
           </h1>
@@ -218,6 +235,12 @@ const Index = () => {
             </Button>
           </div>
           
+          {/* Country Filter */}
+          <CountryFilter 
+            selectedCountry={selectedCountry}
+            onCountryChange={setSelectedCountry}
+          />
+          
           {/* Category Filter */}
           <CategoryFilter 
             selectedCategory={selectedCategory}
@@ -229,7 +252,7 @@ const Index = () => {
       {/* Products Grid - Red Cream Gradient Background with Glass Effect */}
       <main className="relative py-12">
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/30 to-orange-50/40" />
+        <div className="absolute inset-0 red-cream-gradient" />
         <div className="absolute inset-0 pattern-dots opacity-20" />
         
         {/* Decorative Glass Elements */}
@@ -274,7 +297,7 @@ const Index = () => {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               {filteredProducts.map((product) => (
-                <Card key={product.id} className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 glass-effect border-primary/10 hover:border-primary/30">
+                <Card key={product.id} className="overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 glass-card border-primary/10 hover:border-primary/30 glow-card">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img
@@ -333,7 +356,12 @@ const Index = () => {
                   )}
 
                   <div className="flex items-center justify-between">
-                    <p className="text-primary font-bold">{product.price.toFixed(2)} {t('common.currency')}</p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm">{getCountryFlag(product.merchant_country)}</span>
+                      <p className="text-primary font-bold">
+                        {product.price.toFixed(2)} {getCurrencySymbol(product.currency || 'JOD')}
+                      </p>
+                    </div>
                     <Button
                       size="sm"
                       variant="ghost"
