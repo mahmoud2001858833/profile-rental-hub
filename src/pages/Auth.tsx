@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Store, ShoppingBag } from 'lucide-react';
+import { Store, ShoppingBag, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import LanguageToggle from '@/components/LanguageToggle';
 import logoImage from '@/assets/logo.jpg';
@@ -51,6 +51,9 @@ const Auth = () => {
     agreeToTerms: false
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -219,13 +222,22 @@ const Auth = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="login-password" className="font-semibold">{t('auth.password')}</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className="h-12 text-base"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="login-password"
+                      type={showLoginPassword ? "text" : "password"}
+                      value={loginData.password}
+                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      className="h-12 text-base pe-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowLoginPassword(!showLoginPassword)}
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showLoginPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                   {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                 </div>
                 
@@ -253,25 +265,43 @@ const Auth = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="register-password" className="font-semibold">{t('auth.password')}</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    value={registerData.password}
-                    onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                    className="h-12 text-base"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="register-password"
+                      type={showRegisterPassword ? "text" : "password"}
+                      value={registerData.password}
+                      onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                      className="h-12 text-base pe-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showRegisterPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                   {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="register-confirm" className="font-semibold">{t('auth.confirmPassword')}</Label>
-                  <Input
-                    id="register-confirm"
-                    type="password"
-                    value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                    className="h-12 text-base"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="register-confirm"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={registerData.confirmPassword}
+                      onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                      className="h-12 text-base pe-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
                   {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
                 </div>
                 
