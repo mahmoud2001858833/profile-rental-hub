@@ -14,7 +14,7 @@ import CategoryFilter from '@/components/CategoryFilter';
 import CountryFilter, { COUNTRIES, getCurrencySymbol } from '@/components/CountryFilter';
 import FloatingFoodIcons from '@/components/FloatingFoodIcons';
 import { Search, ShoppingCart, Package, Plus, Store, Loader2, ChefHat, LogIn } from 'lucide-react';
-import logoImage from '@/assets/logo.jpg';
+import logoImage from '@/assets/logo-tabbkhat.png';
 
 interface Product {
   id: string;
