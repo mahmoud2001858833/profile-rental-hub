@@ -168,11 +168,11 @@ const Index = () => {
         <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 text-center">
-          {/* Logo Image */}
+          {/* Logo Image - Larger Horizontal */}
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-32 h-32 md:w-40 md:h-40 rounded-3xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
+            className="w-48 h-32 md:w-72 md:h-44 rounded-2xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
           />
           
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
@@ -180,8 +180,8 @@ const Index = () => {
             <span>{t('index.tabkhatyPlatform')}</span>
           </div>
           
-          {/* Main Marketing Text - Peach Color */}
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight text-peach">
+          {/* Main Marketing Text - Smaller Size */}
+          <h1 className="text-xl md:text-2xl font-bold mb-4 leading-tight text-peach">
             حوّلي شغفك بالطبخ إلى مشروع حقيقي
           </h1>
           

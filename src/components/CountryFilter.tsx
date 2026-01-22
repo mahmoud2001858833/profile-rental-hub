@@ -10,16 +10,32 @@ interface CountryFilterProps {
 
 export const COUNTRIES = [
   { code: 'all', name: { ar: 'الكل', en: 'All' }, currency: '', flag: '🌍' },
-  { code: 'JO', name: { ar: 'الأردن', en: 'Jordan' }, currency: 'JOD', flag: '🇯🇴' },
+  // الخليج العربي
   { code: 'SA', name: { ar: 'السعودية', en: 'Saudi Arabia' }, currency: 'SAR', flag: '🇸🇦' },
   { code: 'AE', name: { ar: 'الإمارات', en: 'UAE' }, currency: 'AED', flag: '🇦🇪' },
-  { code: 'EG', name: { ar: 'مصر', en: 'Egypt' }, currency: 'EGP', flag: '🇪🇬' },
   { code: 'KW', name: { ar: 'الكويت', en: 'Kuwait' }, currency: 'KWD', flag: '🇰🇼' },
   { code: 'BH', name: { ar: 'البحرين', en: 'Bahrain' }, currency: 'BHD', flag: '🇧🇭' },
   { code: 'QA', name: { ar: 'قطر', en: 'Qatar' }, currency: 'QAR', flag: '🇶🇦' },
   { code: 'OM', name: { ar: 'عُمان', en: 'Oman' }, currency: 'OMR', flag: '🇴🇲' },
-  { code: 'MA', name: { ar: 'المغرب', en: 'Morocco' }, currency: 'MAD', flag: '🇲🇦' },
+  // الشام
+  { code: 'JO', name: { ar: 'الأردن', en: 'Jordan' }, currency: 'JOD', flag: '🇯🇴' },
+  { code: 'SY', name: { ar: 'سوريا', en: 'Syria' }, currency: 'SYP', flag: '🇸🇾' },
   { code: 'LB', name: { ar: 'لبنان', en: 'Lebanon' }, currency: 'LBP', flag: '🇱🇧' },
+  { code: 'PS', name: { ar: 'فلسطين', en: 'Palestine' }, currency: 'ILS', flag: '🇵🇸' },
+  { code: 'IQ', name: { ar: 'العراق', en: 'Iraq' }, currency: 'IQD', flag: '🇮🇶' },
+  // شمال أفريقيا
+  { code: 'EG', name: { ar: 'مصر', en: 'Egypt' }, currency: 'EGP', flag: '🇪🇬' },
+  { code: 'LY', name: { ar: 'ليبيا', en: 'Libya' }, currency: 'LYD', flag: '🇱🇾' },
+  { code: 'TN', name: { ar: 'تونس', en: 'Tunisia' }, currency: 'TND', flag: '🇹🇳' },
+  { code: 'DZ', name: { ar: 'الجزائر', en: 'Algeria' }, currency: 'DZD', flag: '🇩🇿' },
+  { code: 'MA', name: { ar: 'المغرب', en: 'Morocco' }, currency: 'MAD', flag: '🇲🇦' },
+  { code: 'MR', name: { ar: 'موريتانيا', en: 'Mauritania' }, currency: 'MRU', flag: '🇲🇷' },
+  { code: 'SD', name: { ar: 'السودان', en: 'Sudan' }, currency: 'SDG', flag: '🇸🇩' },
+  // القرن الأفريقي واليمن
+  { code: 'YE', name: { ar: 'اليمن', en: 'Yemen' }, currency: 'YER', flag: '🇾🇪' },
+  { code: 'SO', name: { ar: 'الصومال', en: 'Somalia' }, currency: 'SOS', flag: '🇸🇴' },
+  { code: 'DJ', name: { ar: 'جيبوتي', en: 'Djibouti' }, currency: 'DJF', flag: '🇩🇯' },
+  { code: 'KM', name: { ar: 'جزر القمر', en: 'Comoros' }, currency: 'KMF', flag: '🇰🇲' },
 ];
 
 export const getCurrencySymbol = (currency: string): string => {
@@ -34,6 +50,18 @@ export const getCurrencySymbol = (currency: string): string => {
     'OMR': 'ر.ع',
     'MAD': 'د.م',
     'LBP': 'ل.ل',
+    'SYP': 'ل.س',
+    'ILS': '₪',
+    'IQD': 'د.ع',
+    'YER': 'ر.ي',
+    'LYD': 'د.ل',
+    'SDG': 'ج.س',
+    'TND': 'د.ت',
+    'DZD': 'د.ج',
+    'MRU': 'أ.م',
+    'SOS': 'ش.ص',
+    'DJF': 'ف.ج',
+    'KMF': 'ف.ق',
   };
   return symbols[currency] || currency;
 };
