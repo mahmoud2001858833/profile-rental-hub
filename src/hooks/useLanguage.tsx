@@ -286,6 +286,10 @@ const translations: Translations = {
   'customer.confirmed': { ar: 'مؤكد', en: 'Confirmed' },
   'customer.completed': { ar: 'مكتمل', en: 'Completed' },
   'customer.cancelled': { ar: 'ملغي', en: 'Cancelled' },
+  'customer.loadingData': { ar: 'جاري تحميل بياناتك...', en: 'Loading your data...' },
+  'customer.backToHome': { ar: 'العودة للصفحة الرئيسية', en: 'Back to Home' },
+  'customer.noProfile': { ar: 'لم يتم العثور على الملف الشخصي', en: 'Profile not found' },
+  'customer.createProfile': { ar: 'إنشاء ملف شخصي', en: 'Create Profile' },
   
   // Terms page
   'terms.title': { ar: 'الشروط والأحكام وسياسة الخصوصية', en: 'Terms & Conditions and Privacy Policy' },
