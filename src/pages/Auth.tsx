@@ -57,7 +57,8 @@ const Auth = () => {
 
   useEffect(() => {
     if (user && !loading) {
-      navigate(userType === 'merchant' ? '/dashboard' : '/');
+      // Merchant goes to dashboard, customer goes to browse page
+      navigate(userType === 'merchant' ? '/dashboard' : '/browse');
     }
   }, [user, loading, navigate, userType]);
 

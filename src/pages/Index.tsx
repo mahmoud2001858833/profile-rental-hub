@@ -63,29 +63,27 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Big Start Now CTA Section */}
-      {!user && (
-        <section className="py-20 bg-gradient-to-b from-background to-card border-t border-border">
-          <div className="container text-center space-y-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-peach">
-              🍳 ابدأ مشروعك الآن!
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-md mx-auto">
-              انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي
-            </p>
-            <Button 
-              size="lg" 
-              className="h-20 px-16 text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse"
-              asChild
-            >
-              <Link to="/auth?type=merchant">
-                <ChefHat className="ml-3 h-8 w-8" />
-                {t('index.startNow')}
-              </Link>
-            </Button>
-          </div>
-        </section>
-      )}
+      {/* Big Start Now CTA Section - Always visible */}
+      <section className="py-20 bg-gradient-to-b from-background to-card border-t border-border">
+        <div className="container text-center space-y-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-peach">
+            🍳 ابدأ مشروعك الآن!
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-md mx-auto">
+            انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي
+          </p>
+          <Button 
+            size="lg" 
+            className="h-20 px-16 text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse"
+            asChild
+          >
+            <Link to="/auth?type=merchant">
+              <ChefHat className="ml-3 h-8 w-8" />
+              {t('index.startNow')}
+            </Link>
+          </Button>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-card">

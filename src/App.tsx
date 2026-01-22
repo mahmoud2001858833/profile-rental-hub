@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import PublicPage from "./pages/PublicPage";
 import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
+import Browse from "./pages/Browse";
 import NotFound from "./pages/NotFound";
 import AIGuide from "./components/AIGuide";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -38,6 +39,7 @@ const App = () => (
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/browse" element={<Browse />} />
                 <Route path="/p/:slug" element={<PublicPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
