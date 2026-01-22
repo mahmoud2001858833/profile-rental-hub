@@ -65,9 +65,36 @@ const Customer = () => {
       .from('customer_profiles')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!error && data) {
+    if (error) {
+      console.error('Error fetching profile:', error);
+      setLoadingProfile(false);
+      return;
+    }
+
+    // If no profile exists, create one automatically
+    if (!data) {
+      const userPhone = user.email?.replace('@phone.local', '') || '';
+      const { data: newProfile, error: createError } = await supabase
+        .from('customer_profiles')
+        .insert({
+          user_id: user.id,
+          phone: userPhone,
+          display_name: ''
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('Error creating profile:', createError);
+        setLoadingProfile(false);
+        return;
+      }
+
+      setProfile(newProfile);
+      setDisplayName(newProfile.display_name || '');
+    } else {
       setProfile(data);
       setDisplayName(data.display_name || '');
     }
