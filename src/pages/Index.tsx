@@ -31,7 +31,7 @@ const Index = () => {
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-64 h-40 md:w-96 md:h-56 rounded-2xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
+            className="w-64 h-40 md:w-96 md:h-56 mx-auto mb-6 object-contain"
           />
           
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
