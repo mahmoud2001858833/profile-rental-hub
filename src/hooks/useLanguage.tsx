@@ -297,6 +297,13 @@ const translations: Translations = {
   'customer.backToHome': { ar: 'العودة للصفحة الرئيسية', en: 'Back to Home' },
   'customer.noProfile': { ar: 'لم يتم العثور على الملف الشخصي', en: 'Profile not found' },
   'customer.createProfile': { ar: 'إنشاء ملف شخصي', en: 'Create Profile' },
+  'customer.viewDetails': { ar: 'عرض التفاصيل', en: 'View Details' },
+  'customer.orderDetails': { ar: 'تفاصيل الطلب', en: 'Order Details' },
+  'customer.orderItems': { ar: 'عناصر الطلب', en: 'Order Items' },
+  'customer.notes': { ar: 'ملاحظات', en: 'Notes' },
+  'customer.total': { ar: 'المجموع', en: 'Total' },
+  'customer.contactMerchant': { ar: 'تواصل مع الطباخ', en: 'Contact Cook' },
+  'customer.merchant': { ar: 'الطباخ', en: 'Cook' },
   
   // Terms page
   'terms.title': { ar: 'الشروط والأحكام وسياسة الخصوصية', en: 'Terms & Conditions and Privacy Policy' },
