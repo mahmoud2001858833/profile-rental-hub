@@ -9,6 +9,7 @@ import ProfileForm from '@/components/dashboard/ProfileForm';
 import ItemsManager from '@/components/dashboard/ItemsManager';
 import OrdersManager from '@/components/dashboard/OrdersManager';
 import PaymentManager from '@/components/dashboard/PaymentManager';
+import TrialCountdown from '@/components/dashboard/TrialCountdown';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -58,6 +59,11 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="container py-6">
+        {/* Trial Countdown */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <TrialCountdown />
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full max-w-xl mx-auto grid-cols-4 mb-6">
             <TabsTrigger value="orders" className="gap-2">
