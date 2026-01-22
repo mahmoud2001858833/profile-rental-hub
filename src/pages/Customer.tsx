@@ -29,11 +29,18 @@ const Customer = () => {
   const { user, loading, signOut, userType } = useAuth();
   const { toast } = useToast();
   const { t, language } = useLanguage();
-  const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loadingProfile, setLoadingProfile] = useState(true);
   const [saving, setSaving] = useState(false);
   const [displayName, setDisplayName] = useState('');
+  
+  // Extract phone from user email
+  const userPhone = user?.email?.replace('@phone.local', '') || '';
+  
+  // Create profile object from user data immediately
+  const profile: CustomerProfile = {
+    display_name: displayName,
+    phone: userPhone
+  };
 
   const statusLabels: Record<string, string> = {
     pending: t('customer.pending'),
@@ -53,12 +60,12 @@ const Customer = () => {
 
   useEffect(() => {
     if (user) {
-      fetchProfile();
+      fetchProfileData();
       fetchOrders();
     }
   }, [user]);
 
-  const fetchProfile = async () => {
+  const fetchProfileData = async () => {
     if (!user) return;
 
     const { data, error } = await supabase
@@ -69,36 +76,23 @@ const Customer = () => {
 
     if (error) {
       console.error('Error fetching profile:', error);
-      setLoadingProfile(false);
       return;
     }
 
-    // If no profile exists, create one automatically
-    if (!data) {
-      const userPhone = user.email?.replace('@phone.local', '') || '';
-      const { data: newProfile, error: createError } = await supabase
+    // If profile exists, update display name
+    if (data) {
+      setDisplayName(data.display_name || '');
+    } else {
+      // Create profile in background (truncate phone to 20 chars)
+      const truncatedPhone = userPhone.substring(0, 20);
+      await supabase
         .from('customer_profiles')
         .insert({
           user_id: user.id,
-          phone: userPhone,
+          phone: truncatedPhone,
           display_name: ''
-        })
-        .select()
-        .single();
-
-      if (createError) {
-        console.error('Error creating profile:', createError);
-        setLoadingProfile(false);
-        return;
-      }
-
-      setProfile(newProfile);
-      setDisplayName(newProfile.display_name || '');
-    } else {
-      setProfile(data);
-      setDisplayName(data.display_name || '');
+        });
     }
-    setLoadingProfile(false);
   };
 
   const fetchOrders = async () => {
@@ -139,7 +133,7 @@ const Customer = () => {
     navigate('/');
   };
 
-  if (loading || loadingProfile) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -149,21 +143,6 @@ const Customer = () => {
 
   if (!user) {
     return null;
-  }
-
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="container py-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground mb-4">{t('customer.loadingData')}</p>
-          <Button asChild>
-            <Link to="/">{t('customer.backToHome')}</Link>
-          </Button>
-        </main>
-      </div>
-    );
   }
 
   return (
