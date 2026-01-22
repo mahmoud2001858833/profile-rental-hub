@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard, Gift } from 'lucide-react';
 import { z } from 'zod';
 import ItemGallery from './ItemGallery';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -38,7 +38,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
-  const { isActive: hasActiveSubscription, loading: subscriptionLoading } = useSubscription();
+  const { isActive: hasActiveSubscription, loading: subscriptionLoading, canStartFreeTrial, startFreeTrial } = useSubscription();
+  const [startingTrial, setStartingTrial] = useState(false);
   const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 400, maxHeight: 400, quality: 0.75 });
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Item[]>([]);
@@ -246,17 +247,52 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
           </div>
         </div>
 
-        <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
-          <AlertTriangle className="h-5 w-5" />
-          <AlertTitle className="text-lg font-bold">{t('items.subscriptionRequired')}</AlertTitle>
-          <AlertDescription className="mt-2">
-            <p className="mb-4">{t('items.subscriptionRequiredDesc')}</p>
-            <Button onClick={onNavigateToPayment} className="gap-2">
-              <CreditCard className="h-4 w-4" />
-              {t('items.goToPayment')}
-            </Button>
-          </AlertDescription>
-        </Alert>
+        {canStartFreeTrial ? (
+          <Alert className="border-primary/50 bg-primary/10">
+            <Gift className="h-5 w-5 text-primary" />
+            <AlertTitle className="text-lg font-bold text-primary">🎉 {t('subscription.freeTrialAvailable')}</AlertTitle>
+            <AlertDescription className="mt-2">
+              <p className="mb-4">{t('subscription.freeTrialDesc')}</p>
+              <Button 
+                onClick={async () => {
+                  setStartingTrial(true);
+                  const success = await startFreeTrial();
+                  setStartingTrial(false);
+                  if (success) {
+                    toast({ 
+                      title: t('subscription.trialActivated'), 
+                      description: t('subscription.trialActivatedDesc') 
+                    });
+                  } else {
+                    toast({ 
+                      title: t('common.error'), 
+                      description: t('subscription.trialError'),
+                      variant: 'destructive'
+                    });
+                  }
+                }} 
+                disabled={startingTrial}
+                size="lg"
+                className="gap-2 h-14 text-lg font-bold"
+              >
+                <Gift className="h-5 w-5" />
+                {startingTrial ? t('common.loading') : t('subscription.startFreeTrial')}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
+            <AlertTriangle className="h-5 w-5" />
+            <AlertTitle className="text-lg font-bold">{t('items.subscriptionRequired')}</AlertTitle>
+            <AlertDescription className="mt-2">
+              <p className="mb-4">{t('items.subscriptionRequiredDesc')}</p>
+              <Button onClick={onNavigateToPayment} className="gap-2">
+                <CreditCard className="h-4 w-4" />
+                {t('items.goToPayment')}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Show existing items but disable adding new ones */}
         {items.length > 0 && (

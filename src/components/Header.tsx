@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageToggle from "@/components/LanguageToggle";
-import { User, ShoppingCart, Store, LogIn, ShieldCheck } from "lucide-react";
+import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo-tabbkhat.png";
 
@@ -74,17 +74,17 @@ const Header = () => {
               <div className="w-8 h-8 rounded-full bg-white/20 animate-pulse" />
             ) : user ? (
               userType === 'merchant' ? (
-                <Button variant="secondary" asChild>
+                <Button variant="secondary" size="lg" asChild className="font-bold bg-white text-primary hover:bg-white/90">
                   <Link to="/dashboard">
-                    <Store className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                    <span className="hidden sm:inline">{t('header.dashboard')}</span>
+                    <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                    <span>ارفع طبخاتك</span>
                   </Link>
                 </Button>
               ) : (
                 <Button variant="secondary" asChild>
                   <Link to="/customer">
                     <User className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                    <span className="hidden sm:inline">{t('header.myAccount')}</span>
+                    <span>حسابك الشخصي</span>
                   </Link>
                 </Button>
               )

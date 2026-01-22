@@ -190,6 +190,10 @@ const translations: Translations = {
   'subscription.trialError': { ar: 'فشل في بدء التجربة المجانية', en: 'Failed to start free trial' },
   'subscription.freeTrialActive': { ar: 'التجربة المجانية نشطة', en: 'Free Trial Active' },
   'subscription.free': { ar: 'مجاني', en: 'FREE' },
+  'subscription.freeTrialAvailable': { ar: 'التجربة المجانية متاحة!', en: 'Free Trial Available!' },
+  'subscription.startFreeTrial': { ar: 'ابدأ التجربة المجانية (30 يوم)', en: 'Start Free Trial (30 days)' },
+  'subscription.trialActivated': { ar: 'تم تفعيل التجربة المجانية!', en: 'Free trial activated!' },
+  'subscription.trialActivatedDesc': { ar: 'يمكنك الآن رفع منتجاتك', en: 'You can now upload your products' },
   
   // Public Page
   'public.disclaimer': { ar: 'المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا', en: 'This platform only rents digital display pages, it is not an e-commerce store' },

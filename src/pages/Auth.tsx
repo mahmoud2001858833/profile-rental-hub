@@ -18,7 +18,7 @@ type UserType = 'customer' | 'merchant';
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signIn, signUp, signUpCustomer, loading } = useAuth();
+  const { user, signIn, signUp, signUpCustomer, loading, userType: authUserType } = useAuth();
   const { t } = useLanguage();
   const { toast } = useToast();
   
@@ -55,12 +55,18 @@ const Auth = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Redirect after successful auth - use authUserType from database
   useEffect(() => {
-    if (user && !loading) {
-      // Merchant goes to dashboard, customer goes to browse page
-      navigate(userType === 'merchant' ? '/dashboard' : '/browse');
+    if (user && !loading && authUserType) {
+      // Redirect based on actual user type from database
+      if (authUserType === 'merchant') {
+        navigate('/dashboard');
+      } else {
+        // Customer - redirect to browse page
+        navigate('/browse');
+      }
     }
-  }, [user, loading, navigate, userType]);
+  }, [user, loading, navigate, authUserType]);
 
   const phoneToEmail = (phone: string, type: UserType) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
