@@ -194,6 +194,9 @@ const translations: Translations = {
   'subscription.startFreeTrial': { ar: 'ابدأ التجربة المجانية (30 يوم)', en: 'Start Free Trial (30 days)' },
   'subscription.trialActivated': { ar: 'تم تفعيل التجربة المجانية!', en: 'Free trial activated!' },
   'subscription.trialActivatedDesc': { ar: 'يمكنك الآن رفع منتجاتك', en: 'You can now upload your products' },
+  'subscription.expiresOn': { ar: 'ينتهي في', en: 'Expires on' },
+  'subscription.daysLeft': { ar: 'يوم متبقي', en: 'days left' },
+  'subscription.renewSoon': { ar: 'قم بتجديد اشتراكك قريباً لتجنب إيقاف صفحتك', en: 'Renew your subscription soon to avoid page deactivation' },
   
   // Public Page
   'public.disclaimer': { ar: 'المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا', en: 'This platform only rents digital display pages, it is not an e-commerce store' },
