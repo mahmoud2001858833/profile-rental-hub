@@ -168,11 +168,11 @@ const Index = () => {
         <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 text-center">
-          {/* Logo Image - Larger Horizontal */}
+          {/* Logo Image - Even Larger Horizontal */}
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-48 h-32 md:w-72 md:h-44 rounded-2xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
+            className="w-64 h-40 md:w-96 md:h-56 rounded-2xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
           />
           
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
@@ -373,6 +373,30 @@ const Index = () => {
         )}
         </div>
       </main>
+
+      {/* Big Start Now CTA Section */}
+      {!user && (
+        <section className="py-16 bg-gradient-to-b from-background to-card border-t border-border">
+          <div className="container text-center space-y-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-peach">
+              🍳 ابدأ مشروعك الآن!
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي
+            </p>
+            <Button 
+              size="lg" 
+              className="h-16 px-12 text-xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse"
+              asChild
+            >
+              <Link to="/auth?type=merchant">
+                <ChefHat className="ml-3 h-7 w-7" />
+                {t('index.startNow')}
+              </Link>
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-card mt-8">
