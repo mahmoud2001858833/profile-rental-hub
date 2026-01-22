@@ -156,50 +156,44 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
 
-      {/* Hero Banner - White Background with Floating Icons */}
-      <section className="bg-white py-16 relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 pattern-dots opacity-30" />
+      {/* Hero Banner - Dark Background with Floating Icons */}
+      <section className="bg-background py-16 relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 pattern-dots opacity-20" />
         
         {/* Floating Food Icons */}
         <FloatingFoodIcons />
         
         {/* Decorative Elements */}
-        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-primary/5 rotate-12 animate-float hidden lg:block" />
-        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/5 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-primary/10 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 text-center">
           {/* Logo Image */}
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-32 h-32 md:w-40 md:h-40 rounded-3xl mx-auto mb-6 shadow-2xl object-cover border-4 border-white"
+            className="w-32 h-32 md:w-40 md:h-40 rounded-3xl mx-auto mb-6 shadow-2xl object-cover border-4 border-primary/30"
           />
           
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
             <ChefHat className="h-4 w-4" />
             <span>{t('index.tabkhatyPlatform')}</span>
           </div>
           
-          {/* Main Marketing Text */}
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
-            <span className="text-primary">{t('index.heroTitle')}</span>
-            <br />
-            <span className="gradient-text">{t('index.heroSubtitle')}</span>
+          {/* Main Marketing Text - Peach Color */}
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight text-peach">
+            حوّلي شغفك بالطبخ إلى مشروع حقيقي
           </h1>
           
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
-            {t('index.heroDesc')}
-          </p>
-          
           {!user && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
                 <Link to="/auth?type=merchant">
                   <ChefHat className="ml-2 h-5 w-5" />
                   {t('index.startNow')}
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" asChild>
+              <Button variant="outline" size="lg" className="border-primary/50 text-peach hover:bg-primary/10" asChild>
                 <Link to="/auth?type=customer">
                   <LogIn className="ml-2 h-5 w-5" />
                   {t('index.loginToShop')}
@@ -211,7 +205,7 @@ const Index = () => {
       </section>
 
       {/* Search Bar with Glass Effect */}
-      <div className="sticky top-16 z-40 bg-white/90 backdrop-blur-lg border-b border-border shadow-sm">
+      <div className="sticky top-16 z-40 bg-background/90 backdrop-blur-lg border-b border-border shadow-sm">
         <div className="container py-4 space-y-4">
           <div className="flex items-center gap-4">
             <div className="relative flex-1 max-w-md">
@@ -220,10 +214,10 @@ const Index = () => {
                 placeholder={t('index.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 bg-white border-primary/20"
+                className="pr-10 bg-card border-primary/20 text-foreground"
               />
             </div>
-            <Button variant="outline" className="relative bg-white border-primary/20 hover:bg-primary/5" asChild>
+            <Button variant="outline" className="relative bg-card border-primary/20 hover:bg-primary/10" asChild>
               <Link to="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -249,16 +243,16 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Products Grid - Red Cream Gradient Background with Glass Effect */}
+      {/* Products Grid - Dark Gradient Background with Glass Effect */}
       <main className="relative py-12">
         {/* Background Gradient */}
-        <div className="absolute inset-0 red-cream-gradient" />
-        <div className="absolute inset-0 pattern-dots opacity-20" />
+        <div className="absolute inset-0 dark-gradient" />
+        <div className="absolute inset-0 pattern-dots opacity-10" />
         
         {/* Decorative Glass Elements */}
-        <div className="absolute top-20 left-[5%] w-40 h-40 rounded-3xl bg-primary/5 backdrop-blur-sm border border-primary/10 rotate-12 animate-float hidden lg:block" />
-        <div className="absolute bottom-32 right-[8%] w-32 h-32 rounded-2xl bg-primary/5 backdrop-blur-sm border border-primary/10 -rotate-6 animate-float hidden lg:block" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute top-1/2 right-[15%] w-20 h-20 rounded-xl bg-accent/5 backdrop-blur-sm border border-accent/10 rotate-45 hidden xl:block" />
+        <div className="absolute top-20 left-[5%] w-40 h-40 rounded-3xl bg-primary/10 backdrop-blur-sm border border-primary/20 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-32 right-[8%] w-32 h-32 rounded-2xl bg-primary/10 backdrop-blur-sm border border-primary/20 -rotate-6 animate-float hidden lg:block" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-1/2 right-[15%] w-20 h-20 rounded-xl bg-accent/10 backdrop-blur-sm border border-accent/20 rotate-45 hidden xl:block" />
         
         <div className="container relative z-10">
           <div className="flex items-center justify-between mb-8">
@@ -381,7 +375,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-white mt-8">
+      <footer className="border-t border-border py-8 bg-card mt-8">
         <div className="container text-center space-y-4">
           <div className="flex justify-center gap-4">
             <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">

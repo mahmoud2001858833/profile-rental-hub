@@ -9,27 +9,27 @@
 
 @layer base {
   :root {
-    /* White/Cream warm background */
-    --background: 0 0% 100%;
-    --foreground: 25 25% 15%;
+    /* Dark/Black background */
+    --background: 0 0% 8%;
+    --foreground: 25 50% 85%;
 
-    /* Card - soft cream */
-    --card: 35 50% 97%;
-    --card-foreground: 25 25% 15%;
+    /* Card - dark with slight warmth */
+    --card: 0 0% 12%;
+    --card-foreground: 25 50% 85%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 25 25% 15%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 25 50% 85%;
 
     /* Primary - Rich Red (for buttons and CTAs) */
     --primary: 0 75% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Warm Cream */
-    --secondary: 35 50% 92%;
-    --secondary-foreground: 25 25% 15%;
+    /* Secondary - Dark warm */
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 25 50% 85%;
 
-    --muted: 35 35% 90%;
-    --muted-foreground: 25 20% 45%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 25 30% 60%;
 
     /* Accent - Deep Red for highlights */
     --accent: 0 70% 45%;
@@ -39,25 +39,29 @@
     --destructive: 0 80% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 30% 88%;
-    --input: 35 35% 92%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
     --ring: 0 75% 50%;
 
     --radius: 1rem;
 
+    /* Peach/Cream text color */
+    --peach: 25 70% 80%;
+    --peach-light: 25 60% 90%;
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(0 75% 50%), hsl(0 70% 40%));
     --gradient-accent: linear-gradient(135deg, hsl(0 70% 45%), hsl(0 65% 35%));
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 50% 97%) 100%);
-    --gradient-page: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 96%) 30%, hsl(0 75% 50% / 0.03) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 12%) 100%);
+    --gradient-page: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 10%) 30%, hsl(0 75% 50% / 0.05) 100%);
 
-    --sidebar-background: 35 50% 97%;
-    --sidebar-foreground: 25 25% 15%;
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 25 50% 85%;
     --sidebar-primary: 0 75% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 50% 92%;
-    --sidebar-accent-foreground: 25 25% 15%;
-    --sidebar-border: 35 30% 88%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 25 50% 85%;
+    --sidebar-border: 0 0% 20%;
     --sidebar-ring: 0 75% 50%;
   }
 }
@@ -75,7 +79,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Cairo', sans-serif;
-    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 97%) 30%, hsl(0 75% 50% / 0.02) 100%);
+    background: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 10%) 30%, hsl(0 75% 50% / 0.05) 100%);
     min-height: 100vh;
   }
 }
@@ -86,12 +90,20 @@
     @apply text-accent font-bold;
   }
 
+  .text-peach {
+    color: hsl(25 70% 80%);
+  }
+
+  .text-peach-light {
+    color: hsl(25 60% 90%);
+  }
+
   .glass-effect {
-    @apply bg-white/50 backdrop-blur-xl border border-white/30 shadow-xl;
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-xl;
   }
 
   .glass-card {
-    @apply bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl rounded-2xl;
+    @apply bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl;
   }
 
   .hover-lift {
@@ -107,7 +119,7 @@
   }
 
   .glow-card {
-    @apply shadow-[0_8px_30px_rgb(220,38,38,0.12)];
+    @apply shadow-[0_8px_30px_rgb(220,38,38,0.15)];
   }
 
   .gradient-border {
@@ -127,8 +139,8 @@
     mask-composite: exclude;
   }
 
-  .red-cream-gradient {
-    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(35 45% 97%) 50%, hsl(0 75% 50% / 0.05) 100%);
+  .dark-gradient {
+    background: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 10%) 50%, hsl(0 75% 50% / 0.08) 100%);
   }
 }
 

@@ -173,6 +173,24 @@ const translations: Translations = {
   'payment.stripeClosed': { ar: 'مغلق حالياً', en: 'Currently closed' },
   'payment.stripePay': { ar: 'ادفع الآن', en: 'Pay Now' },
   
+  // Subscription & Free Trial
+  'subscription.status': { ar: 'حالة الاشتراك', en: 'Subscription Status' },
+  'subscription.days': { ar: 'يوم', en: 'days' },
+  'subscription.remaining': { ar: 'متبقي', en: 'remaining' },
+  'subscription.expired': { ar: 'انتهى اشتراكك', en: 'Your subscription expired' },
+  'subscription.renewNow': { ar: 'جدد اشتراكك لإعادة تفعيل صفحتك', en: 'Renew your subscription to reactivate your page' },
+  'subscription.freeTrial': { ar: 'تجربة مجانية!', en: 'Free Trial!' },
+  'subscription.freeMonth': { ar: 'شهر مجاني', en: 'Free Month' },
+  'subscription.freeTrialDesc': { ar: 'ابدأ شهر مجاني الآن بدون أي دفع', en: 'Start a free month now without any payment' },
+  'subscription.trialDuration': { ar: 'مدة التجربة', en: 'Trial Duration' },
+  'subscription.startTrial': { ar: 'ابدأ التجربة المجانية', en: 'Start Free Trial' },
+  'subscription.starting': { ar: 'جاري البدء...', en: 'Starting...' },
+  'subscription.trialStarted': { ar: 'تم بدء التجربة المجانية!', en: 'Free trial started!' },
+  'subscription.trialStartedDesc': { ar: 'يمكنك الآن إضافة أطباقك لمدة 30 يوم', en: 'You can now add your dishes for 30 days' },
+  'subscription.trialError': { ar: 'فشل في بدء التجربة المجانية', en: 'Failed to start free trial' },
+  'subscription.freeTrialActive': { ar: 'التجربة المجانية نشطة', en: 'Free Trial Active' },
+  'subscription.free': { ar: 'مجاني', en: 'FREE' },
+  
   // Public Page
   'public.disclaimer': { ar: 'المنصة تؤجّر صفحات عرض رقمية فقط، وليست متجرًا إلكترونيًا', en: 'This platform only rents digital display pages, it is not an e-commerce store' },
   'public.notFound': { ar: 'الصفحة غير موجودة', en: 'Page not found' },
@@ -406,13 +424,6 @@ const translations: Translations = {
   'notFound.title': { ar: '404', en: '404' },
   'notFound.message': { ar: 'عذراً! الصفحة غير موجودة', en: 'Oops! Page not found' },
   'notFound.backHome': { ar: 'العودة للرئيسية', en: 'Return to Home' },
-  
-  // Subscription
-  'subscription.status': { ar: 'حالة الاشتراك', en: 'Subscription Status' },
-  'subscription.days': { ar: 'يوم', en: 'days' },
-  'subscription.remaining': { ar: 'متبقي على الانتهاء', en: 'remaining' },
-  'subscription.expired': { ar: 'انتهى اشتراكك', en: 'Your subscription has expired' },
-  'subscription.renewNow': { ar: 'جدد اشتراكك للاستمرار في رفع الأطباق', en: 'Renew your subscription to continue uploading dishes' },
   
   // AI Guide
   'aiGuide.smartGuide': { ar: 'مرشد ذكي', en: 'Smart Guide' },
