@@ -174,7 +174,7 @@ const AIGuide = () => {
 
   return (
     <>
-      {/* Floating AI Guide Button with Label */}
+      {/* Floating AI Guide Button with Label - Smaller */}
       <div
         className={`fixed bottom-6 ${language === 'ar' ? 'left-6' : 'right-6'} z-50 flex flex-col items-center gap-1 transition-all duration-300 ${
           isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
@@ -182,12 +182,12 @@ const AIGuide = () => {
       >
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="h-14 w-14 rounded-full shadow-2xl shadow-primary/40"
+          className="h-10 w-10 rounded-full shadow-xl shadow-primary/30"
           size="icon"
         >
-          <Bot className="h-6 w-6" />
+          <Bot className="h-4 w-4" />
         </Button>
-        <span className="text-xs font-medium text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-0.5 rounded-full border">
+        <span className="text-[10px] font-medium text-muted-foreground bg-background/80 backdrop-blur-sm px-1.5 py-0.5 rounded-full border border-border">
           {t('aiGuide.smartGuide')}
         </span>
       </div>

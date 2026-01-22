@@ -275,6 +275,8 @@ export type Database = {
           cover_url: string | null
           created_at: string | null
           display_name: string | null
+          free_trial_started_at: string | null
+          free_trial_used: boolean | null
           has_delivery: boolean | null
           id: string
           page_enabled: boolean | null
@@ -292,6 +294,8 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           display_name?: string | null
+          free_trial_started_at?: string | null
+          free_trial_used?: boolean | null
           has_delivery?: boolean | null
           id?: string
           page_enabled?: boolean | null
@@ -309,6 +313,8 @@ export type Database = {
           cover_url?: string | null
           created_at?: string | null
           display_name?: string | null
+          free_trial_started_at?: string | null
+          free_trial_used?: boolean | null
           has_delivery?: boolean | null
           id?: string
           page_enabled?: boolean | null

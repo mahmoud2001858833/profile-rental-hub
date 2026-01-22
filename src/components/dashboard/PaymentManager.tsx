@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Upload, CreditCard, CheckCircle, XCircle, Clock, Loader2, FileImage, Info, Lock, Calendar } from 'lucide-react';
+import { Upload, CreditCard, CheckCircle, XCircle, Clock, Loader2, FileImage, Info, Lock, Calendar, Gift, Sparkles } from 'lucide-react';
+
 interface PaymentReceipt {
   id: string;
   amount: number;
@@ -21,26 +22,26 @@ interface PaymentReceipt {
   created_at: string;
   admin_notes: string | null;
 }
+
 const PaymentManager = () => {
-  const {
-    user
-  } = useAuth();
-  const {
-    t
-  } = useLanguage();
-  const {
-    toast
-  } = useToast();
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const { toast } = useToast();
   const {
     isActive,
     daysRemaining,
-    expiresAt
+    expiresAt,
+    isFreeTrial,
+    freeTrialDaysRemaining,
+    canStartFreeTrial,
+    startFreeTrial
   } = useSubscription();
   const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [startingTrial, setStartingTrial] = useState(false);
   useEffect(() => {
     if (user) {
       fetchReceipts();
@@ -130,6 +131,25 @@ const PaymentManager = () => {
         return <Badge variant="secondary"><Clock className="h-3 w-3 ml-1" />{t('payment.pending')}</Badge>;
     }
   };
+  const handleStartFreeTrial = async () => {
+    setStartingTrial(true);
+    const success = await startFreeTrial();
+    setStartingTrial(false);
+    
+    if (success) {
+      toast({
+        title: t('subscription.trialStarted'),
+        description: t('subscription.trialStartedDesc'),
+      });
+    } else {
+      toast({
+        title: t('common.error'),
+        description: t('subscription.trialError'),
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center py-8">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -150,8 +170,92 @@ const PaymentManager = () => {
     return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
   };
   return <div className="space-y-6">
-      {/* Subscription Countdown */}
-      {isActive && daysRemaining !== null && <Card className={`border ${getCountdownBgColor()}`}>
+      {/* Free Trial Offer - Show only if can start trial and not active */}
+      {canStartFreeTrial && !isActive && (
+        <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-primary/5 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-full bg-primary/20">
+                <Gift className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  {t('subscription.freeTrial')}
+                  <Badge className="bg-primary text-primary-foreground">
+                    <Sparkles className="h-3 w-3 ml-1" />
+                    {t('subscription.freeMonth')}
+                  </Badge>
+                </CardTitle>
+                <CardDescription>{t('subscription.freeTrialDesc')}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-card/50 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  <span className="font-medium">{t('subscription.trialDuration')}</span>
+                </div>
+                <span className="text-2xl font-bold text-primary">30 {t('subscription.days')}</span>
+              </div>
+            </div>
+            <Button 
+              onClick={handleStartFreeTrial} 
+              disabled={startingTrial}
+              className="w-full h-12 text-lg font-bold shadow-lg"
+            >
+              {startingTrial ? (
+                <>
+                  <Loader2 className="ml-2 h-5 w-5 animate-spin" />
+                  {t('subscription.starting')}
+                </>
+              ) : (
+                <>
+                  <Gift className="ml-2 h-5 w-5" />
+                  {t('subscription.startTrial')}
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Free Trial Active Banner */}
+      {isFreeTrial && isActive && (
+        <Card className="border-2 border-green-500/50 bg-gradient-to-br from-green-500/10 to-green-500/5">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-green-500/20">
+                  <Gift className="h-5 w-5 text-green-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold">{t('subscription.freeTrialActive')}</p>
+                    <Badge className="bg-green-500 text-white text-xs">
+                      {t('subscription.free')}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {expiresAt && new Date(expiresAt).toLocaleDateString('ar-EG')}
+                  </p>
+                </div>
+              </div>
+              <div className="text-end">
+                <p className="text-2xl font-bold text-green-500">
+                  {freeTrialDaysRemaining} {t('subscription.days')}
+                </p>
+                <p className="text-sm text-muted-foreground">{t('subscription.remaining')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Paid Subscription Countdown */}
+      {isActive && !isFreeTrial && daysRemaining !== null && <Card className={`border ${getCountdownBgColor()}`}>
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
