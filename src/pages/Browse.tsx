@@ -108,6 +108,7 @@ const Browse = () => {
 
   const handleAddToCart = (item: Item) => {
     const merchant = merchantsInfo[item.user_id];
+    const currency = getCurrencySymbol(item.currency, merchant?.country || null);
     addItem({
       id: item.id,
       title: item.title,
@@ -115,6 +116,7 @@ const Browse = () => {
       image_url: item.image_url,
       merchant_id: item.user_id,
       merchant_name: merchant?.display_name || 'تاجر',
+      currency: currency,
     });
     toast.success('تمت الإضافة للسلة');
   };
