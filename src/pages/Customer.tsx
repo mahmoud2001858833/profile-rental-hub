@@ -120,8 +120,23 @@ const Customer = () => {
     );
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return null;
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8 text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground mb-4">{t('customer.loadingData') || 'جاري تحميل بياناتك...'}</p>
+          <Button asChild>
+            <Link to="/">{t('customer.backToHome') || 'العودة للصفحة الرئيسية'}</Link>
+          </Button>
+        </main>
+      </div>
+    );
   }
 
   return (
