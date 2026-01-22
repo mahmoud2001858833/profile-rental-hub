@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Store, ShoppingBag, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import LanguageToggle from '@/components/LanguageToggle';
-import logoImage from '@/assets/logo.jpg';
+import logoImage from '@/assets/logo-tabbkhat.png';
 type UserType = 'customer' | 'merchant';
 
 const Auth = () => {
