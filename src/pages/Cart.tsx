@@ -232,7 +232,7 @@ const Cart = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold truncate">{item.title}</h4>
-                        <p className="text-primary font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
+                        <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button
                             size="icon"
@@ -262,14 +262,14 @@ const Cart = () => {
                         </div>
                       </div>
                       <div className="text-end">
-                        <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {t('common.currency')}</p>
+                        <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {item.currency}</p>
                       </div>
                     </div>
                   ))}
                   <Separator />
                   <div className="flex items-center justify-between font-bold">
                     <span>{t('cart.subtotal')}:</span>
-                    <span className="text-primary text-lg">{group.total.toFixed(2)} {t('common.currency')}</span>
+                    <span className="text-primary text-lg">{group.total.toFixed(2)} {group.items[0]?.currency || 'د.أ'}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -327,7 +327,9 @@ const Cart = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-lg font-bold">
                     <span>{t('cart.total')}:</span>
-                    <span className="text-primary">{getTotal().toFixed(2)} {t('common.currency')}</span>
+                    <span className="text-primary">
+                      {getTotal().toFixed(2)} {items[0]?.currency || 'د.أ'}
+                    </span>
                   </div>
 
                   {Object.entries(groupedItems).map(([merchantId, group]) => (
