@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
 import FloatingFoodIcons from '@/components/FloatingFoodIcons';
-import { ChefHat, LogIn } from 'lucide-react';
+import { ChefHat, ShoppingCart } from 'lucide-react';
 import logoImage from '@/assets/logo-tabbkhat.png';
 
 const Index = () => {
@@ -49,13 +49,13 @@ const Index = () => {
               <Button size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
                 <Link to="/auth?type=merchant">
                   <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                  {t('index.startNow')}
+                  {t('index.registerAsCook')}
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="border-primary/50 text-peach hover:bg-primary/10" asChild>
-                <Link to="/auth?type=customer">
-                  <LogIn className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                  {t('index.loginToShop')}
+              <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
+                <Link to="/browse">
+                  <ShoppingCart className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                  {t('index.shopNow')}
                 </Link>
               </Button>
             </div>

@@ -43,6 +43,8 @@ const translations: Translations = {
   'index.heroSubtitle': { ar: 'بمنيو رقمي وتجربة بيع سلسة مع طبخات', en: 'With a digital menu and smooth selling experience' },
   'index.heroDesc': { ar: 'منصة المنيو الرقمي الأولى للطباخين المنزليين. اعرضي أطباقك وتواصلي مع العملاء بسهولة.', en: 'The first digital menu platform for home cooks. Display your dishes and connect with customers easily.' },
   'index.startNow': { ar: 'ابدأي الآن', en: 'Start Now' },
+  'index.registerAsCook': { ar: 'سجلي الآن كطباخة', en: 'Register as a Cook' },
+  'index.shopNow': { ar: 'تسوق الآن', en: 'Shop Now' },
   'index.startNowCTA': { ar: '🍳 ابدأ مشروعك الآن!', en: '🍳 Start Your Project Now!' },
   'index.joinPlatform': { ar: 'انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي', en: 'Join Tabkhat platform and turn your cooking passion into a real income source' },
   
@@ -148,6 +150,9 @@ const translations: Translations = {
   'cart.acceptsPhones': { ar: 'يقبل أرقام الأردن، السعودية، الإمارات', en: 'Accepts Jordan, Saudi Arabia, UAE numbers' },
   'cart.added': { ar: 'تمت الإضافة', en: 'Added' },
   'cart.addedTo': { ar: 'تم إضافة', en: 'Added' },
+  'cart.loginToOrder': { ar: 'سجل دخولك لإكمال الطلب', en: 'Login to complete your order' },
+  'cart.loginToContinue': { ar: 'يجب تسجيل الدخول لإرسال طلبك', en: 'You need to login to send your order' },
+  'cart.loginNow': { ar: 'سجل الآن', en: 'Login Now' },
   'cart.toCart': { ar: 'للسلة', en: 'to cart' },
   
   // Dashboard page

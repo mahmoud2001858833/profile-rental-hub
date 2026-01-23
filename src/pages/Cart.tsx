@@ -25,6 +25,7 @@ const Cart = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const orderSchema = z.object({
     name: z.string().min(2, t('cart.nameRequired')).max(200),
@@ -35,15 +36,8 @@ const Cart = () => {
     notes: z.string().max(500).optional(),
   });
 
-  // Redirect if not logged in as customer
+  // Check if merchant trying to access cart
   useEffect(() => {
-    if (!authLoading && !user) {
-      toast({
-        title: t('auth.loginRequired'),
-        description: t('auth.loginToCart'),
-      });
-      navigate('/auth?type=customer');
-    }
     if (!authLoading && userType === 'merchant') {
       toast({
         title: t('auth.notForMerchants'),
@@ -52,7 +46,7 @@ const Cart = () => {
       });
       navigate('/');
     }
-  }, [user, authLoading, userType, navigate, toast, t]);
+  }, [authLoading, userType, navigate, toast, t]);
 
   // Group items by merchant
   const groupedItems = items.reduce((acc, item) => {
@@ -334,7 +328,21 @@ const Cart = () => {
                     </span>
                   </div>
 
-                  {Object.entries(groupedItems).map(([merchantId, group]) => (
+                  {/* Login prompt for guests */}
+                  {!user && (
+                    <Card className="border-primary/30 bg-primary/5">
+                      <CardContent className="py-4 text-center space-y-3">
+                        <p className="text-sm font-medium">{t('cart.loginToOrder')}</p>
+                        <p className="text-xs text-muted-foreground">{t('cart.loginToContinue')}</p>
+                        <Button asChild className="w-full">
+                          <Link to="/auth?type=customer">{t('cart.loginNow')}</Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Order buttons - only show when logged in */}
+                  {user && Object.entries(groupedItems).map(([merchantId, group]) => (
                     <Button
                       key={merchantId}
                       className="w-full"
