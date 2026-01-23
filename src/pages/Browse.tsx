@@ -22,6 +22,7 @@ interface Item {
   currency: string | null;
   user_id: string;
   category: string | null;
+  country: string | null;
 }
 
 interface MerchantInfo {
@@ -43,15 +44,15 @@ const Browse = () => {
 
   useEffect(() => {
     fetchItems();
-  }, [selectedCountry]);
+  }, []);
 
   const fetchItems = async () => {
     setLoading(true);
     
-    // Build query for items
+    // Build query for items - now includes country
     let query = supabase
       .from('items')
-      .select('id, title, description, price, image_url, currency, user_id, category')
+      .select('id, title, description, price, image_url, currency, user_id, category, country')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
@@ -85,17 +86,9 @@ const Browse = () => {
           };
         });
         setMerchantsInfo(merchantMap);
-
-        // Filter items based on country if selected
-        let filteredItems = itemsData;
-        if (selectedCountry) {
-          const merchantsInCountry = profilesData
-            .filter(p => p.country === selectedCountry)
-            .map(p => p.user_id);
-          filteredItems = itemsData.filter(item => merchantsInCountry.includes(item.user_id));
-        }
         
-        setItems(filteredItems);
+        // All items are stored, filtering happens in filteredItems
+        setItems(itemsData);
       } else {
         setItems(itemsData);
       }
@@ -138,7 +131,7 @@ const Browse = () => {
     return country ? countryToCurrency[country] || 'د.أ' : 'د.أ';
   };
 
-  // Filter items by search and category
+  // Filter items by search, category, and country
   const filteredItems = items.filter(item => {
     const matchesSearch = !searchQuery || 
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -146,7 +139,10 @@ const Browse = () => {
     
     const matchesCategory = !selectedCategory || item.category === selectedCategory;
     
-    return matchesSearch && matchesCategory;
+    // Filter by item's country, not merchant's country
+    const matchesCountry = !selectedCountry || item.country === selectedCountry;
+    
+    return matchesSearch && matchesCategory && matchesCountry;
   });
 
   return (

@@ -410,7 +410,8 @@ const translations: Translations = {
   'items.imageUploaded': { ar: 'تم رفع الصورة', en: 'Image uploaded' },
   'items.imageUploadedDesc': { ar: 'تم رفع الصورة بنجاح', en: 'Image uploaded successfully' },
   'items.imageUploadError': { ar: 'فشل في رفع الصورة، حاول مرة أخرى', en: 'Failed to upload image, please try again' },
-  
+  'items.productCountry': { ar: 'بلد المنتج', en: 'Product Country' },
+  'items.productCategory': { ar: 'نوع المنتج', en: 'Product Category' },
   // Orders Manager
   'orders.title': { ar: 'الطلبات', en: 'Orders' },
   'orders.manageOrders': { ar: 'إدارة طلبات العملاء', en: 'Manage customer orders' },
@@ -429,6 +430,7 @@ const translations: Translations = {
   'orders.name': { ar: 'الاسم', en: 'Name' },
   'orders.phone': { ar: 'الجوال', en: 'Phone' },
   'orders.notes': { ar: 'ملاحظات', en: 'Notes' },
+  'orders.country': { ar: 'البلد', en: 'Country' },
   'orders.products': { ar: 'الأطباق', en: 'Dishes' },
   'orders.total': { ar: 'الإجمالي', en: 'Total' },
   'orders.call': { ar: 'اتصال', en: 'Call' },

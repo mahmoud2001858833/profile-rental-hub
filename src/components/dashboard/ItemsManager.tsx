@@ -27,8 +27,30 @@ interface Item {
   is_active: boolean;
   sort_order: number;
   currency: string | null;
+  category: string | null;
+  country: string | null;
   gallery_count?: number;
 }
+
+// Categories for dropdown
+const CATEGORIES = [
+  { id: 'أطباق رئيسية', label: { ar: 'أطباق رئيسية', en: 'Main Dishes' } },
+  { id: 'أكل شعبي', label: { ar: 'أكل شعبي', en: 'Traditional Food' } },
+  { id: 'أكل شرقي', label: { ar: 'أكل شرقي', en: 'Eastern Food' } },
+  { id: 'أكل غربي', label: { ar: 'أكل غربي', en: 'Western Food' } },
+  { id: 'مأكولات بحرية', label: { ar: 'مأكولات بحرية', en: 'Seafood' } },
+  { id: 'أكل صحي', label: { ar: 'أكل صحي', en: 'Healthy Food' } },
+  { id: 'لحوم ومشاوي', label: { ar: 'لحوم ومشاوي', en: 'Meats & Grills' } },
+  { id: 'فطور', label: { ar: 'فطور', en: 'Breakfast' } },
+  { id: 'مقبلات', label: { ar: 'مقبلات', en: 'Appetizers' } },
+  { id: 'حلويات', label: { ar: 'حلويات', en: 'Desserts' } },
+  { id: 'حلاويات شعبية', label: { ar: 'حلاويات شعبية', en: 'Traditional Sweets' } },
+  { id: 'آيس كريم', label: { ar: 'آيس كريم', en: 'Ice Cream' } },
+  { id: 'مشروبات', label: { ar: 'مشروبات', en: 'Drinks' } },
+  { id: 'معجنات', label: { ar: 'معجنات', en: 'Pastries' } },
+  { id: 'أكلات خفيفة', label: { ar: 'أكلات خفيفة', en: 'Snacks' } },
+  { id: 'فواكه وعصائر', label: { ar: 'فواكه وعصائر', en: 'Fruits & Juices' } },
+];
 
 interface ItemsManagerProps {
   onNavigateToPayment?: () => void;
@@ -37,7 +59,7 @@ interface ItemsManagerProps {
 const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { isActive: hasActiveSubscription, loading: subscriptionLoading, canStartFreeTrial, startFreeTrial } = useSubscription();
   const [startingTrial, setStartingTrial] = useState(false);
   const { uploadImage, uploading, deleteImage } = useImageUpload({ maxWidth: 400, maxHeight: 400, quality: 0.75 });
@@ -52,6 +74,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     price: '',
     image_url: null as string | null,
     currency: 'JOD',
+    category: 'أطباق رئيسية',
+    country: 'JO',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [merchantCountry, setMerchantCountry] = useState<string>('JO');
@@ -112,7 +136,15 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
 
   const openAddDialog = () => {
     setEditingItem(null);
-    setFormData({ title: '', description: '', price: '', image_url: null, currency: getDefaultCurrency() });
+    setFormData({ 
+      title: '', 
+      description: '', 
+      price: '', 
+      image_url: null, 
+      currency: getDefaultCurrency(),
+      category: 'أطباق رئيسية',
+      country: merchantCountry,
+    });
     setErrors({});
     setDialogOpen(true);
   };
@@ -125,6 +157,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       price: item.price.toString(),
       image_url: item.image_url,
       currency: item.currency || 'JOD',
+      category: item.category || 'أطباق رئيسية',
+      country: item.country || merchantCountry,
     });
     setErrors({});
     setDialogOpen(true);
@@ -203,6 +237,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
           price: parseFloat(formData.price),
           image_url: formData.image_url,
           currency: formData.currency,
+          category: formData.category,
+          country: formData.country,
         })
         .eq('id', editingItem.id);
 
@@ -225,6 +261,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
         price: parseFloat(formData.price),
         image_url: formData.image_url,
         currency: formData.currency,
+        category: formData.category,
+        country: formData.country,
         sort_order: items.length,
       });
 
@@ -508,6 +546,56 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                   </Select>
                 </div>
                 {errors.price && <p className="text-sm text-destructive">{errors.price}</p>}
+              </div>
+
+              {/* Country Selection */}
+              <div className="space-y-2">
+                <Label>{t('items.productCountry')}</Label>
+                <Select 
+                  value={formData.country} 
+                  onValueChange={(value) => {
+                    const country = COUNTRIES.find(c => c.code === value);
+                    setFormData({ 
+                      ...formData, 
+                      country: value,
+                      currency: country?.currency || formData.currency 
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60 bg-background">
+                    {COUNTRIES.filter(c => c.code !== 'all').map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        <span className="flex items-center gap-2">
+                          <span>{country.flag}</span>
+                          <span>{language === 'ar' ? country.name.ar : country.name.en}</span>
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Category Selection */}
+              <div className="space-y-2">
+                <Label>{t('items.productCategory')}</Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60 bg-background">
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {language === 'ar' ? cat.label.ar : cat.label.en}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {editingItem && user && (
