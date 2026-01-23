@@ -436,11 +436,14 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
               {t('items.addItem')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
+          <DialogContent className="max-w-md max-h-[85vh] flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>{editingItem ? t('items.editItem') : t('items.addNewItem')}</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4 mt-4 overflow-y-auto flex-1 px-1 relative">
+              {/* Scroll indicators */}
+              <div className="sticky top-0 left-0 right-0 h-6 bg-gradient-to-b from-background to-transparent pointer-events-none z-10 -mt-4" />
+              <div className="sticky bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-background to-transparent pointer-events-none z-10 -mb-4" />
               <div className="space-y-2">
                 <Label>{t('items.productImage')}</Label>
                 <div className="flex items-center gap-4">

@@ -267,7 +267,7 @@ const OrdersManager = () => {
                           size="icon"
                           variant="outline"
                           className="h-8 w-8 text-green-600"
-                          onClick={() => openWhatsApp(order.customer_phone, `${t('orders.total')}: ${order.total_amount.toFixed(2)} ${t('common.currency')}`)}
+                          onClick={() => openWhatsApp(order.customer_phone, `${t('orders.total')}: ${order.total_amount.toFixed(2)}`)}
                         >
                           <MessageCircle className="h-4 w-4" />
                         </Button>
@@ -352,7 +352,7 @@ const OrdersManager = () => {
                   className="flex-1 bg-green-600 hover:bg-green-700"
                   onClick={() => openWhatsApp(
                     selectedOrder.customer_phone,
-                    selectedOrder.items?.map(i => `${i.item_title} × ${i.quantity}`).join('\n') + `\n${t('orders.total')}: ${selectedOrder.total_amount.toFixed(2)} ${t('common.currency')}`
+                    selectedOrder.items?.map(i => `${i.item_title} × ${i.quantity}`).join('\n') + `\n${t('orders.total')}: ${selectedOrder.total_amount.toFixed(2)}`
                   )}
                 >
                   <MessageCircle className="mx-2 h-4 w-4" />
