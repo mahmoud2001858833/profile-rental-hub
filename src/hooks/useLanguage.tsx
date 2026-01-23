@@ -47,15 +47,21 @@ const translations: Translations = {
   // Categories
   'categories.all': { ar: 'الكل', en: 'All' },
   'categories.mainDishes': { ar: 'أطباق رئيسية', en: 'Main Dishes' },
+  'categories.traditionalFood': { ar: 'أكل شعبي', en: 'Traditional Food' },
   'categories.easternFood': { ar: 'أكل شرقي', en: 'Eastern Food' },
   'categories.westernFood': { ar: 'أكل غربي', en: 'Western Food' },
   'categories.seafood': { ar: 'مأكولات بحرية', en: 'Seafood' },
   'categories.healthyFood': { ar: 'أكل صحي', en: 'Healthy Food' },
+  'categories.meatsGrills': { ar: 'لحوم ومشاوي', en: 'Meats & Grills' },
+  'categories.breakfast': { ar: 'فطور', en: 'Breakfast' },
   'categories.appetizers': { ar: 'مقبلات', en: 'Appetizers' },
   'categories.desserts': { ar: 'حلويات', en: 'Desserts' },
+  'categories.traditionalSweets': { ar: 'حلاويات شعبية', en: 'Traditional Sweets' },
+  'categories.iceCream': { ar: 'آيس كريم', en: 'Ice Cream' },
   'categories.drinks': { ar: 'مشروبات', en: 'Drinks' },
   'categories.pastries': { ar: 'معجنات', en: 'Pastries' },
   'categories.snacks': { ar: 'أكلات خفيفة', en: 'Snacks' },
+  'categories.fruitsJuices': { ar: 'فواكه وعصائر', en: 'Fruits & Juices' },
   
   // Countries
   'countries.all': { ar: 'الكل', en: 'All' },
