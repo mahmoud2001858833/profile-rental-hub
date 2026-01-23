@@ -9,7 +9,7 @@ import logoImage from '@/assets/logo-tabbkhat.png';
 
 const Index = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, dir } = useLanguage();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -41,20 +41,20 @@ const Index = () => {
           
           {/* Main Marketing Text */}
           <h1 className="text-xl md:text-2xl font-bold mb-4 leading-tight text-peach">
-            حوّلي شغفك بالطبخ إلى مشروع حقيقي
+            {t('index.heroTitle')}
           </h1>
           
           {!user && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button size="lg" className="shadow-xl hover:shadow-2xl transition-shadow" asChild>
                 <Link to="/auth?type=merchant">
-                  <ChefHat className="ml-2 h-5 w-5" />
+                  <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   {t('index.startNow')}
                 </Link>
               </Button>
               <Button variant="outline" size="lg" className="border-primary/50 text-peach hover:bg-primary/10" asChild>
                 <Link to="/auth?type=customer">
-                  <LogIn className="ml-2 h-5 w-5" />
+                  <LogIn className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   {t('index.loginToShop')}
                 </Link>
               </Button>
@@ -67,10 +67,10 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-b from-background to-card border-t border-border">
         <div className="container text-center space-y-8">
           <h2 className="text-3xl md:text-4xl font-bold text-peach">
-            🍳 ابدأ مشروعك الآن!
+            {t('index.startNowCTA')}
           </h2>
           <p className="text-muted-foreground text-lg max-w-md mx-auto">
-            انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي
+            {t('index.joinPlatform')}
           </p>
           <Button 
             size="lg" 
@@ -78,7 +78,7 @@ const Index = () => {
             asChild
           >
             <Link to="/auth?type=merchant">
-              <ChefHat className="ml-3 h-8 w-8" />
+              <ChefHat className={`h-8 w-8 ${dir === 'rtl' ? 'ml-3' : 'mr-3'}`} />
               {t('index.startNow')}
             </Link>
           </Button>

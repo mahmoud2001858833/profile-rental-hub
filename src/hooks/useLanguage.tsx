@@ -43,6 +43,8 @@ const translations: Translations = {
   'index.heroSubtitle': { ar: 'بمنيو رقمي وتجربة بيع سلسة مع طبخات', en: 'With a digital menu and smooth selling experience' },
   'index.heroDesc': { ar: 'منصة المنيو الرقمي الأولى للطباخين المنزليين. اعرضي أطباقك وتواصلي مع العملاء بسهولة.', en: 'The first digital menu platform for home cooks. Display your dishes and connect with customers easily.' },
   'index.startNow': { ar: 'ابدأي الآن', en: 'Start Now' },
+  'index.startNowCTA': { ar: '🍳 ابدأ مشروعك الآن!', en: '🍳 Start Your Project Now!' },
+  'index.joinPlatform': { ar: 'انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي', en: 'Join Tabkhat platform and turn your cooking passion into a real income source' },
   
   // Categories
   'categories.all': { ar: 'الكل', en: 'All' },
