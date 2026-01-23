@@ -8,8 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Package, Phone, MessageCircle, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
-import { getCurrencySymbol } from '@/components/CountryFilter';
+import { Loader2, Package, Phone, MessageCircle, Clock, CheckCircle, XCircle, Eye, MapPin } from 'lucide-react';
+import { getCurrencySymbol, COUNTRIES } from '@/components/CountryFilter';
 
 interface OrderItem {
   id: string;
@@ -119,6 +119,49 @@ const OrdersManager = () => {
     window.open(`https://wa.me/${formattedPhone}?text=${message}`, '_blank');
   };
 
+  // Detect country from phone number
+  const getCountryFromPhone = (phone: string): { country: string; flag: string } | null => {
+    const cleanPhone = phone.replace(/[\s\-()]/g, '');
+    
+    // Country code prefixes
+    const countryPrefixes: Record<string, { code: string; flag: string }> = {
+      '962': { code: 'JO', flag: '🇯🇴' },
+      '966': { code: 'SA', flag: '🇸🇦' },
+      '971': { code: 'AE', flag: '🇦🇪' },
+      '20': { code: 'EG', flag: '🇪🇬' },
+      '965': { code: 'KW', flag: '🇰🇼' },
+      '973': { code: 'BH', flag: '🇧🇭' },
+      '974': { code: 'QA', flag: '🇶🇦' },
+      '968': { code: 'OM', flag: '🇴🇲' },
+      '961': { code: 'LB', flag: '🇱🇧' },
+      '963': { code: 'SY', flag: '🇸🇾' },
+      '970': { code: 'PS', flag: '🇵🇸' },
+      '964': { code: 'IQ', flag: '🇮🇶' },
+      '967': { code: 'YE', flag: '🇾🇪' },
+      '212': { code: 'MA', flag: '🇲🇦' },
+      '216': { code: 'TN', flag: '🇹🇳' },
+      '213': { code: 'DZ', flag: '🇩🇿' },
+      '218': { code: 'LY', flag: '🇱🇾' },
+      '249': { code: 'SD', flag: '🇸🇩' },
+    };
+    
+    let phoneToCheck = cleanPhone;
+    if (phoneToCheck.startsWith('+')) phoneToCheck = phoneToCheck.slice(1);
+    if (phoneToCheck.startsWith('00')) phoneToCheck = phoneToCheck.slice(2);
+    
+    for (const [prefix, data] of Object.entries(countryPrefixes)) {
+      if (phoneToCheck.startsWith(prefix)) {
+        const country = COUNTRIES.find(c => c.code === data.code);
+        return { 
+          country: country ? (language === 'ar' ? country.name.ar : country.name.en) : data.code, 
+          flag: data.flag 
+        };
+      }
+    }
+    
+    return null;
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     // Use ar-EG for Gregorian calendar instead of ar-SA which defaults to Hijri
@@ -158,19 +201,30 @@ const OrdersManager = () => {
         <div className="space-y-3">
           {orders.map((order) => {
             const status = statusConfig[order.status] || statusConfig.pending;
+            const customerCountry = getCountryFromPhone(order.customer_phone);
             return (
               <Card key={order.id}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <h4 className="font-semibold">{order.customer_name}</h4>
                         <Badge className={`${status.color} text-white gap-1`}>
                           {status.icon}
                           {status.label}
                         </Badge>
+                        {customerCountry && (
+                          <Badge variant="outline" className="gap-1 text-xs">
+                            <span>{customerCountry.flag}</span>
+                            <span>{customerCountry.country}</span>
+                          </Badge>
+                        )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{formatDate(order.created_at)}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Phone className="h-3 w-3" />
+                        <span dir="ltr">{order.customer_phone}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatDate(order.created_at)}</p>
                       <p className="text-primary font-bold mt-1">{order.total_amount.toFixed(2)} {getCurrencySymbol(order.currency || 'JOD')}</p>
                     </div>
 
@@ -235,12 +289,33 @@ const OrdersManager = () => {
           {selectedOrder && (
             <div className="space-y-4">
               <div>
-                <h4 className="font-semibold mb-1">{t('orders.customerData')}</h4>
-                <p className="text-sm">{t('orders.name')}: {selectedOrder.customer_name}</p>
-                <p className="text-sm">{t('orders.phone')}: {selectedOrder.customer_phone}</p>
-                {selectedOrder.customer_notes && (
-                  <p className="text-sm">{t('orders.notes')}: {selectedOrder.customer_notes}</p>
-                )}
+                <h4 className="font-semibold mb-2">{t('orders.customerData')}</h4>
+                <div className="space-y-2 bg-muted/50 rounded-lg p-3">
+                  <p className="text-sm flex items-center gap-2">
+                    <span className="font-medium">{t('orders.name')}:</span> 
+                    {selectedOrder.customer_name}
+                  </p>
+                  <p className="text-sm flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-primary" />
+                    <span className="font-medium">{t('orders.phone')}:</span> 
+                    <span dir="ltr" className="font-mono">{selectedOrder.customer_phone}</span>
+                  </p>
+                  {(() => {
+                    const country = getCountryFromPhone(selectedOrder.customer_phone);
+                    return country && (
+                      <p className="text-sm flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-primary" />
+                        <span className="font-medium">{t('orders.country')}:</span>
+                        <span>{country.flag} {country.country}</span>
+                      </p>
+                    );
+                  })()}
+                  {selectedOrder.customer_notes && (
+                    <p className="text-sm">
+                      <span className="font-medium">{t('orders.notes')}:</span> {selectedOrder.customer_notes}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div>

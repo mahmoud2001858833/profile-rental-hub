@@ -103,6 +103,7 @@ export type Database = {
       items: {
         Row: {
           category: string | null
+          country: string | null
           created_at: string | null
           currency: string | null
           description: string | null
@@ -117,6 +118,7 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          country?: string | null
           created_at?: string | null
           currency?: string | null
           description?: string | null
@@ -131,6 +133,7 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          country?: string | null
           created_at?: string | null
           currency?: string | null
           description?: string | null
