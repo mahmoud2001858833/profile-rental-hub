@@ -166,11 +166,16 @@ const Browse = () => {
             />
           </div>
           
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          {/* Country Filter - Row 1 */}
+          <div className="overflow-x-auto pb-2">
             <CountryFilter 
               selectedCountry={selectedCountry} 
               onCountryChange={setSelectedCountry} 
             />
+          </div>
+          
+          {/* Category Filter - Row 2 */}
+          <div className="overflow-x-auto pb-2">
             <CategoryFilter 
               selectedCategory={selectedCategory} 
               onCategoryChange={setSelectedCategory} 
