@@ -230,7 +230,8 @@ const Customer = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    // Use ar-EG for Gregorian calendar instead of ar-SA which defaults to Hijri
+    return date.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

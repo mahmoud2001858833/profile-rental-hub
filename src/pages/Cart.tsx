@@ -85,7 +85,8 @@ const Cart = () => {
     setSubmitting(true);
 
     try {
-      // Create order
+      // Create order with currency from first item
+      const orderCurrency = merchantGroup.items[0]?.currency || 'JOD';
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
@@ -95,6 +96,7 @@ const Cart = () => {
           customer_phone: orderForm.phone.trim(),
           customer_notes: orderForm.notes?.trim() || null,
           total_amount: merchantGroup.total,
+          currency: orderCurrency,
         })
         .select()
         .single();
@@ -158,7 +160,7 @@ const Cart = () => {
                 {t('cart.merchantWillContact')}
               </p>
               <Button asChild>
-                <Link to="/">{t('cart.continueShopping')}</Link>
+                <Link to="/browse">{t('cart.continueShopping')}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -178,7 +180,7 @@ const Cart = () => {
               <h2 className="text-xl font-bold mb-2">{t('cart.empty')}</h2>
               <p className="text-muted-foreground mb-6">{t('cart.noProducts')}</p>
               <Button asChild>
-                <Link to="/">{t('cart.browseProducts')}</Link>
+                <Link to="/browse">{t('cart.browseProducts')}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -194,7 +196,7 @@ const Cart = () => {
       <main className="container py-8">
         <div className="flex items-center gap-2 mb-6">
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/">
+            <Link to="/browse">
               <ArrowIcon className="h-4 w-4 mx-1" />
               {t('cart.continueShopping')}
             </Link>

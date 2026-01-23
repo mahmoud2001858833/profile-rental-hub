@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Package, Phone, MessageCircle, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { getCurrencySymbol } from '@/components/CountryFilter';
 
 interface OrderItem {
   id: string;
@@ -25,6 +26,7 @@ interface Order {
   total_amount: number;
   status: string;
   created_at: string;
+  currency?: string;
   items?: OrderItem[];
 }
 
@@ -104,13 +106,23 @@ const OrdersManager = () => {
   };
 
   const openWhatsApp = (phone: string, orderDetails: string) => {
+    // Clean phone number and remove any non-numeric chars except +
+    const cleanPhone = phone.replace(/[\s\-()]/g, '');
+    // If starts with +, remove it; if starts with 0, keep as is for wa.me to handle
+    const formattedPhone = cleanPhone.startsWith('+') 
+      ? cleanPhone.slice(1) 
+      : cleanPhone.startsWith('00') 
+        ? cleanPhone.slice(2) 
+        : cleanPhone;
+    
     const message = encodeURIComponent(`${t('orders.hello')}\n${orderDetails}`);
-    window.open(`https://wa.me/966${phone.slice(1)}?text=${message}`, '_blank');
+    window.open(`https://wa.me/${formattedPhone}?text=${message}`, '_blank');
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    // Use ar-EG for Gregorian calendar instead of ar-SA which defaults to Hijri
+    return date.toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -159,7 +171,7 @@ const OrdersManager = () => {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{formatDate(order.created_at)}</p>
-                      <p className="text-primary font-bold mt-1">{order.total_amount.toFixed(2)} {t('common.currency')}</p>
+                      <p className="text-primary font-bold mt-1">{order.total_amount.toFixed(2)} {getCurrencySymbol(order.currency || 'JOD')}</p>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -237,7 +249,7 @@ const OrdersManager = () => {
                   {selectedOrder.items?.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
                       <span>{item.item_title} × {item.quantity}</span>
-                      <span className="font-medium">{(item.item_price * item.quantity).toFixed(2)} {t('common.currency')}</span>
+                      <span className="font-medium">{(item.item_price * item.quantity).toFixed(2)} {getCurrencySymbol(selectedOrder.currency || 'JOD')}</span>
                     </div>
                   ))}
                 </div>
@@ -246,7 +258,7 @@ const OrdersManager = () => {
               <div className="border-t pt-2">
                 <div className="flex justify-between font-bold">
                   <span>{t('orders.total')}:</span>
-                  <span className="text-primary">{selectedOrder.total_amount.toFixed(2)} {t('common.currency')}</span>
+                  <span className="text-primary">{selectedOrder.total_amount.toFixed(2)} {getCurrencySymbol(selectedOrder.currency || 'JOD')}</span>
                 </div>
               </div>
 

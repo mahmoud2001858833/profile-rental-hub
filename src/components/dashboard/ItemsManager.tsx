@@ -54,6 +54,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     currency: 'JOD',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [merchantCountry, setMerchantCountry] = useState<string>('JO');
   
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,8 +67,27 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
   useEffect(() => {
     if (user) {
       fetchItems();
+      fetchMerchantCountry();
     }
   }, [user]);
+
+  const fetchMerchantCountry = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('country')
+      .eq('user_id', user.id)
+      .single();
+    
+    if (data?.country) {
+      setMerchantCountry(data.country);
+    }
+  };
+
+  const getDefaultCurrency = () => {
+    const country = COUNTRIES.find(c => c.code === merchantCountry);
+    return country?.currency || 'JOD';
+  };
 
   const fetchItems = async () => {
     if (!user) return;
@@ -92,7 +112,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
 
   const openAddDialog = () => {
     setEditingItem(null);
-    setFormData({ title: '', description: '', price: '', image_url: null, currency: 'JOD' });
+    setFormData({ title: '', description: '', price: '', image_url: null, currency: getDefaultCurrency() });
     setErrors({});
     setDialogOpen(true);
   };
