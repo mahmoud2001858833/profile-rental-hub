@@ -111,7 +111,7 @@ const Browse = () => {
       merchant_name: merchant?.display_name || 'تاجر',
       currency: currency,
     });
-    toast.success('تمت الإضافة للسلة');
+    toast.success(t('browse.addedToCart'));
   };
 
   const getCurrencySymbol = (currency: string | null, country: string | null) => {
@@ -197,8 +197,8 @@ const Browse = () => {
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-20">
             <ChefHat className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">لا توجد أطباق</h3>
-            <p className="text-muted-foreground">جرب تغيير الفلاتر أو البحث</p>
+            <h3 className="text-xl font-semibold mb-2">{t('browse.noDishes')}</h3>
+            <p className="text-muted-foreground">{t('browse.tryChangingFilters')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

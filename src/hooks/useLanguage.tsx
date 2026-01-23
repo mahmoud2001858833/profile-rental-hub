@@ -464,6 +464,11 @@ const translations: Translations = {
   
   // AI Guide
   'aiGuide.smartGuide': { ar: 'مرشد ذكي', en: 'Smart Guide' },
+  
+  // Browse page
+  'browse.addedToCart': { ar: 'تمت الإضافة للسلة', en: 'Added to cart' },
+  'browse.noDishes': { ar: 'لا توجد أطباق', en: 'No dishes found' },
+  'browse.tryChangingFilters': { ar: 'جرب تغيير الفلاتر أو البحث', en: 'Try changing filters or search' },
 };
 
 interface LanguageContextType {
