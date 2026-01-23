@@ -157,6 +157,12 @@ const Auth = () => {
         title: t('auth.registerSuccess'),
         description: userType === 'merchant' ? t('auth.welcomeMerchant') : t('auth.welcomeCustomer'),
       });
+      // Redirect immediately after successful registration
+      if (userType === 'merchant') {
+        navigate('/dashboard', { replace: true });
+      } else {
+        navigate('/browse', { replace: true });
+      }
     }
   };
 
