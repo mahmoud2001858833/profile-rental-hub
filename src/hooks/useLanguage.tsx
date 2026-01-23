@@ -47,6 +47,10 @@ const translations: Translations = {
   // Categories
   'categories.all': { ar: 'الكل', en: 'All' },
   'categories.mainDishes': { ar: 'أطباق رئيسية', en: 'Main Dishes' },
+  'categories.easternFood': { ar: 'أكل شرقي', en: 'Eastern Food' },
+  'categories.westernFood': { ar: 'أكل غربي', en: 'Western Food' },
+  'categories.seafood': { ar: 'مأكولات بحرية', en: 'Seafood' },
+  'categories.healthyFood': { ar: 'أكل صحي', en: 'Healthy Food' },
   'categories.appetizers': { ar: 'مقبلات', en: 'Appetizers' },
   'categories.desserts': { ar: 'حلويات', en: 'Desserts' },
   'categories.drinks': { ar: 'مشروبات', en: 'Drinks' },
