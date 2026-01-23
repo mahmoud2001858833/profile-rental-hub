@@ -55,18 +55,27 @@ const Auth = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Redirect after successful auth - use authUserType from database
+  // Redirect after successful auth - immediate redirect to browse, then database check
   useEffect(() => {
-    if (user && !loading && authUserType) {
-      // Redirect based on actual user type from database
-      if (authUserType === 'merchant') {
-        navigate('/dashboard');
+    if (user && !loading) {
+      // If we have authUserType from database, use it
+      if (authUserType) {
+        if (authUserType === 'merchant') {
+          navigate('/dashboard', { replace: true });
+        } else {
+          navigate('/browse', { replace: true });
+        }
       } else {
-        // Customer - redirect to browse page
-        navigate('/browse');
+        // Fallback: redirect based on selected userType while waiting for database
+        // This provides immediate feedback while the database query completes
+        if (userType === 'merchant') {
+          navigate('/dashboard', { replace: true });
+        } else {
+          navigate('/browse', { replace: true });
+        }
       }
     }
-  }, [user, loading, navigate, authUserType]);
+  }, [user, loading, navigate, authUserType, userType]);
 
   const phoneToEmail = (phone: string, type: UserType) => {
     const cleanPhone = phone.replace(/[^0-9]/g, '');
