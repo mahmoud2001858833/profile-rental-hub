@@ -134,13 +134,36 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
-    if (formData.image_url) {
-      await deleteImage(formData.image_url);
-    }
+    toast({
+      title: t('items.uploadingImage'),
+      description: t('items.pleaseWait'),
+    });
 
-    const url = await uploadImage(file, user.id, 'products');
-    if (url) {
-      setFormData({ ...formData, image_url: url });
+    try {
+      if (formData.image_url) {
+        await deleteImage(formData.image_url);
+      }
+
+      const url = await uploadImage(file, user.id, 'products');
+      if (url) {
+        setFormData({ ...formData, image_url: url });
+        toast({
+          title: t('items.imageUploaded'),
+          description: t('items.imageUploadedDesc'),
+        });
+      } else {
+        toast({
+          title: t('common.error'),
+          description: t('items.imageUploadError'),
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: t('items.imageUploadError'),
+        variant: 'destructive',
+      });
     }
   };
 

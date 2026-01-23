@@ -399,6 +399,11 @@ const translations: Translations = {
   'items.subscriptionRequired': { ar: 'يجب تفعيل اشتراكك أولاً', en: 'You need to activate your subscription first' },
   'items.subscriptionRequiredDesc': { ar: 'لا يمكنك رفع أطباق حتى تدفع رسوم الاشتراك الشهري (7 دينار)', en: 'You cannot upload dishes until you pay the monthly subscription fee (7 JOD)' },
   'items.goToPayment': { ar: 'الذهاب للدفع', en: 'Go to Payment' },
+  'items.uploadingImage': { ar: 'جاري رفع الصورة...', en: 'Uploading image...' },
+  'items.pleaseWait': { ar: 'يرجى الانتظار', en: 'Please wait' },
+  'items.imageUploaded': { ar: 'تم رفع الصورة', en: 'Image uploaded' },
+  'items.imageUploadedDesc': { ar: 'تم رفع الصورة بنجاح', en: 'Image uploaded successfully' },
+  'items.imageUploadError': { ar: 'فشل في رفع الصورة، حاول مرة أخرى', en: 'Failed to upload image, please try again' },
   
   // Orders Manager
   'orders.title': { ar: 'الطلبات', en: 'Orders' },
