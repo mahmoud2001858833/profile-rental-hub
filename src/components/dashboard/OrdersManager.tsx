@@ -55,6 +55,8 @@ const OrdersManager = () => {
   const fetchOrders = async () => {
     if (!user) return;
 
+    console.log('Fetching orders for merchant:', user.id);
+    
     const { data, error } = await supabase
       .from('orders')
       .select('*')
@@ -62,12 +64,14 @@ const OrdersManager = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
+      console.error('Error fetching orders:', error);
       toast({
         title: t('common.error'),
         description: t('orders.loadError'),
         variant: 'destructive',
       });
     } else {
+      console.log('Orders fetched:', data?.length || 0, 'orders');
       setOrders(data || []);
     }
     setLoading(false);
