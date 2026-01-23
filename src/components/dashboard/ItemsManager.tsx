@@ -258,7 +258,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
         user_id: user.id,
         title: formData.title,
         description: formData.description || null,
-        price: parseFloat(formData.price),
+        price: parseFloat(formData.price) || 0,
         image_url: formData.image_url,
         currency: formData.currency,
         category: formData.category,
