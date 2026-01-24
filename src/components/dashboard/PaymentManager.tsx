@@ -100,7 +100,7 @@ const PaymentManager = () => {
         user_id: user.id,
         receipt_url: urlData.publicUrl,
         amount: 7,
-        currency: 'JOD',
+        currency: 'USD',
         payment_month: new Date().toISOString().slice(0, 10)
       });
       if (insertError) throw insertError;
@@ -312,9 +312,9 @@ const PaymentManager = () => {
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
               <div className="text-end">
-                <span className="font-bold text-muted-foreground text-lg line-through">$10</span>
+                <span className="font-bold text-primary text-lg">7 {t('payment.usd')}</span>
                 <span className="text-sm text-muted-foreground mx-2">=</span>
-                <span className="font-bold text-primary text-lg">7 {t('payment.jod')}</span>
+                <span className="font-bold text-muted-foreground text-lg">5 {t('payment.jod')}</span>
               </div>
             </div>
           </div>
@@ -342,7 +342,11 @@ const PaymentManager = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
-              <span className="font-bold text-primary text-lg">7 {t('payment.jod')}</span>
+              <div className="text-end">
+                <span className="font-bold text-primary text-lg">7 {t('payment.usd')}</span>
+                <span className="text-sm text-muted-foreground mx-2">=</span>
+                <span className="font-bold text-muted-foreground text-lg">5 {t('payment.jod')}</span>
+              </div>
             </div>
           </div>
           
