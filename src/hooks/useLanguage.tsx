@@ -45,6 +45,7 @@ const translations: Translations = {
   'index.startNow': { ar: 'ابدأي الآن', en: 'Start Now' },
   'index.registerAsCook': { ar: 'سجلي الآن كطباخة', en: 'Register as a Cook' },
   'index.shopNow': { ar: 'تسوق الآن', en: 'Shop Now' },
+  'index.freeTrialMonth': { ar: '+ تجربة مجانية لمدة شهر', en: '+ Free trial for one month' },
   'index.startNowCTA': { ar: '🍳 ابدأ مشروعك الآن!', en: '🍳 Start Your Project Now!' },
   'index.joinPlatform': { ar: 'انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي', en: 'Join Tabkhat platform and turn your cooking passion into a real income source' },
   
@@ -170,6 +171,7 @@ const translations: Translations = {
   'payment.cliqAlias': { ar: 'الاسم المستعار', en: 'CliQ Alias' },
   'payment.amount': { ar: 'المبلغ', en: 'Amount' },
   'payment.jod': { ar: 'دينار أردني', en: 'JOD' },
+  'payment.usd': { ar: 'دولار', en: 'USD' },
   'payment.instructions': { ar: 'بعد التحويل، ارفع صورة الوصل وانتظر موافقة الإدارة لتفعيل صفحتك', en: 'After transfer, upload the receipt image and wait for admin approval to activate your page' },
   'payment.uploadReceipt': { ar: 'رفع وصل الدفع', en: 'Upload Payment Receipt' },
   'payment.selectImage': { ar: 'اختر صورة الوصل', en: 'Select receipt image' },

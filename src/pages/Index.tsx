@@ -46,12 +46,15 @@ const Index = () => {
           
           {!user && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
-                <Link to="/auth?type=merchant">
-                  <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                  {t('index.registerAsCook')}
-                </Link>
-              </Button>
+              <div className="flex flex-col items-center gap-2">
+                <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
+                  <Link to="/auth?type=merchant">
+                    <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                    {t('index.registerAsCook')}
+                  </Link>
+                </Button>
+                <span className="text-sm text-primary font-medium">{t('index.freeTrialMonth')}</span>
+              </div>
               <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
                 <Link to="/browse">
                   <ShoppingCart className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
