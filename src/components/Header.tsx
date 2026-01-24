@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -17,7 +17,11 @@ const Header = () => {
   const { getItemCount } = useCart();
   const { t, dir } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
   const cartCount = getItemCount();
+  
+  // Show cart and admin only on browse page (not on homepage)
+  const showCartAndAdmin = location.pathname !== '/';
   
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [password, setPassword] = useState("");
@@ -50,14 +54,16 @@ const Header = () => {
             {/* Language Toggle */}
             <LanguageToggle />
             
-            {/* Admin Link - visible to everyone */}
-            <Button variant="secondary" size="sm" onClick={handleAdminClick}>
-              <ShieldCheck className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-              <span className="hidden sm:inline">لوحة الأدمن</span>
-            </Button>
+            {/* Admin Link - visible only on browse page */}
+            {showCartAndAdmin && (
+              <Button variant="secondary" size="sm" onClick={handleAdminClick}>
+                <ShieldCheck className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                <span className="hidden sm:inline">لوحة الأدمن</span>
+              </Button>
+            )}
 
-            {/* Cart - only for customers */}
-            {(!user || userType === 'customer') && (
+            {/* Cart - only for customers on browse page */}
+            {showCartAndAdmin && (!user || userType === 'customer') && (
               <Button variant="ghost" className="relative text-white hover:bg-white/20" asChild>
                 <Link to="/cart">
                   <ShoppingCart className="h-5 w-5" />

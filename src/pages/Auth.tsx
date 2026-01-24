@@ -263,7 +263,7 @@ const Auth = () => {
                   {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                 </div>
                 
-                <Button type="submit" className="w-full h-12 text-base font-bold" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-12 text-base font-bold bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
                   {isSubmitting ? t('auth.loggingIn') : t('auth.login')}
                 </Button>
               </form>
@@ -351,7 +351,7 @@ const Auth = () => {
                 </div>
                 {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}
                 
-                <Button type="submit" className="w-full h-12 text-base font-bold" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-12 text-base font-bold bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
                   {isSubmitting ? t('auth.creatingAccount') : `${t('auth.createAccount')} ${userType === 'merchant' ? t('auth.merchant') : t('auth.customer')}`}
                 </Button>
               </form>

@@ -210,6 +210,36 @@ const Admin = () => {
     }
   };
 
+  const handleDeleteMerchant = async (merchantId: string, merchantUserId: string) => {
+    if (!confirm(t('admin.confirmDeleteMerchant'))) return;
+    
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: 'POST',
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'delete_merchant',
+            data: { id: merchantId, user_id: merchantUserId }
+          })
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to delete merchant');
+      
+      toast.success(t('admin.merchantDeleted'));
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting merchant:', error);
+      toast.error(t('common.error'));
+    }
+  };
+
 
   if (loadingData) {
     return (
@@ -360,23 +390,33 @@ const Admin = () => {
                             )}
                           </TableCell>
                           <TableCell>
-                            <Button
-                              size="sm"
-                              variant={merchant.page_enabled ? "destructive" : "default"}
-                              onClick={() => handleToggleStore(merchant)}
-                            >
-                              {merchant.page_enabled ? (
-                                <>
-                                  <XCircle className="h-4 w-4 mx-1" />
-                                  {t('admin.close')}
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle className="h-4 w-4 mx-1" />
-                                  {t('admin.activate')}
-                                </>
-                              )}
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant={merchant.page_enabled ? "destructive" : "default"}
+                                onClick={() => handleToggleStore(merchant)}
+                              >
+                                {merchant.page_enabled ? (
+                                  <>
+                                    <XCircle className="h-4 w-4 mx-1" />
+                                    {t('admin.close')}
+                                  </>
+                                ) : (
+                                  <>
+                                    <CheckCircle className="h-4 w-4 mx-1" />
+                                    {t('admin.activate')}
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteMerchant(merchant.id, merchant.user_id)}
+                              >
+                                <Trash2 className="h-4 w-4 mx-1" />
+                                {t('admin.deleteMerchant')}
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}

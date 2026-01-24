@@ -334,7 +334,7 @@ const Cart = () => {
                       <CardContent className="py-4 text-center space-y-3">
                         <p className="text-sm font-medium">{t('cart.loginToOrder')}</p>
                         <p className="text-xs text-muted-foreground">{t('cart.loginToContinue')}</p>
-                        <Button asChild className="w-full">
+                        <Button asChild className="w-full bg-green-600 hover:bg-green-700">
                           <Link to="/auth?type=customer">{t('cart.loginNow')}</Link>
                         </Button>
                       </CardContent>
@@ -345,7 +345,7 @@ const Cart = () => {
                   {user && Object.entries(groupedItems).map(([merchantId, group]) => (
                     <Button
                       key={merchantId}
-                      className="w-full"
+                      className="w-full bg-green-600 hover:bg-green-700"
                       onClick={() => handleSubmitOrder(merchantId)}
                       disabled={submitting}
                     >
