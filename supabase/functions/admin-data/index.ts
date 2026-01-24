@@ -159,6 +159,46 @@ serve(async (req) => {
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+
+      if (type === "delete_merchant") {
+        const { id, user_id } = data;
+        
+        // Delete merchant's items first
+        await supabase
+          .from("items")
+          .delete()
+          .eq("user_id", user_id);
+        
+        // Delete merchant's gallery images
+        await supabase
+          .from("gallery_images")
+          .delete()
+          .eq("user_id", user_id);
+        
+        // Delete merchant's orders
+        await supabase
+          .from("orders")
+          .delete()
+          .eq("merchant_id", user_id);
+        
+        // Delete merchant's payment receipts
+        await supabase
+          .from("payment_receipts")
+          .delete()
+          .eq("user_id", user_id);
+        
+        // Delete the merchant profile
+        const { error } = await supabase
+          .from("profiles")
+          .delete()
+          .eq("id", id);
+
+        if (error) throw error;
+        return new Response(
+          JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     return new Response(

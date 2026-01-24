@@ -274,6 +274,9 @@ const translations: Translations = {
   'admin.deleteProduct': { ar: 'حذف', en: 'Delete' },
   'admin.productDeleted': { ar: 'تم حذف الطبق', en: 'Dish deleted' },
   'admin.confirmDelete': { ar: 'هل أنت متأكد من حذف هذا الطبق؟', en: 'Are you sure you want to delete this dish?' },
+  'admin.deleteMerchant': { ar: 'حذف', en: 'Delete' },
+  'admin.merchantDeleted': { ar: 'تم حذف المطعم بنجاح', en: 'Restaurant deleted successfully' },
+  'admin.confirmDeleteMerchant': { ar: 'هل أنت متأكد من حذف هذا المطعم بجميع بياناته؟ لا يمكن التراجع عن هذا الإجراء.', en: 'Are you sure you want to delete this restaurant and all its data? This action cannot be undone.' },
   
   // Common
   'common.loading': { ar: 'جاري التحميل...', en: 'Loading...' },
