@@ -73,7 +73,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     description: '',
     price: '',
     image_url: null as string | null,
-    currency: 'JOD',
+    currency: 'JOD', // Always default to JOD
     category: 'أطباق رئيسية',
     country: 'JO',
   });
@@ -109,8 +109,8 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
   };
 
   const getDefaultCurrency = () => {
-    const country = COUNTRIES.find(c => c.code === merchantCountry);
-    return country?.currency || 'JOD';
+    // Always use JOD as the default currency
+    return 'JOD';
   };
 
   const fetchItems = async () => {

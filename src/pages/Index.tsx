@@ -12,50 +12,52 @@ const Index = () => {
   const { t, dir } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      {/* Hero Banner - Dark Background with Floating Icons */}
-      <section className="bg-background py-20 relative overflow-hidden border-b border-border flex-1 flex items-center">
-        <div className="absolute inset-0 pattern-dots opacity-20" />
+      {/* Hero Banner - Cream Background with Floating Icons */}
+      <section className="py-16 md:py-24 relative overflow-hidden flex-1 flex items-center">
+        <div className="absolute inset-0 pattern-dots opacity-10" />
         
         {/* Floating Food Icons */}
         <FloatingFoodIcons />
         
         {/* Decorative Elements */}
-        <div className="absolute top-10 left-10 w-32 h-32 rounded-2xl bg-primary/10 rotate-12 animate-float hidden lg:block" />
-        <div className="absolute bottom-10 right-10 w-24 h-24 rounded-2xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-10 left-10 w-28 h-28 rounded-3xl bg-primary/10 rotate-12 animate-float hidden lg:block" />
+        <div className="absolute bottom-10 right-10 w-20 h-20 rounded-3xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
-        <div className="container relative z-10 text-center">
+        <div className="container relative z-10 text-center px-4">
           {/* Logo Image - Large Horizontal */}
-          <img 
-            src={logoImage} 
-            alt="طبخات" 
-            className="w-64 h-40 md:w-96 md:h-56 mx-auto mb-6 object-contain"
-          />
+          <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 inline-block shadow-lg mb-8">
+            <img 
+              src={logoImage} 
+              alt="طبخات" 
+              className="w-56 h-36 md:w-80 md:h-48 mx-auto object-contain"
+            />
+          </div>
           
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 text-primary text-sm font-semibold mb-6 border border-primary/20 shadow-sm">
             <ChefHat className="h-4 w-4" />
             <span>{t('index.tabkhatyPlatform')}</span>
           </div>
           
           {/* Main Marketing Text */}
-          <h1 className="text-xl md:text-2xl font-bold mb-4 leading-tight text-peach">
+          <h1 className="text-xl md:text-2xl font-bold mb-6 leading-tight text-foreground">
             {t('index.heroTitle')}
           </h1>
           
           {!user && (
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <div className="flex flex-col items-center gap-2">
-                <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
+            <div className="flex flex-col sm:flex-row gap-5 justify-center mt-8">
+              <div className="flex flex-col items-center gap-3">
+                <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8" asChild>
                   <Link to="/auth?type=merchant">
                     <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                     {t('index.registerAsCook')}
                   </Link>
                 </Button>
-                <span className="text-sm text-green-600 font-medium">{t('index.freeTrialMonth')}</span>
+                <span className="text-sm text-green-600 font-semibold bg-green-50 px-3 py-1 rounded-full">{t('index.freeTrialMonth')}</span>
               </div>
-              <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
+              <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8" asChild>
                 <Link to="/browse">
                   <ShoppingCart className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   {t('index.shopNow')}
@@ -67,21 +69,21 @@ const Index = () => {
       </section>
 
       {/* Big Start Now CTA Section - Always visible */}
-      <section className="py-20 bg-gradient-to-b from-background to-card border-t border-border">
-        <div className="container text-center space-y-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-peach">
+      <section className="py-16 md:py-20 bg-gradient-to-b from-card to-background border-t border-border/50">
+        <div className="container text-center space-y-6 px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
             {t('index.startNowCTA')}
           </h2>
-          <p className="text-muted-foreground text-lg max-w-md mx-auto">
+          <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto">
             {t('index.joinPlatform')}
           </p>
           <Button 
             size="lg" 
-            className="h-20 px-16 text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse bg-green-600 hover:bg-green-700"
+            className="h-16 md:h-20 px-10 md:px-16 text-xl md:text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 bg-green-600 hover:bg-green-700 rounded-2xl"
             asChild
           >
             <Link to="/auth?type=merchant">
-              <ChefHat className={`h-8 w-8 ${dir === 'rtl' ? 'ml-3' : 'mr-3'}`} />
+              <ChefHat className={`h-7 w-7 md:h-8 md:w-8 ${dir === 'rtl' ? 'ml-3' : 'mr-3'}`} />
               {t('index.startNow')}
             </Link>
           </Button>
@@ -89,9 +91,9 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-card">
-        <div className="container text-center space-y-4">
-          <div className="flex justify-center gap-4">
+      <footer className="border-t border-border/50 py-8 bg-card/50">
+        <div className="container text-center space-y-4 px-4">
+          <div className="flex justify-center gap-4 flex-wrap">
             <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">
               {t('index.registerCustomer')}
             </Link>
