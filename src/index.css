@@ -9,27 +9,27 @@
 
 @layer base {
   :root {
-    /* Dark/Black background */
-    --background: 0 0% 8%;
-    --foreground: 30 90% 65%;
+    /* Cream/Off-white background */
+    --background: 40 30% 96%;
+    --foreground: 0 0% 15%;
 
-    /* Card - Dark with orange tint */
-    --card: 0 0% 12%;
-    --card-foreground: 30 90% 65%;
+    /* Card - Light cream */
+    --card: 40 25% 98%;
+    --card-foreground: 0 0% 15%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 30 90% 65%;
+    --popover: 40 25% 98%;
+    --popover-foreground: 0 0% 15%;
 
     /* Primary - Rich Red (for buttons and CTAs) */
     --primary: 0 75% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Dark warm */
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 30 90% 65%;
+    /* Secondary - Light warm */
+    --secondary: 40 20% 92%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 0 0% 18%;
-    --muted-foreground: 30 70% 55%;
+    --muted: 40 15% 90%;
+    --muted-foreground: 0 0% 45%;
 
     /* Accent - Deep Red for highlights */
     --accent: 0 70% 45%;
@@ -39,29 +39,29 @@
     --destructive: 0 80% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
+    --border: 40 15% 85%;
+    --input: 40 20% 92%;
     --ring: 0 75% 50%;
 
     --radius: 1rem;
 
     /* Orange text color */
-    --orange: 30 90% 65%;
-    --orange-light: 30 80% 75%;
+    --orange: 30 90% 50%;
+    --orange-light: 30 80% 60%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(0 75% 50%), hsl(0 70% 40%));
     --gradient-accent: linear-gradient(135deg, hsl(0 70% 45%), hsl(0 65% 35%));
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 12%) 100%);
-    --gradient-page: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 10%) 50%, hsl(0 75% 50% / 0.05) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(40 30% 96%) 0%, hsl(40 25% 94%) 100%);
+    --gradient-page: linear-gradient(180deg, hsl(40 30% 96%) 0%, hsl(40 25% 94%) 50%, hsl(0 75% 50% / 0.03) 100%);
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 30 90% 65%;
+    --sidebar-background: 40 25% 98%;
+    --sidebar-foreground: 0 0% 15%;
     --sidebar-primary: 0 75% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 30 90% 65%;
-    --sidebar-border: 0 0% 20%;
+    --sidebar-accent: 40 20% 92%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 40 15% 85%;
     --sidebar-ring: 0 75% 50%;
   }
 }
@@ -79,7 +79,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Cairo', sans-serif;
-    background: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 10%) 50%, hsl(0 75% 50% / 0.05) 100%);
+    background: linear-gradient(180deg, hsl(40 30% 96%) 0%, hsl(40 25% 94%) 50%, hsl(0 75% 50% / 0.03) 100%);
     min-height: 100vh;
   }
 }

@@ -99,8 +99,8 @@ const PaymentManager = () => {
       } = await supabase.from('payment_receipts').insert({
         user_id: user.id,
         receipt_url: urlData.publicUrl,
-        amount: 7,
-        currency: 'USD',
+        amount: 5,
+        currency: 'JOD',
         payment_month: new Date().toISOString().slice(0, 10)
       });
       if (insertError) throw insertError;
@@ -311,11 +311,7 @@ const PaymentManager = () => {
           <div className="bg-background rounded-lg p-4 space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
-              <div className="text-end">
-                <span className="font-bold text-primary text-lg">7 {t('payment.usd')}</span>
-                <span className="text-sm text-muted-foreground mx-2">=</span>
-                <span className="font-bold text-muted-foreground text-lg">5 {t('payment.jod')}</span>
-              </div>
+              <span className="font-bold text-primary text-lg">5 {t('payment.jod')}</span>
             </div>
           </div>
           <Button className="w-full mt-4" disabled>
@@ -342,11 +338,7 @@ const PaymentManager = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
-              <div className="text-end">
-                <span className="font-bold text-primary text-lg">7 {t('payment.usd')}</span>
-                <span className="text-sm text-muted-foreground mx-2">=</span>
-                <span className="font-bold text-muted-foreground text-lg">5 {t('payment.jod')}</span>
-              </div>
+              <span className="font-bold text-primary text-lg">5 {t('payment.jod')}</span>
             </div>
           </div>
           
