@@ -53,7 +53,7 @@ const Index = () => {
                     {t('index.registerAsCook')}
                   </Link>
                 </Button>
-                <span className="text-sm text-primary font-medium">{t('index.freeTrialMonth')}</span>
+                <span className="text-sm text-green-600 font-medium">{t('index.freeTrialMonth')}</span>
               </div>
               <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-shadow" asChild>
                 <Link to="/browse">
