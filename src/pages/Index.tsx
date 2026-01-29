@@ -141,7 +141,7 @@ const Index = () => {
               asChild
             >
               <Link to="/auth?type=merchant">
-                ابدأ كطباخ
+                أبدأ كطابخه
               </Link>
             </Button>
             <span className="text-success font-semibold text-sm md:text-base bg-success/10 px-5 py-2 rounded-full">
