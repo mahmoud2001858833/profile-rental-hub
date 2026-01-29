@@ -131,6 +131,11 @@ const Index = () => {
           />
         </div>
 
+        {/* Tagline - Above Buttons */}
+        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-6">
+          حولي شغفك بالطبخ الي مشروع حقيقي
+        </p>
+
         {/* Separate Buttons - Bigger */}
         <div className="relative z-10 flex flex-row items-start justify-center gap-4 md:gap-8 w-full max-w-3xl px-4 animate-fade-in">
           {/* Start as Cook Button with subtitle */}
@@ -160,11 +165,6 @@ const Index = () => {
             </Link>
           </Button>
         </div>
-
-        {/* Tagline */}
-        <p className="mt-8 text-muted-foreground text-center text-base md:text-lg max-w-md animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          {t('index.heroTitle')}
-        </p>
       </section>
 
       {/* Start Now - Special Section */}
@@ -192,15 +192,6 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/30 py-6 bg-card/50">
         <div className="container text-center space-y-3 px-4">
-          <div className="flex justify-center gap-4 flex-wrap">
-            <Link to="/auth?type=customer" className="text-sm text-primary hover:underline font-medium">
-              {t('index.registerCustomer')}
-            </Link>
-            <span className="text-muted-foreground">|</span>
-            <Link to="/auth?type=merchant" className="text-sm text-primary hover:underline font-medium">
-              {t('index.registerMerchant')}
-            </Link>
-          </div>
           <div className="flex justify-center gap-6 text-sm">
             <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
               {t('index.termsConditions')}
