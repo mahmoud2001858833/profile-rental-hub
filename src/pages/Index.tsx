@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -10,76 +11,115 @@ import logoImage from '@/assets/logo-tabbkhat-new.png';
 const Index = () => {
   const { user } = useAuth();
   const { t, dir } = useLanguage();
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <Header />
 
-      {/* Hero Banner - Premium Design with Glassmorphism */}
-      <section className="py-8 md:py-12 relative overflow-hidden flex-1 flex items-center justify-center min-h-[80vh]">
-        {/* Background Effects */}
-        <div className="absolute inset-0 pattern-dots opacity-20" />
+      {/* Hero Banner - Premium Design with Glassmorphism & Parallax */}
+      <section className="py-4 md:py-6 relative overflow-hidden flex-1">
+        {/* Background Effects with Parallax */}
+        <div 
+          className="absolute inset-0 pattern-dots opacity-20" 
+          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+        />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-primary/5" />
         
-        {/* Decorative Glowing Orbs */}
-        <div className="absolute top-20 left-20 w-72 h-72 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" />
-        <div className="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-primary/15 blur-3xl animate-pulse-glow" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/4 w-48 h-48 rounded-full bg-success/10 blur-2xl animate-float" style={{ animationDelay: '0.5s' }} />
+        {/* Decorative Glowing Orbs with Parallax */}
+        <div 
+          className="absolute top-10 left-20 w-72 h-72 rounded-full bg-primary/20 blur-3xl animate-pulse-glow" 
+          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+        />
+        <div 
+          className="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-primary/15 blur-3xl animate-pulse-glow" 
+          style={{ transform: `translateY(${scrollY * 0.15}px)`, animationDelay: '1s' }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/4 w-48 h-48 rounded-full bg-success/10 blur-2xl animate-float" 
+          style={{ transform: `translateY(${scrollY * 0.25}px)`, animationDelay: '0.5s' }}
+        />
         
-        {/* Floating Food Icons - More Visible */}
-        <FloatingFoodIcons />
+        {/* Floating Food Icons with Parallax */}
+        <div style={{ transform: `translateY(${scrollY * 0.1}px)` }}>
+          <FloatingFoodIcons />
+        </div>
         
-        {/* Decorative Red Shapes */}
-        <div className="absolute top-16 left-16 w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/25 to-primary/10 rotate-12 animate-float backdrop-blur-sm border border-primary/20 hidden lg:block" />
-        <div className="absolute bottom-16 right-16 w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 -rotate-12 animate-float backdrop-blur-sm border border-primary/15 hidden lg:block" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-32 right-32 w-16 h-16 rounded-2xl bg-gradient-to-br from-success/20 to-success/10 rotate-45 animate-float backdrop-blur-sm border border-success/20 hidden lg:block" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute bottom-32 left-32 w-20 h-20 rounded-full bg-gradient-to-br from-primary/15 to-transparent animate-float backdrop-blur-sm hidden lg:block" style={{ animationDelay: '2s' }} />
+        {/* Decorative Red Shapes with Parallax */}
+        <div 
+          className="absolute top-8 left-16 w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/25 to-primary/10 rotate-12 animate-float backdrop-blur-sm border border-primary/20 hidden lg:block" 
+          style={{ transform: `translateY(${scrollY * 0.35}px)` }}
+        />
+        <div 
+          className="absolute bottom-16 right-16 w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 -rotate-12 animate-float backdrop-blur-sm border border-primary/15 hidden lg:block" 
+          style={{ transform: `translateY(${scrollY * 0.2}px)`, animationDelay: '1s' }}
+        />
+        <div 
+          className="absolute top-24 right-32 w-16 h-16 rounded-2xl bg-gradient-to-br from-success/20 to-success/10 rotate-45 animate-float backdrop-blur-sm border border-success/20 hidden lg:block" 
+          style={{ transform: `translateY(${scrollY * 0.3}px)`, animationDelay: '1.5s' }}
+        />
+        <div 
+          className="absolute bottom-32 left-32 w-20 h-20 rounded-full bg-gradient-to-br from-primary/15 to-transparent animate-float backdrop-blur-sm hidden lg:block" 
+          style={{ transform: `translateY(${scrollY * 0.25}px)`, animationDelay: '2s' }}
+        />
         
-        {/* Glass Cards Floating */}
-        <div className="absolute top-1/4 right-10 w-28 h-20 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 shadow-xl animate-float hidden xl:block" style={{ animationDelay: '0.8s' }} />
-        <div className="absolute bottom-1/4 left-10 w-24 h-16 rounded-2xl bg-white/25 backdrop-blur-xl border border-white/35 shadow-lg animate-float hidden xl:block" style={{ animationDelay: '1.2s' }} />
+        {/* Glass Cards Floating with Parallax */}
+        <div 
+          className="absolute top-1/4 right-10 w-28 h-20 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/40 shadow-xl animate-float hidden xl:block" 
+          style={{ transform: `translateY(${scrollY * 0.4}px)`, animationDelay: '0.8s' }}
+        />
+        <div 
+          className="absolute bottom-1/4 left-10 w-24 h-16 rounded-2xl bg-white/25 backdrop-blur-xl border border-white/35 shadow-lg animate-float hidden xl:block" 
+          style={{ transform: `translateY(${scrollY * 0.15}px)`, animationDelay: '1.2s' }}
+        />
         
-        <div className="container relative z-10 flex flex-col items-center text-center px-4">
-          {/* Logo Image - VERY BIG, No Borders */}
-          <div className="mb-8 animate-scale-in">
+        <div className="container relative z-10 flex flex-col items-center text-center px-4 pt-2">
+          {/* Logo Image - VERY BIG, No Borders, At Top */}
+          <div className="mb-4 animate-scale-in">
             <img 
               src={logoImage} 
               alt="طبخات" 
-              className="w-80 h-auto md:w-[500px] lg:w-[600px] object-contain drop-shadow-2xl"
+              className="w-72 h-auto md:w-[450px] lg:w-[550px] object-contain drop-shadow-2xl"
             />
           </div>
           
           {/* Platform Badge with Glass Effect */}
-          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/40 backdrop-blur-xl text-primary text-sm font-bold mb-6 border border-white/50 shadow-lg animate-fade-in stagger-1">
-            <ChefHat className="h-5 w-5" />
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/40 backdrop-blur-xl text-primary text-sm font-bold mb-3 border border-white/50 shadow-lg animate-fade-in stagger-1">
+            <ChefHat className="h-4 w-4" />
             <span>{t('index.tabkhatyPlatform')}</span>
           </div>
           
           {/* Main Marketing Text */}
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold mb-10 leading-relaxed text-foreground max-w-2xl animate-fade-in stagger-2">
+          <h1 className="text-base md:text-lg lg:text-xl font-bold mb-5 leading-relaxed text-foreground max-w-2xl animate-fade-in stagger-2">
             {t('index.heroTitle')}
           </h1>
           
-          {/* Buttons - Side by Side */}
+          {/* Buttons - Side by Side, Directly Below */}
           {!user && (
-            <div className="flex flex-col items-center gap-4 animate-slide-up stagger-3">
-              <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col items-center gap-3 animate-slide-up stagger-3">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
                 {/* Register Button */}
                 <div className="flex flex-col items-center gap-2">
-                  <Button size="lg" className="h-14 bg-primary hover:bg-primary/90 text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 rounded-2xl px-8 backdrop-blur-sm border border-primary/30 glow-primary" asChild>
+                  <Button size="lg" className="h-12 bg-primary hover:bg-primary/90 text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 rounded-2xl px-6 backdrop-blur-sm border border-primary/30 glow-primary" asChild>
                     <Link to="/auth?type=merchant">
                       <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                       {t('index.registerAsCook')}
                     </Link>
                   </Button>
                   {/* Free Trial Badge */}
-                  <span className="text-sm text-success font-bold bg-success/15 backdrop-blur-xl px-5 py-2 rounded-full border border-success/40 shadow-md animate-pulse-glow">
+                  <span className="text-xs text-success font-bold bg-success/15 backdrop-blur-xl px-4 py-1.5 rounded-full border border-success/40 shadow-md animate-pulse-glow">
                     {t('index.freeTrialMonth')}
                   </span>
                 </div>
                 
                 {/* Shop Button */}
-                <Button size="lg" className="h-14 bg-primary hover:bg-primary/90 text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 rounded-2xl px-8 backdrop-blur-sm border border-primary/30 glow-primary" asChild>
+                <Button size="lg" className="h-12 bg-primary hover:bg-primary/90 text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 rounded-2xl px-6 backdrop-blur-sm border border-primary/30 glow-primary" asChild>
                   <Link to="/browse">
                     <ShoppingCart className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                     {t('index.shopNow')}
