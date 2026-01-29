@@ -43,10 +43,10 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-primary text-primary-foreground shadow-lg" dir={dir}>
+      <header className="sticky top-0 z-50 bg-primary/95 backdrop-blur-md text-primary-foreground shadow-lg border-b border-white/10" dir={dir}>
         <div className="container flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="طبخات" className="w-10 h-10 rounded-xl object-cover bg-white/20" />
+            <img src={logo} alt="طبخات" className="w-12 h-12 rounded-xl object-cover bg-white/30 backdrop-blur-sm p-1 shadow-md" />
             <span className="font-bold text-lg hidden sm:block">{t('header.tabkhaty')}</span>
           </Link>
 

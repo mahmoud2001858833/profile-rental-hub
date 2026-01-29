@@ -15,9 +15,10 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      {/* Hero Banner - Centered Layout */}
+      {/* Hero Banner - Centered Layout with Glass Effect */}
       <section className="py-12 md:py-16 relative overflow-hidden flex-1 flex items-center justify-center">
         <div className="absolute inset-0 pattern-dots opacity-10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         
         {/* Floating Food Icons */}
         <FloatingFoodIcons />
@@ -27,12 +28,12 @@ const Index = () => {
         <div className="absolute bottom-10 right-10 w-20 h-20 rounded-3xl bg-primary/10 -rotate-12 animate-float hidden lg:block" style={{ animationDelay: '1s' }} />
         
         <div className="container relative z-10 flex flex-col items-center text-center px-4">
-          {/* Logo Image - Centered at top */}
-          <div className="mb-6">
+          {/* Logo Image - Centered at top with Glass Effect */}
+          <div className="mb-6 p-4 rounded-3xl bg-white/40 backdrop-blur-md border border-white/30 shadow-xl">
             <img 
               src={logoImage} 
               alt="طبخات" 
-              className="w-64 h-40 md:w-80 md:h-48 object-contain"
+              className="w-64 h-40 md:w-80 md:h-48 object-contain drop-shadow-lg"
             />
           </div>
           
@@ -52,17 +53,17 @@ const Index = () => {
             <div className="flex flex-col items-center gap-4">
               {/* Register Button with Free Trial */}
               <div className="flex flex-col items-center gap-2">
-                <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8" asChild>
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8 backdrop-blur-sm" asChild>
                   <Link to="/auth?type=merchant">
                     <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                     {t('index.registerAsCook')}
                   </Link>
                 </Button>
-                <span className="text-sm text-green-600 font-semibold bg-green-50 px-4 py-1.5 rounded-full border border-green-200">{t('index.freeTrialMonth')}</span>
+                <span className="text-sm text-success font-semibold bg-success/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-success/30">{t('index.freeTrialMonth')}</span>
               </div>
               
               {/* Shop Button */}
-              <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8" asChild>
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 rounded-xl px-8 backdrop-blur-sm" asChild>
                 <Link to="/browse">
                   <ShoppingCart className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
                   {t('index.shopNow')}
@@ -78,7 +79,7 @@ const Index = () => {
         <div className="container text-center px-4">
           <Button 
             size="lg" 
-            className="h-16 md:h-20 px-10 md:px-16 text-xl md:text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 bg-green-600 hover:bg-green-700 rounded-2xl"
+            className="h-16 md:h-20 px-10 md:px-16 text-xl md:text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 bg-success hover:bg-success/90 text-success-foreground rounded-2xl backdrop-blur-sm"
             asChild
           >
             <Link to="/auth?type=merchant">

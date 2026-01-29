@@ -64,10 +64,10 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryFilterPr
                 variant={isSelected ? "default" : "outline"}
                 size="sm"
                 onClick={() => onCategoryChange(category.id)}
-                className={`flex items-center gap-2 rounded-full px-5 py-2.5 transition-all font-bold text-base ${
+                className={`flex items-center gap-2 rounded-full px-5 py-2.5 transition-all font-bold text-base backdrop-blur-sm ${
                   isSelected 
                     ? 'bg-primary text-white shadow-lg border-2 border-white/30 scale-105' 
-                    : 'bg-red-800/80 text-orange-300 hover:bg-red-700 border-2 border-red-600 hover:text-orange-200 hover:scale-102'
+                    : 'bg-primary/90 text-white hover:bg-primary border-2 border-primary/50 hover:scale-102 shadow-md'
                 }`}
               >
                 <Icon className="h-5 w-5" />

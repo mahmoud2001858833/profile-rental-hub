@@ -175,17 +175,20 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <div className="absolute top-4 right-4 z-10">
         <LanguageToggle />
       </div>
-      <Card className="w-full max-w-md shadow-xl border-0">
+      <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-md relative z-10">
         <CardHeader className="text-center pb-2">
-          <img 
-            src={logoImage} 
-            alt="طبخات" 
-            className="w-24 h-24 rounded-2xl mx-auto mb-4 shadow-lg object-cover"
-          />
+          <div className="p-3 rounded-2xl bg-white/50 backdrop-blur-sm mx-auto mb-4 shadow-lg w-fit">
+            <img 
+              src={logoImage} 
+              alt="طبخات" 
+              className="w-28 h-24 object-contain"
+            />
+          </div>
           <CardTitle className="text-2xl font-bold">{t('auth.welcome')}</CardTitle>
           <CardDescription>{t('auth.chooseAccount')}</CardDescription>
         </CardHeader>
@@ -263,7 +266,7 @@ const Auth = () => {
                   {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                 </div>
                 
-                <Button type="submit" className="w-full h-12 text-base font-bold bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-12 text-base font-bold bg-success hover:bg-success/90 text-success-foreground" disabled={isSubmitting}>
                   {isSubmitting ? t('auth.loggingIn') : t('auth.login')}
                 </Button>
               </form>
@@ -351,7 +354,7 @@ const Auth = () => {
                 </div>
                 {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}
                 
-                <Button type="submit" className="w-full h-12 text-base font-bold bg-green-600 hover:bg-green-700" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-12 text-base font-bold bg-success hover:bg-success/90 text-success-foreground" disabled={isSubmitting}>
                   {isSubmitting ? t('auth.creatingAccount') : `${t('auth.createAccount')} ${userType === 'merchant' ? t('auth.merchant') : t('auth.customer')}`}
                 </Button>
               </form>
