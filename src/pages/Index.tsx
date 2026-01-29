@@ -72,33 +72,38 @@ const Index = () => {
           />
         </div>
 
-        {/* Logo - Bigger with Shadow */}
-        <div className="relative z-10 mb-6 md:mb-8 animate-scale-in">
+        {/* Logo - Large with Strong Shadow */}
+        <div className="relative z-10 mb-8 md:mb-10 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-80 h-80 md:w-[400px] md:h-[400px] lg:w-[480px] lg:h-[480px] object-contain drop-shadow-2xl"
-            style={{ filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))' }}
+            className="w-[320px] h-auto md:w-[450px] lg:w-[550px] object-contain"
+            style={{ filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.2)) drop-shadow(0 8px 16px rgba(0,0,0,0.1))' }}
           />
         </div>
 
-        {/* Glass Effect Buttons Container */}
-        <div className="relative z-10 flex flex-row items-center justify-center gap-3 md:gap-4 w-full max-w-xl px-4 animate-fade-in backdrop-blur-sm bg-white/30 py-4 rounded-2xl border border-white/40 shadow-lg">
-          {/* Free Trial Button - GREEN */}
-          <Button 
-            size="lg" 
-            className="flex-1 h-12 md:h-14 text-sm md:text-base font-bold bg-success hover:bg-success/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
-            asChild
-          >
-            <Link to="/auth?type=merchant">
+        {/* Separate Buttons */}
+        <div className="relative z-10 flex flex-row items-start justify-center gap-4 md:gap-6 w-full max-w-2xl px-4 animate-fade-in">
+          {/* Start as Cook Button with subtitle */}
+          <div className="flex flex-col items-center gap-2">
+            <Button 
+              size="lg" 
+              className="h-14 md:h-16 px-6 md:px-10 text-base md:text-lg font-bold bg-success hover:bg-success/90 text-white rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+              asChild
+            >
+              <Link to="/auth?type=merchant">
+                ابدأ كطباخ
+              </Link>
+            </Button>
+            <span className="text-success font-semibold text-sm md:text-base bg-success/10 px-4 py-1.5 rounded-full">
               تجربة مجانية لمدة شهر
-            </Link>
-          </Button>
+            </span>
+          </div>
           
-          {/* Shop Now Button - RED */}
+          {/* Shop Now Button */}
           <Button 
             size="lg" 
-            className="flex-1 h-12 md:h-14 text-sm md:text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+            className="h-14 md:h-16 px-6 md:px-10 text-base md:text-lg font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
             asChild
           >
             <Link to="/browse">
@@ -108,7 +113,7 @@ const Index = () => {
         </div>
 
         {/* Tagline */}
-        <p className="mt-4 text-muted-foreground text-center text-sm md:text-base max-w-sm animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        <p className="mt-6 text-muted-foreground text-center text-sm md:text-base max-w-sm animate-fade-in" style={{ animationDelay: '0.3s' }}>
           {t('index.heroTitle')}
         </p>
       </section>
