@@ -5,7 +5,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
 import FloatingFoodIcons from '@/components/FloatingFoodIcons';
 import { ChefHat, ShoppingCart } from 'lucide-react';
-import logoImage from '@/assets/logo-tabbkhat.png';
+import logoImage from '@/assets/logo-tabbkhat-new.png';
 
 const Index = () => {
   const { user } = useAuth();
@@ -28,11 +28,11 @@ const Index = () => {
         
         <div className="container relative z-10 flex flex-col items-center text-center px-4">
           {/* Logo Image - Centered at top */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-6 shadow-lg mb-6">
+          <div className="mb-6">
             <img 
               src={logoImage} 
               alt="طبخات" 
-              className="w-48 h-32 md:w-64 md:h-40 object-contain"
+              className="w-64 h-40 md:w-80 md:h-48 object-contain"
             />
           </div>
           
@@ -73,15 +73,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Big Start Now CTA Section - Always visible */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-card to-background border-t border-border/50">
-        <div className="container text-center space-y-6 px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-            {t('index.startNowCTA')}
-          </h2>
-          <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto">
-            {t('index.joinPlatform')}
-          </p>
+      {/* Simple Start Now CTA */}
+      <section className="py-12 md:py-16 bg-gradient-to-b from-card to-background border-t border-border/50">
+        <div className="container text-center px-4">
           <Button 
             size="lg" 
             className="h-16 md:h-20 px-10 md:px-16 text-xl md:text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all hover:scale-105 bg-green-600 hover:bg-green-700 rounded-2xl"
