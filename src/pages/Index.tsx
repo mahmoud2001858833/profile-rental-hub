@@ -11,78 +11,83 @@ const Index = () => {
   const { t, dir } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-primary/5 to-success/5">
       <Header />
 
-      {/* Hero Section - Logo Focused */}
-      <section className="flex-1 flex flex-col items-center justify-start pt-6 md:pt-10 px-4 relative overflow-hidden">
+      {/* Hero Section - Logo Focused with Glass Effect */}
+      <section className="flex-1 flex flex-col items-center justify-start pt-4 md:pt-8 px-4 relative overflow-hidden">
+        
+        {/* Decorative Background Blobs */}
+        <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-64 h-64 bg-success/10 rounded-full blur-3xl" />
         
         {/* Food Icons Around Logo */}
         <div className="absolute inset-0 pointer-events-none">
           <Pizza 
-            className="absolute top-20 left-[8%] text-primary/25 animate-float" 
-            size={48} 
+            className="absolute top-24 left-[8%] text-primary/30 animate-float" 
+            size={52} 
             strokeWidth={1.5}
           />
           <Coffee 
-            className="absolute top-36 left-[12%] text-success/30 animate-float" 
-            size={36} 
+            className="absolute top-44 left-[12%] text-success/35 animate-float" 
+            size={40} 
             strokeWidth={1.5}
             style={{ animationDelay: '0.5s' }}
           />
           <Sandwich 
-            className="absolute top-20 right-[8%] text-primary/25 animate-float" 
-            size={44} 
+            className="absolute top-24 right-[8%] text-primary/30 animate-float" 
+            size={48} 
             strokeWidth={1.5}
             style={{ animationDelay: '1s' }}
           />
           <IceCreamCone 
-            className="absolute top-40 right-[10%] text-success/30 animate-float" 
-            size={38} 
+            className="absolute top-48 right-[10%] text-success/35 animate-float" 
+            size={42} 
             strokeWidth={1.5}
             style={{ animationDelay: '1.5s' }}
           />
           <UtensilsCrossed 
-            className="absolute top-56 left-[5%] text-primary/20 animate-float" 
-            size={42} 
+            className="absolute top-64 left-[5%] text-primary/25 animate-float" 
+            size={46} 
             strokeWidth={1.5}
             style={{ animationDelay: '2s' }}
           />
           <Salad 
-            className="absolute top-60 right-[6%] text-success/25 animate-float" 
-            size={40} 
+            className="absolute top-72 right-[6%] text-success/30 animate-float" 
+            size={44} 
             strokeWidth={1.5}
             style={{ animationDelay: '0.8s' }}
           />
           <Soup 
-            className="absolute bottom-52 left-[10%] text-primary/20 animate-float hidden md:block" 
-            size={36} 
+            className="absolute bottom-44 left-[10%] text-primary/25 animate-float hidden md:block" 
+            size={40} 
             strokeWidth={1.5}
             style={{ animationDelay: '1.2s' }}
           />
           <Cookie 
-            className="absolute bottom-56 right-[10%] text-success/20 animate-float hidden md:block" 
-            size={34} 
+            className="absolute bottom-52 right-[10%] text-success/25 animate-float hidden md:block" 
+            size={38} 
             strokeWidth={1.5}
             style={{ animationDelay: '0.3s' }}
           />
         </div>
 
-        {/* Logo - Square format */}
+        {/* Logo - Bigger with Shadow */}
         <div className="relative z-10 mb-6 md:mb-8 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain"
+            className="w-80 h-80 md:w-[400px] md:h-[400px] lg:w-[480px] lg:h-[480px] object-contain drop-shadow-2xl"
+            style={{ filter: 'drop-shadow(0 25px 50px rgba(0,0,0,0.15))' }}
           />
         </div>
 
-        {/* Two Red Buttons Side by Side */}
-        <div className="relative z-10 flex flex-row items-center justify-center gap-3 md:gap-4 w-full max-w-xl px-4 animate-fade-in">
-          {/* Free Trial Button */}
+        {/* Glass Effect Buttons Container */}
+        <div className="relative z-10 flex flex-row items-center justify-center gap-3 md:gap-4 w-full max-w-xl px-4 animate-fade-in backdrop-blur-sm bg-white/30 py-4 rounded-2xl border border-white/40 shadow-lg">
+          {/* Free Trial Button - GREEN */}
           <Button 
             size="lg" 
-            className="flex-1 h-12 md:h-14 text-sm md:text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+            className="flex-1 h-12 md:h-14 text-sm md:text-base font-bold bg-success hover:bg-success/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
             asChild
           >
             <Link to="/auth?type=merchant">
@@ -90,7 +95,7 @@ const Index = () => {
             </Link>
           </Button>
           
-          {/* Shop Now Button */}
+          {/* Shop Now Button - RED */}
           <Button 
             size="lg" 
             className="flex-1 h-12 md:h-14 text-sm md:text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
@@ -108,12 +113,19 @@ const Index = () => {
         </p>
       </section>
 
-      {/* Start Now CTA at Bottom */}
-      <section className="py-8 md:py-12 bg-muted/30">
-        <div className="container text-center px-4">
+      {/* Start Now - Special Section */}
+      <section className="py-12 md:py-16 bg-gradient-to-b from-transparent via-success/5 to-success/10 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-success/5 via-transparent to-transparent" />
+        <div className="container text-center px-4 relative z-10">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4">
+            ابدأ رحلتك معنا الآن
+          </h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            انضم لآلاف الطباخين واعرض أطباقك للعملاء
+          </p>
           <Button 
             size="lg" 
-            className="h-14 md:h-16 px-12 md:px-16 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+            className="h-16 md:h-20 px-16 md:px-24 text-xl md:text-2xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-2xl hover:shadow-3xl transition-all hover:scale-105 backdrop-blur-sm border border-success/30"
             asChild
           >
             <Link to="/auth?type=merchant">
