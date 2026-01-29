@@ -4,7 +4,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Globe } from 'lucide-react';
 
 interface CountryFilterProps {
-  selectedCountry: string;
+  selectedCountry: string | null;
   onCountryChange: (country: string) => void;
 }
 
@@ -74,7 +74,7 @@ const CountryFilter = ({ selectedCountry, onCountryChange }: CountryFilterProps)
       <ScrollArea className="w-full whitespace-nowrap">
         <div className="flex gap-2 pb-2">
           {COUNTRIES.map((country) => {
-            const isSelected = selectedCountry === country.code;
+            const isSelected = selectedCountry === country.code || (!selectedCountry && country.code === 'all');
             
             return (
               <Button

@@ -39,8 +39,8 @@ const Browse = () => {
   const [merchantsInfo, setMerchantsInfo] = useState<Record<string, MerchantInfo>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCountry, setSelectedCountry] = useState<string>("all");
 
   useEffect(() => {
     fetchItems();

@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 interface CategoryFilterProps {
-  selectedCategory: string;
+  selectedCategory: string | null;
   onCategoryChange: (category: string) => void;
 }
 
@@ -56,7 +56,7 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryFilterPr
         <div className="flex gap-2 pb-2">
           {categories.map((category) => {
             const Icon = category.icon;
-            const isSelected = selectedCategory === category.id;
+            const isSelected = selectedCategory === category.id || (!selectedCategory && category.id === 'all');
             
             return (
               <Button
