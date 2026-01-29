@@ -26,30 +26,30 @@ const TrialCountdown = () => {
 
   const days = isFreeTrial ? freeTrialDaysRemaining : daysRemaining;
   
-  // Determine color based on days remaining
+  // Determine color based on days remaining - Always green theme for trial
   const getColorClasses = () => {
     if (days === null) return { bg: 'bg-muted', text: 'text-muted-foreground', border: 'border-muted' };
     if (days > 7) {
       return { 
-        bg: 'bg-green-500/10', 
-        text: 'text-green-600 dark:text-green-400', 
-        border: 'border-green-500/30',
-        icon: 'text-green-500'
+        bg: 'bg-success/10', 
+        text: 'text-success', 
+        border: 'border-success/30',
+        icon: 'text-success'
       };
     }
     if (days >= 3) {
       return { 
-        bg: 'bg-orange-500/10', 
-        text: 'text-orange-600 dark:text-orange-400', 
-        border: 'border-orange-500/30',
-        icon: 'text-orange-500'
+        bg: 'bg-success/15', 
+        text: 'text-success', 
+        border: 'border-success/40',
+        icon: 'text-success'
       };
     }
     return { 
-      bg: 'bg-red-500/10', 
-      text: 'text-red-600 dark:text-red-400', 
-      border: 'border-red-500/30',
-      icon: 'text-red-500'
+      bg: 'bg-success/20', 
+      text: 'text-success', 
+      border: 'border-success/50',
+      icon: 'text-success'
     };
   };
 
@@ -67,7 +67,7 @@ const TrialCountdown = () => {
   return (
     <div 
       className={cn(
-        "rounded-xl border-2 p-4 transition-all duration-300 animate-fade-in",
+        "rounded-xl border-2 p-4 transition-all duration-300 animate-fade-in backdrop-blur-sm",
         colors.bg,
         colors.border
       )}
@@ -104,11 +104,7 @@ const TrialCountdown = () => {
       <div className="mt-4">
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <div 
-            className={cn(
-              "h-full rounded-full transition-all duration-500",
-              days !== null && days > 7 ? 'bg-green-500' :
-              days !== null && days >= 3 ? 'bg-orange-500' : 'bg-red-500'
-            )}
+            className="h-full rounded-full transition-all duration-500 bg-success"
             style={{ 
               width: `${Math.min(100, ((days || 0) / 30) * 100)}%` 
             }}
