@@ -137,10 +137,11 @@ const Browse = () => {
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesCategory = !selectedCategory || item.category === selectedCategory;
+    // Handle 'all' as showing everything - 'all' means no filter applied
+    const matchesCategory = !selectedCategory || selectedCategory === 'all' || item.category === selectedCategory;
     
-    // Filter by item's country, not merchant's country
-    const matchesCountry = !selectedCountry || item.country === selectedCountry;
+    // Filter by item's country, not merchant's country - 'all' means no filter
+    const matchesCountry = !selectedCountry || selectedCountry === 'all' || item.country === selectedCountry;
     
     return matchesSearch && matchesCategory && matchesCountry;
   });
