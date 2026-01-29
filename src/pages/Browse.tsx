@@ -117,16 +117,16 @@ const Browse = () => {
   const getCurrencySymbol = (currency: string | null, country: string | null) => {
     if (currency) return currency;
     const countryToCurrency: Record<string, string> = {
-      jordan: 'د.أ',
-      saudi: 'ر.س',
-      uae: 'د.إ',
-      egypt: 'ج.م',
-      morocco: 'د.م',
-      kuwait: 'د.ك',
-      bahrain: 'د.ب',
-      qatar: 'ر.ق',
-      oman: 'ر.ع',
-      lebanon: 'ل.ل',
+      JO: 'د.أ',
+      SA: 'ر.س',
+      AE: 'د.إ',
+      EG: 'ج.م',
+      MA: 'د.م',
+      KW: 'د.ك',
+      BH: 'د.ب',
+      QA: 'ر.ق',
+      OM: 'ر.ع',
+      LB: 'ل.ل',
     };
     return country ? countryToCurrency[country] || 'د.أ' : 'د.أ';
   };

@@ -181,7 +181,6 @@ const Admin = () => {
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm(t('admin.confirmDelete'))) return;
     
     try {
       const response = await fetch(
