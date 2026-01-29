@@ -10,7 +10,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import LanguageToggle from "@/components/LanguageToggle";
 import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat } from "lucide-react";
 import { toast } from "sonner";
-import logo from "@/assets/logo-tabbkhat.png";
+import logo from "@/assets/logo-tabbkhat-new.png";
 
 const Header = () => {
   const { user, loading, userType } = useAuth();
