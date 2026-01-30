@@ -162,7 +162,7 @@ const Index = () => {
         </div>
 
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-0 animate-scale-in">
+        <div className="relative z-10 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
@@ -172,7 +172,7 @@ const Index = () => {
         </div>
 
         {/* Tagline - Directly Below Logo */}
-        <p className="relative z-10 text-destructive text-center text-xl md:text-2xl lg:text-3xl font-bold max-w-lg animate-fade-in mb-6 -mt-2">
+        <p className="relative z-10 text-destructive text-center text-xl md:text-2xl lg:text-3xl font-bold max-w-lg animate-fade-in mb-6 -mt-6">
           {t('index.heroTitle')}
         </p>
 
