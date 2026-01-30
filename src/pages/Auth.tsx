@@ -325,26 +325,37 @@ const Auth = () => {
                   {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
                 </div>
                 
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/50 border border-border">
+                <div 
+                  className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    registerData.agreeToTerms 
+                      ? 'bg-success/10 border-success' 
+                      : 'bg-muted/50 border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => setRegisterData({ ...registerData, agreeToTerms: !registerData.agreeToTerms })}
+                >
                   <Checkbox
                     id="agree-terms"
                     checked={registerData.agreeToTerms}
                     onCheckedChange={(checked) => 
                       setRegisterData({ ...registerData, agreeToTerms: checked === true })
                     }
-                    className="mt-0.5"
+                    className={`mt-0.5 h-5 w-5 ${registerData.agreeToTerms ? 'border-success data-[state=checked]:bg-success' : ''}`}
                   />
-                  <div className="space-y-1">
-                    <Label htmlFor="agree-terms" className="text-sm font-medium cursor-pointer">
+                  <div className="space-y-1 flex-1">
+                    <Label htmlFor="agree-terms" className="text-sm font-semibold cursor-pointer leading-relaxed">
                       {t('auth.agreeTerms')}{' '}
                       <Link 
                         to="/terms" 
                         target="_blank"
-                        className="text-primary hover:underline font-semibold"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-primary hover:underline font-bold"
                       >
                         {t('auth.termsLink')}
                       </Link>
                     </Label>
+                    {registerData.agreeToTerms && (
+                      <p className="text-xs text-success font-medium">✓ تم الموافقة</p>
+                    )}
                   </div>
                 </div>
                 {errors.agreeToTerms && <p className="text-sm text-destructive">{errors.agreeToTerms}</p>}

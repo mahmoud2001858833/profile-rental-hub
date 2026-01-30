@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Phone, MessageCircle, Truck, Loader2, Package, Copy, Check } from 'lucide-react';
+import { Phone, MessageCircle, Truck, Loader2, Package, Copy, Check, Plus, ShoppingCart } from 'lucide-react';
 import ImageGallery from '@/components/ui/image-gallery';
 import LanguageToggle from '@/components/LanguageToggle';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface Profile {
   display_name: string | null;
@@ -38,11 +40,29 @@ interface Item {
 const PublicPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t, dir } = useLanguage();
+  const { addItem, getItemCount } = useCart();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const handleAddToCart = (item: Item) => {
+    if (!profile) return;
+    
+    addItem({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image_url: item.image_url,
+      merchant_id: profile.user_id,
+      merchant_name: profile.display_name || t('public.noName'),
+      currency: 'JOD',
+      merchant_slug: slug
+    });
+
+    toast.success(dir === 'rtl' ? `تم إضافة ${item.title} للسلة` : `${item.title} added to cart`);
+  };
 
   useEffect(() => {
     if (slug) {
@@ -139,13 +159,25 @@ const PublicPage = () => {
 
   return (
     <div className="min-h-screen bg-background" dir={dir}>
-      {/* Disclaimer with Language Toggle */}
+      {/* Disclaimer with Language Toggle and Cart */}
       <div className="bg-card border-b border-border py-2 px-4">
         <div className="container flex items-center justify-between">
           <p className="text-xs text-muted-foreground flex-1">
             {t('public.disclaimer')}
           </p>
-          <LanguageToggle />
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm" className="relative">
+              <Link to="/cart">
+                <ShoppingCart className="h-5 w-5" />
+                {getItemCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {getItemCount()}
+                  </span>
+                )}
+              </Link>
+            </Button>
+            <LanguageToggle />
+          </div>
         </div>
       </div>
 
@@ -274,7 +306,16 @@ const PublicPage = () => {
                         {item.description}
                       </p>
                     )}
-                    <p className="text-accent font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-accent font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
+                      <Button
+                        size="icon"
+                        className="h-8 w-8 bg-success hover:bg-success/90 rounded-full"
+                        onClick={() => handleAddToCart(item)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
