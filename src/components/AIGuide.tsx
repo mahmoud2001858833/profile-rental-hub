@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useAuth } from '@/hooks/useAuth';
 import { MessageCircle, X, Send, Loader2, Sparkles, Bot, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,6 +18,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-guide`;
 
 const AIGuide = () => {
   const { t, language } = useLanguage();
+  const { userType } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: t('aiGuide.welcome') }
@@ -37,17 +39,19 @@ const AIGuide = () => {
     const routes: Record<string, string> = {
       home: '/',
       auth: '/auth',
-      dashboard: '/dashboard',
+      dashboard: userType === 'customer' ? '/customer' : '/dashboard',
       terms: '/terms',
       cart: '/cart',
+      customer: '/customer',
     };
     
     const routeNames: Record<string, string> = {
       home: t('aiGuide.home'),
       auth: t('aiGuide.login'),
-      dashboard: t('aiGuide.dashboard'),
+      dashboard: userType === 'customer' ? t('aiGuide.myAccount') : t('aiGuide.dashboard'),
       terms: t('aiGuide.terms'),
       cart: t('aiGuide.cart'),
+      customer: t('aiGuide.myAccount'),
     };
     
     const route = routes[page];

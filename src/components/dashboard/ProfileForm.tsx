@@ -306,6 +306,7 @@ const ProfileForm = () => {
             <Switch
               checked={profile.page_enabled}
               onCheckedChange={(checked) => setProfile({ ...profile, page_enabled: checked })}
+              className="data-[state=checked]:bg-green-500"
             />
           </CardTitle>
           <CardDescription>
@@ -411,6 +412,7 @@ const ProfileForm = () => {
             <Switch
               checked={profile.has_delivery}
               onCheckedChange={(checked) => setProfile({ ...profile, has_delivery: checked })}
+              className="data-[state=checked]:bg-green-500"
             />
           </div>
         </CardContent>

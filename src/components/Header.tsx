@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageToggle from "@/components/LanguageToggle";
-import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat } from "lucide-react";
+import { User, ShoppingCart, Store, LogIn, ShieldCheck, ChefHat, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import logo from "@/assets/logo-tabbkhat-new.png";
 
@@ -51,6 +51,17 @@ const Header = () => {
           </Link>
 
           <nav className="flex items-center gap-2">
+            {/* Contact Us - WhatsApp */}
+            <Button 
+              variant="ghost"
+              size="sm"
+              className="bg-[#25D366] hover:bg-[#20BD5A] text-white"
+              onClick={() => window.open('https://wa.me/962799126390', '_blank')}
+            >
+              <MessageCircle className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+              <span className="hidden sm:inline">{t('header.contactUs')}</span>
+            </Button>
+            
             {/* Language Toggle */}
             <LanguageToggle />
             
