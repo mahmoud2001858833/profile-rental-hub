@@ -180,7 +180,7 @@ const AIGuide = () => {
     <>
       {/* Floating AI Guide Button with Label - Smaller */}
       <div
-        className={`fixed bottom-6 ${language === 'ar' ? 'left-6' : 'right-6'} z-50 flex flex-col items-center gap-1 transition-all duration-300 ${
+        className={`fixed bottom-6 right-6 z-50 flex flex-col items-center gap-1 transition-all duration-300 ${
           isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
         }`}
       >
@@ -197,7 +197,7 @@ const AIGuide = () => {
       </div>
 
       <div
-        className={`fixed bottom-6 ${language === 'ar' ? 'left-6' : 'right-6'} z-50 w-[90vw] max-w-[380px] transition-all duration-300 ${
+        className={`fixed bottom-6 right-6 z-50 w-[90vw] max-w-[380px] transition-all duration-300 ${
           isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
         }`}
       >
