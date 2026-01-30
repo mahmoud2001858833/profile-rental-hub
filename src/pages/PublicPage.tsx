@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
+import { getCurrencySymbol } from '@/components/CountryFilter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ interface Item {
   description: string | null;
   price: number;
   image_url: string | null;
+  currency: string | null;
   gallery_images?: ItemImage[];
 }
 
@@ -50,6 +52,8 @@ const PublicPage = () => {
   const handleAddToCart = (item: Item) => {
     if (!profile) return;
     
+    const currencySymbol = getCurrencySymbol(item.currency || 'JOD');
+    
     addItem({
       id: item.id,
       title: item.title,
@@ -57,7 +61,7 @@ const PublicPage = () => {
       image_url: item.image_url,
       merchant_id: profile.user_id,
       merchant_name: profile.display_name || t('public.noName'),
-      currency: 'JOD',
+      currency: currencySymbol,
       merchant_slug: slug
     });
 
@@ -89,7 +93,7 @@ const PublicPage = () => {
     // Fetch items
     const { data: itemsData } = await supabase
       .from('items')
-      .select('id, title, description, price, image_url')
+      .select('id, title, description, price, image_url, currency')
       .eq('user_id', profileData.user_id)
       .eq('is_active', true)
       .order('sort_order', { ascending: true });
@@ -307,7 +311,7 @@ const PublicPage = () => {
                       </p>
                     )}
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-accent font-bold">{item.price.toFixed(2)} {t('common.currency')}</p>
+                      <p className="text-accent font-bold">{item.price.toFixed(2)} {getCurrencySymbol(item.currency || 'JOD')}</p>
                       <Button
                         size="icon"
                         className="h-8 w-8 bg-success hover:bg-success/90 rounded-full"
