@@ -1,166 +1,152 @@
 
 # خطة التحسينات المطلوبة
 
-## ملخص المشاكل والحلول
+## ملخص التغييرات
 
-| المشكلة | الحل |
+| المتطلب | الحل |
 |---------|------|
-| تصنيفات الأطباق كثيرة جداً | تحديثها للقائمة المطلوبة فقط |
-| في صفحة الطباخ زر الواتساب ليس أخضر | تغيير لون الزر للأخضر |
-| العميل المسجل لا يستطيع تأكيد الطلب | إصلاح منطق التحقق من تسجيل الدخول |
-| حجم الشعار صغير | تكبيره |
-| "أطباق وخدمات" بدل "أطباق" | تغيير الترجمة |
-| العملة تظهر بالريال السعودي في صفحة العميل | جلب العملة من الطلب بدل استخدام قيمة ثابتة |
+| بعد تأكيد الطلب → انتقال لصفحة الطباخ | إضافة `navigate` بعد نجاح الطلب |
+| حالة الصفحة والتوصيل بلون أخضر عند التفعيل | تحسين Switch في ProfileForm |
+| المرشد الذكي يأخذ العميل للوحة التحكم خطأً | تحديث AIGuide وEdge Function للتفريق بين أنواع المستخدمين |
+| حذف زر الواتساب من الزاوية | حذف WhatsAppButton من App.tsx |
+| إضافة "تواصل معنا" في الهيدر | إضافة زر في Header يفتح الواتساب |
 
 ---
 
-## التغييرات التقنية
+## التفاصيل التقنية
 
-### 1. تحديث التصنيفات
-
-**الملفات المتأثرة:**
-- `src/components/CategoryFilter.tsx`
-- `src/components/dashboard/ItemsManager.tsx`
-- `src/hooks/useLanguage.tsx`
-
-**التصنيفات الجديدة:**
-1. الكل
-2. طبخات شعبية
-3. مشاوي
-4. مأكولات بحرية
-5. معكرونة
-6. شوربة
-7. مقبلات
-8. معجنات
-9. حلويات
-10. عصائر
-11. بوظة
-
-### 2. زر الواتساب أخضر في صفحة الطباخ
-
-**الملف:** `src/pages/PublicPage.tsx`
-
-```text
-تغيير:
-variant="outline" → bg-[#25D366] text-white
-```
-
-### 3. إصلاح مشكلة تأكيد الطلب للعميل المسجل
+### 1. الانتقال لصفحة الطباخ بعد تأكيد الطلب
 
 **الملف:** `src/pages/Cart.tsx`
 
-**المشكلة:** التحقق من `customerInfo` يفشل لأن البيانات قد لا تكون محملة بعد أو العميل لم يكمل ملفه الشخصي.
+**التغييرات:**
+- بعد `clearMerchantItems(merchantId)` وعرض رسالة النجاح
+- إضافة `navigate(/p/${merchantSlug})` إذا كان `merchant_slug` متوفر
+- الانتقال الفوري لصفحة الطباخ للتواصل
 
-**الحل:**
-- التحقق من `user` أولاً (مسجل دخول)
-- إذا لم يكن لديه ملف عميل كامل → إنشاء ملف تلقائي أو توجيهه لإكماله
-- السماح بتأكيد الطلب حتى لو لم يكمل بياناته (استخدام بيانات افتراضية)
+**الكود:**
+```typescript
+// بعد نجاح الطلب
+clearMerchantItems(merchantId);
 
-### 4. تكبير الشعار
+toast({
+  title: t('cart.orderConfirmed'),
+  description: t('cart.orderSentToMerchant'),
+});
 
-**الملف:** `src/pages/Index.tsx`
-
-```text
-من: w-[220px] md:w-[280px] lg:w-[340px]
-إلى: w-[280px] md:w-[340px] lg:w-[420px]
+// الانتقال لصفحة الطباخ
+const merchantSlug = merchantItems[0]?.merchant_slug;
+if (merchantSlug) {
+  navigate(`/p/${merchantSlug}`);
+}
 ```
 
-### 5. تغيير "أطباق وخدمات" إلى "أطباق"
+### 2. تحسين ألوان Switch في لوحة التحكم
 
-**الملف:** `src/hooks/useLanguage.tsx`
+**الملف:** `src/components/dashboard/ProfileForm.tsx`
 
-```text
-'public.productsServices': { ar: 'أطباق وخدمات', ... }
-→
-'public.productsServices': { ar: 'أطباق', en: 'Dishes' }
+**المشكلة:** Switch الافتراضي يستخدم لون رمادي/أحمر للحالة الفعالة
+
+**الحل:** إضافة classes مخصصة للـ Switch عند التفعيل
+
+**التغييرات:**
+```typescript
+// حالة الصفحة
+<Switch
+  checked={profile.page_enabled}
+  onCheckedChange={(checked) => setProfile({ ...profile, page_enabled: checked })}
+  className={profile.page_enabled ? 'data-[state=checked]:bg-green-500' : ''}
+/>
+
+// خيار التوصيل
+<Switch
+  checked={profile.has_delivery}
+  onCheckedChange={(checked) => setProfile({ ...profile, has_delivery: checked })}
+  className={profile.has_delivery ? 'data-[state=checked]:bg-green-500' : ''}
+/>
 ```
 
-### 6. إصلاح العملة في صفحة العميل
+### 3. إصلاح المرشد الذكي (AIGuide)
 
-**الملف:** `src/pages/Customer.tsx`
+**المشكلة:** عندما يطلب العميل الانتقال للوحة التحكم، يأخذه للوحة تحكم الطباخ
 
-**المشكلة:** يستخدم `t('common.currency')` الثابت بدل العملة المحفوظة مع الطلب.
+**الحل ذو شقين:**
 
-**الحل:**
-- استخدام `order.currency` من قاعدة البيانات
-- إضافة دالة `getCurrencyDisplay` لتحويل رمز العملة
+#### أ) تحديث Frontend (`src/components/AIGuide.tsx`)
+- تمرير `userType` من `useAuth` للمرشد
+- تعديل `handleNavigate` ليوجه العميل لـ `/customer` بدل `/dashboard`
 
----
-
-## تفاصيل التغييرات
-
-### CategoryFilter.tsx - التصنيفات الجديدة
-
-```text
-الكل (all) → LayoutGrid
-طبخات شعبية → Soup
-مشاوي → Beef
-مأكولات بحرية → Fish
-معكرونة → UtensilsCrossed
-شوربة → Soup
-مقبلات → Salad
-معجنات → Croissant
-حلويات → Cake
-عصائر → Coffee
-بوظة → IceCream
+```typescript
+const handleNavigate = (page: string) => {
+  const routes: Record<string, string> = {
+    home: '/',
+    auth: '/auth',
+    dashboard: userType === 'customer' ? '/customer' : '/dashboard',
+    terms: '/terms',
+    cart: '/cart',
+    customer: '/customer',
+  };
+  // ...
+};
 ```
 
-### ItemsManager.tsx - تحديث قائمة التصنيفات
-
-نفس القائمة أعلاه للاختيار عند رفع طبق جديد.
-
-### Cart.tsx - إصلاح منطق تأكيد الطلب
+#### ب) تحديث Edge Function (`supabase/functions/ai-guide/index.ts`)
+- تعديل system prompt لتوضيح الفرق بين أنواع المستخدمين:
+  - العملاء → صفحة "حسابي" (/customer)
+  - الطباخين → "لوحة التحكم" (/dashboard)
 
 ```text
-المنطق الحالي:
-if (!customerInfo?.name || !customerInfo?.phone) → redirect
+## أنواع المستخدمين:
+1. الطباخين (merchants) - لديهم لوحة تحكم (/dashboard) لإدارة أطباقهم وصفحتهم
+2. العملاء (customers) - لديهم صفحة حسابي (/customer) لعرض طلباتهم
 
-المنطق الجديد:
-1. التحقق من user (مسجل؟)
-2. إذا لم يوجد customerInfo → جلبه أو إنشاؤه تلقائياً
-3. استخدام رقم الهاتف من user.email كـ fallback
-4. السماح بالطلب حتى بدون اسم (يمكن تركه فارغ)
+- إذا طلب مستخدم الذهاب للوحة التحكم وكان عميلاً → وجهه لصفحة "حسابي" (customer)
+- إذا طلب مستخدم الذهاب للوحة التحكم وكان طباخاً → وجهه للوحة التحكم (dashboard)
 ```
 
-### PublicPage.tsx - زر واتساب أخضر
+### 4. حذف زر الواتساب العائم
 
-```text
-من:
-<Button onClick={handleWhatsApp} variant="outline" ...>
+**الملف:** `src/App.tsx`
 
-إلى:
-<Button onClick={handleWhatsApp} className="bg-[#25D366] hover:bg-[#20BD5A] text-white" ...>
+**التغيير:**
+- حذف استيراد `WhatsAppButton`
+- حذف `<WhatsAppButton />` من الـ JSX
+
+```diff
+- import WhatsAppButton from "./components/WhatsAppButton";
+
+// في JSX
+  <AIGuide />
+- <WhatsAppButton />
 ```
 
-### Customer.tsx - العملة الصحيحة
+### 5. إضافة "تواصل معنا" في الهيدر
 
-```text
-من:
-{order.total_amount.toFixed(2)} {t('common.currency')}
+**الملف:** `src/components/Header.tsx`
 
-إلى:
-{order.total_amount.toFixed(2)} {getCurrencyDisplay(order.currency)}
+**التغييرات:**
+- إضافة زر "تواصل معنا" بلون أخضر الواتساب
+- عند النقر → فتح رابط الواتساب في نافذة جديدة
+
+**الكود:**
+```typescript
+import { MessageCircle } from 'lucide-react';
+
+// في الـ nav قبل أي عنصر
+<Button 
+  variant="ghost"
+  size="sm"
+  className="bg-[#25D366] hover:bg-[#20BD5A] text-white"
+  onClick={() => window.open('https://wa.me/962799126390', '_blank')}
+>
+  <MessageCircle className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+  <span className="hidden sm:inline">{t('header.contactUs')}</span>
+</Button>
 ```
 
----
-
-## الترجمات المحدثة
-
-```text
-// التصنيفات الجديدة
-'categories.traditionalDishes': { ar: 'طبخات شعبية', en: 'Traditional Dishes' }
-'categories.grills': { ar: 'مشاوي', en: 'Grills' }
-'categories.seafood': { ar: 'مأكولات بحرية', en: 'Seafood' }
-'categories.pasta': { ar: 'معكرونة', en: 'Pasta' }
-'categories.soup': { ar: 'شوربة', en: 'Soup' }
-'categories.appetizers': { ar: 'مقبلات', en: 'Appetizers' }
-'categories.pastries': { ar: 'معجنات', en: 'Pastries' }
-'categories.desserts': { ar: 'حلويات', en: 'Desserts' }
-'categories.juices': { ar: 'عصائر', en: 'Juices' }
-'categories.iceCream': { ar: 'بوظة', en: 'Ice Cream' }
-
-// تغيير اسم القسم
-'public.productsServices': { ar: 'أطباق', en: 'Dishes' }
+**ترجمة جديدة:**
+```typescript
+'header.contactUs': { ar: 'تواصل معنا', en: 'Contact Us' }
 ```
 
 ---
@@ -169,21 +155,27 @@ if (!customerInfo?.name || !customerInfo?.phone) → redirect
 
 | الملف | التغيير |
 |-------|---------|
-| `src/components/CategoryFilter.tsx` | تحديث التصنيفات |
-| `src/components/dashboard/ItemsManager.tsx` | تحديث قائمة التصنيفات |
-| `src/hooks/useLanguage.tsx` | تحديث الترجمات + تغيير "أطباق وخدمات" |
-| `src/pages/PublicPage.tsx` | زر واتساب أخضر |
-| `src/pages/Cart.tsx` | إصلاح منطق تأكيد الطلب |
-| `src/pages/Customer.tsx` | إصلاح عرض العملة |
-| `src/pages/Index.tsx` | تكبير الشعار |
+| `src/pages/Cart.tsx` | إضافة navigate بعد تأكيد الطلب |
+| `src/components/dashboard/ProfileForm.tsx` | Switch أخضر عند التفعيل |
+| `src/components/AIGuide.tsx` | التفريق بين أنواع المستخدمين |
+| `supabase/functions/ai-guide/index.ts` | تحديث prompt للتفريق بين المستخدمين |
+| `src/App.tsx` | حذف WhatsAppButton |
+| `src/components/Header.tsx` | إضافة زر "تواصل معنا" |
+| `src/hooks/useLanguage.tsx` | إضافة ترجمة "تواصل معنا" |
+
+---
+
+## الترجمات الجديدة
+
+```typescript
+'header.contactUs': { ar: 'تواصل معنا', en: 'Contact Us' }
+```
 
 ---
 
 ## النتيجة المتوقعة
 
-1. **التصنيفات**: قائمة مختصرة ومنظمة (11 تصنيف بدل 17)
-2. **زر الواتساب**: أخضر فاقع مميز
-3. **تأكيد الطلب**: يعمل للعميل المسجل فوراً
-4. **الشعار**: أكبر وأوضح
-5. **العنوان**: "أطباق" بدل "أطباق وخدمات"
-6. **العملة**: تظهر بعملة الطباخ الصحيحة
+1. **تأكيد الطلب** → ينتقل العميل فوراً لصفحة الطباخ للتواصل
+2. **Switch الصفحة/التوصيل** → لون أخضر عند التفعيل (بدل الأحمر)
+3. **المرشد الذكي** → يوجه العملاء لـ "حسابي" والطباخين لـ "لوحة التحكم"
+4. **زر الواتساب** → انتقل من الزاوية إلى الهيدر بعنوان "تواصل معنا"
