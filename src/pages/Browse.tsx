@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, ShoppingCart, Plus, ChefHat } from "lucide-react";
+import { Search, ShoppingCart, Plus, ChefHat, Truck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ interface Item {
   user_id: string;
   category: string | null;
   country: string | null;
+  has_delivery?: boolean;
 }
 
 interface MerchantInfo {
@@ -49,10 +50,10 @@ const Browse = () => {
   const fetchItems = async () => {
     setLoading(true);
     
-    // Build query for items - now includes country
+    // Build query for items - now includes country and has_delivery
     let query = supabase
       .from('items')
-      .select('id, title, description, price, image_url, currency, user_id, category, country')
+      .select('*')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
@@ -222,11 +223,19 @@ const Browse = () => {
                           <ChefHat className="h-12 w-12 text-muted-foreground" />
                         </div>
                       )}
-                      {item.category && (
-                        <Badge className="absolute top-2 right-2 text-xs">
-                          {item.category}
-                        </Badge>
-                      )}
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        {item.category && (
+                          <Badge className="text-xs">
+                            {item.category}
+                          </Badge>
+                        )}
+                        {item.has_delivery && (
+                          <Badge className="text-xs bg-green-600 hover:bg-green-700">
+                            <Truck className="h-3 w-3 mr-1" />
+                            {t('browse.delivery')}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </Link>
                   

@@ -470,7 +470,9 @@ export type Database = {
           avatar_url: string
           display_name: string
           page_slug: string
+          phone: string
           user_id: string
+          whatsapp_number: string
         }[]
       }
       has_role: {
