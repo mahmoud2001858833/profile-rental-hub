@@ -55,7 +55,7 @@ const Index = () => {
       <Header />
 
       {/* Hero Section - Logo Focused with Glass Effect */}
-      <section className="flex-1 flex flex-col items-center justify-center py-8 md:py-12 px-4 relative overflow-hidden">
+      <section className="flex-1 flex flex-col items-center justify-center py-4 md:py-6 px-4 relative overflow-hidden">
         
         {/* Decorative Background Blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
@@ -162,22 +162,22 @@ const Index = () => {
         </div>
 
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-2 md:mb-3 animate-scale-in">
+        <div className="relative z-10 mb-1 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-[280px] h-auto md:w-[340px] lg:w-[420px] object-contain"
+            className="w-[320px] h-auto md:w-[420px] lg:w-[500px] object-contain"
             style={{ filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.2)) drop-shadow(0 6px 12px rgba(0,0,0,0.1))' }}
           />
         </div>
 
         {/* Tagline - Above Buttons */}
-        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-6">
+        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-4">
           {t('index.heroTitle')}
         </p>
 
         {/* Dynamic Buttons based on user type */}
-        <div className="relative z-10 flex flex-row items-start justify-center gap-4 md:gap-8 w-full max-w-3xl px-4 animate-fade-in">
+        <div className="relative z-10 flex flex-row items-start justify-center gap-3 md:gap-6 w-full max-w-3xl px-4 animate-fade-in">
           {/* Not logged in: Show register + shop */}
           {!user && (
             <>
