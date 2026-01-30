@@ -172,7 +172,7 @@ const Index = () => {
         </div>
 
         {/* Tagline - Directly Below Logo */}
-        <p className="relative z-10 text-destructive text-center text-xl md:text-2xl lg:text-3xl font-bold max-w-lg animate-fade-in mb-6 -mt-20 md:-mt-24">
+        <p className="relative z-10 text-destructive text-center text-xl md:text-2xl lg:text-3xl font-bold max-w-lg animate-fade-in mb-4 -mt-32 md:-mt-40">
           {t('index.heroTitle')}
         </p>
 
