@@ -107,6 +107,7 @@ export type Database = {
           created_at: string | null
           currency: string | null
           description: string | null
+          has_delivery: boolean | null
           id: string
           image_url: string | null
           is_active: boolean | null
@@ -122,6 +123,7 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           description?: string | null
+          has_delivery?: boolean | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
@@ -137,6 +139,7 @@ export type Database = {
           created_at?: string | null
           currency?: string | null
           description?: string | null
+          has_delivery?: boolean | null
           id?: string
           image_url?: string | null
           is_active?: boolean | null
