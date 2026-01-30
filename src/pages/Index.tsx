@@ -133,7 +133,7 @@ const Index = () => {
 
         {/* Tagline - Above Buttons */}
         <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-6">
-          حولي شغفك بالطبخ الي مشروع حقيقي
+          {t('index.heroTitle')}
         </p>
 
         {/* Separate Buttons - Bigger */}
@@ -146,11 +146,11 @@ const Index = () => {
               asChild
             >
               <Link to="/auth?type=merchant">
-                أبدأ كطابخه
+                {t('index.registerAsCook')}
               </Link>
             </Button>
             <span className="text-success font-semibold text-sm md:text-base bg-success/10 px-5 py-2 rounded-full">
-              تجربة مجانية لمدة شهر
+              {t('index.freeTrialMonth')}
             </span>
           </div>
           
@@ -161,7 +161,7 @@ const Index = () => {
             asChild
           >
             <Link to="/browse">
-              تسوق الآن
+              {t('index.shopNow')}
             </Link>
           </Button>
         </div>
@@ -172,10 +172,10 @@ const Index = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-success/5 via-transparent to-transparent" />
         <div className="container text-center px-4 relative z-10">
           <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4">
-            ابدأ رحلتك معنا الآن
+            {t('index.startNowCTA')}
           </h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            انضم لآلاف الطباخين واعرض أطباقك للعملاء
+            {t('index.joinPlatform')}
           </p>
           <Button 
             size="lg" 
@@ -183,7 +183,7 @@ const Index = () => {
             asChild
           >
             <Link to="/auth?type=merchant">
-              ابدأ الآن
+              {t('index.startNow')}
             </Link>
           </Button>
         </div>
