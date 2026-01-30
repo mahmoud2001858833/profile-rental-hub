@@ -54,8 +54,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-primary/5 to-success/5">
       <Header />
 
-      {/* Hero Section - Logo Focused with Glass Effect */}
-      <section className="flex-1 flex flex-col items-center justify-center py-4 md:py-6 px-4 relative overflow-hidden">
+      {/* Hero Section - Compact Layout */}
+      <section className="flex-1 flex flex-col items-center justify-end pb-8 md:pb-12 px-4 relative overflow-hidden">
         
         {/* Decorative Background Blobs */}
         <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
@@ -163,7 +163,7 @@ const Index = () => {
 
         {/* Logo - Medium with Strong Shadow */}
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-2 animate-scale-in">
+        <div className="relative z-10 mb-1 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
@@ -173,7 +173,7 @@ const Index = () => {
         </div>
 
         {/* Tagline - Below Logo */}
-        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-4">
+        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-3">
           {t('index.heroTitle')}
         </p>
 
