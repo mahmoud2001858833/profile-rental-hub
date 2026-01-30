@@ -53,15 +53,10 @@ const Cart = () => {
       return;
     }
 
-    if (!customerInfo?.name || !customerInfo?.phone) {
-      toast({
-        title: t('cart.loginToConfirm'),
-        description: t('cart.loginToContinue'),
-        variant: 'destructive',
-      });
-      navigate('/customer');
-      return;
-    }
+    // Extract phone from user email as fallback
+    const userPhone = user.email?.replace('.customer@phone.local', '').replace('@phone.local', '') || '';
+    const customerName = customerInfo?.name || userPhone;
+    const customerPhone = customerInfo?.phone || userPhone;
 
     setSubmittingMerchant(merchantId);
 
@@ -72,8 +67,8 @@ const Cart = () => {
         .insert({
           merchant_id: merchantId,
           customer_id: user.id,
-          customer_name: customerInfo.name,
-          customer_phone: customerInfo.phone,
+          customer_name: customerName,
+          customer_phone: customerPhone,
           total_amount: total,
           currency: merchantItems[0]?.currency || 'JOD',
           status: 'pending'

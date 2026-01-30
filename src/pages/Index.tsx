@@ -166,7 +166,7 @@ const Index = () => {
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-[220px] h-auto md:w-[280px] lg:w-[340px] object-contain"
+            className="w-[280px] h-auto md:w-[340px] lg:w-[420px] object-contain"
             style={{ filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.2)) drop-shadow(0 6px 12px rgba(0,0,0,0.1))' }}
           />
         </div>

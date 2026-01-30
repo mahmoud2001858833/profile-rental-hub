@@ -2,24 +2,16 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { 
-  ChefHat, 
   Salad, 
   Cake, 
   Coffee, 
   Croissant, 
-  Sandwich,
   LayoutGrid,
   UtensilsCrossed,
   Fish,
-  Leaf,
-  Utensils,
-  Cookie,
   Soup,
-  Pizza,
   Beef,
   IceCream,
-  Egg,
-  Apple
 } from 'lucide-react';
 
 interface CategoryFilterProps {
@@ -32,22 +24,16 @@ const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryFilterPr
 
   const categories = [
     { id: 'all', label: t('categories.all'), icon: LayoutGrid },
-    { id: 'أطباق رئيسية', label: t('categories.mainDishes'), icon: ChefHat },
-    { id: 'أكل شعبي', label: t('categories.traditionalFood'), icon: Soup },
-    { id: 'أكل شرقي', label: t('categories.easternFood'), icon: UtensilsCrossed },
-    { id: 'أكل غربي', label: t('categories.westernFood'), icon: Pizza },
+    { id: 'طبخات شعبية', label: t('categories.traditionalDishes'), icon: Soup },
+    { id: 'مشاوي', label: t('categories.grills'), icon: Beef },
     { id: 'مأكولات بحرية', label: t('categories.seafood'), icon: Fish },
-    { id: 'أكل صحي', label: t('categories.healthyFood'), icon: Leaf },
-    { id: 'لحوم ومشاوي', label: t('categories.meatsGrills'), icon: Beef },
-    { id: 'فطور', label: t('categories.breakfast'), icon: Egg },
+    { id: 'معكرونة', label: t('categories.pasta'), icon: UtensilsCrossed },
+    { id: 'شوربة', label: t('categories.soup'), icon: Soup },
     { id: 'مقبلات', label: t('categories.appetizers'), icon: Salad },
-    { id: 'حلويات', label: t('categories.desserts'), icon: Cake },
-    { id: 'حلاويات شعبية', label: t('categories.traditionalSweets'), icon: Cookie },
-    { id: 'آيس كريم', label: t('categories.iceCream'), icon: IceCream },
-    { id: 'مشروبات', label: t('categories.drinks'), icon: Coffee },
     { id: 'معجنات', label: t('categories.pastries'), icon: Croissant },
-    { id: 'أكلات خفيفة', label: t('categories.snacks'), icon: Sandwich },
-    { id: 'فواكه وعصائر', label: t('categories.fruitsJuices'), icon: Apple },
+    { id: 'حلويات', label: t('categories.desserts'), icon: Cake },
+    { id: 'عصائر', label: t('categories.juices'), icon: Coffee },
+    { id: 'بوظة', label: t('categories.iceCream'), icon: IceCream },
   ];
 
   return (

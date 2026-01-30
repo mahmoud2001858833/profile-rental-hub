@@ -36,22 +36,16 @@ interface Item {
 
 // Categories for dropdown
 const CATEGORIES = [
-  { id: 'أطباق رئيسية', label: { ar: 'أطباق رئيسية', en: 'Main Dishes' } },
-  { id: 'أكل شعبي', label: { ar: 'أكل شعبي', en: 'Traditional Food' } },
-  { id: 'أكل شرقي', label: { ar: 'أكل شرقي', en: 'Eastern Food' } },
-  { id: 'أكل غربي', label: { ar: 'أكل غربي', en: 'Western Food' } },
+  { id: 'طبخات شعبية', label: { ar: 'طبخات شعبية', en: 'Traditional Dishes' } },
+  { id: 'مشاوي', label: { ar: 'مشاوي', en: 'Grills' } },
   { id: 'مأكولات بحرية', label: { ar: 'مأكولات بحرية', en: 'Seafood' } },
-  { id: 'أكل صحي', label: { ar: 'أكل صحي', en: 'Healthy Food' } },
-  { id: 'لحوم ومشاوي', label: { ar: 'لحوم ومشاوي', en: 'Meats & Grills' } },
-  { id: 'فطور', label: { ar: 'فطور', en: 'Breakfast' } },
+  { id: 'معكرونة', label: { ar: 'معكرونة', en: 'Pasta' } },
+  { id: 'شوربة', label: { ar: 'شوربة', en: 'Soup' } },
   { id: 'مقبلات', label: { ar: 'مقبلات', en: 'Appetizers' } },
-  { id: 'حلويات', label: { ar: 'حلويات', en: 'Desserts' } },
-  { id: 'حلاويات شعبية', label: { ar: 'حلاويات شعبية', en: 'Traditional Sweets' } },
-  { id: 'آيس كريم', label: { ar: 'آيس كريم', en: 'Ice Cream' } },
-  { id: 'مشروبات', label: { ar: 'مشروبات', en: 'Drinks' } },
   { id: 'معجنات', label: { ar: 'معجنات', en: 'Pastries' } },
-  { id: 'أكلات خفيفة', label: { ar: 'أكلات خفيفة', en: 'Snacks' } },
-  { id: 'فواكه وعصائر', label: { ar: 'فواكه وعصائر', en: 'Fruits & Juices' } },
+  { id: 'حلويات', label: { ar: 'حلويات', en: 'Desserts' } },
+  { id: 'عصائر', label: { ar: 'عصائر', en: 'Juices' } },
+  { id: 'بوظة', label: { ar: 'بوظة', en: 'Ice Cream' } },
 ];
 
 interface ItemsManagerProps {
@@ -76,7 +70,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     price: '',
     image_url: null as string | null,
     currency: 'JOD', // Always default to JOD
-    category: 'أطباق رئيسية',
+    category: 'طبخات شعبية',
     country: 'JO',
     has_delivery: false,
   });
@@ -145,7 +139,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       price: '', 
       image_url: null, 
       currency: getDefaultCurrency(),
-      category: 'أطباق رئيسية',
+      category: 'طبخات شعبية',
       country: merchantCountry,
       has_delivery: false,
     });
@@ -161,7 +155,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       price: item.price.toString(),
       image_url: item.image_url,
       currency: item.currency || 'JOD',
-      category: item.category || 'أطباق رئيسية',
+      category: item.category || 'طبخات شعبية',
       country: item.country || merchantCountry,
       has_delivery: item.has_delivery || false,
     });

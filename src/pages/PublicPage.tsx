@@ -261,7 +261,7 @@ const PublicPage = () => {
               <Phone className="h-4 w-4" />
               {t('public.call')}
             </Button>
-            <Button onClick={handleWhatsApp} variant="outline" size="lg" className="flex-1 gap-2">
+            <Button onClick={handleWhatsApp} size="lg" className="flex-1 gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white">
               <MessageCircle className="h-4 w-4" />
               {t('public.whatsapp')}
             </Button>
