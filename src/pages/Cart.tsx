@@ -61,6 +61,38 @@ const Cart = () => {
     setSubmittingMerchant(merchantId);
 
     try {
+      // First, verify all items are still available
+      const itemIds = merchantItems.map(item => item.id);
+      const { data: availableItems, error: checkError } = await supabase
+        .from('items')
+        .select('id, price, title, is_active')
+        .in('id', itemIds)
+        .eq('is_active', true);
+
+      if (checkError) throw checkError;
+
+      // Check if any items are unavailable
+      const availableItemIds = new Set(availableItems?.map(item => item.id) || []);
+      const unavailableItems = merchantItems.filter(item => !availableItemIds.has(item.id));
+
+      if (unavailableItems.length > 0) {
+        // Remove unavailable items from cart
+        unavailableItems.forEach(item => removeItem(item.id));
+        
+        toast({
+          title: t('cart.itemsUnavailable'),
+          description: t('cart.someItemsRemoved'),
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Recalculate total with verified prices
+      const verifiedTotal = merchantItems.reduce((sum, item) => {
+        const verifiedItem = availableItems?.find(ai => ai.id === item.id);
+        return sum + (verifiedItem?.price || item.price) * item.quantity;
+      }, 0);
+
       // Create order
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -69,7 +101,7 @@ const Cart = () => {
           customer_id: user.id,
           customer_name: customerName,
           customer_phone: customerPhone,
-          total_amount: total,
+          total_amount: verifiedTotal,
           currency: merchantItems[0]?.currency || 'JOD',
           status: 'pending'
         })
@@ -78,14 +110,17 @@ const Cart = () => {
 
       if (orderError) throw orderError;
 
-      // Create order items
-      const orderItems = merchantItems.map(item => ({
-        order_id: order.id,
-        item_id: item.id,
-        item_title: item.title,
-        item_price: item.price,
-        quantity: item.quantity
-      }));
+      // Create order items with verified prices
+      const orderItems = merchantItems.map(item => {
+        const verifiedItem = availableItems?.find(ai => ai.id === item.id);
+        return {
+          order_id: order.id,
+          item_id: item.id,
+          item_title: verifiedItem?.title || item.title,
+          item_price: verifiedItem?.price || item.price,
+          quantity: item.quantity
+        };
+      });
 
       const { error: itemsError } = await supabase
         .from('order_items')
