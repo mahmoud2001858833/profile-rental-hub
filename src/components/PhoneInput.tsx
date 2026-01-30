@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -42,18 +42,41 @@ interface PhoneInputProps {
 const PhoneInput = ({ value, onChange, placeholder, className, id }: PhoneInputProps) => {
   // Parse the value to extract country code and number
   const parseValue = (val: string) => {
+    if (!val) return { countryCode: '+962', number: '' };
+    
+    // Check if value starts with a known country code
     for (const cc of COUNTRY_CODES) {
       if (val.startsWith(cc.code)) {
         return { countryCode: cc.code, number: val.slice(cc.code.length) };
       }
     }
-    // Default to Jordan if no code found
-    return { countryCode: '+962', number: val.replace(/^\+/, '') };
+    
+    // If starts with +, try to match country code
+    if (val.startsWith('+')) {
+      // Try to find matching country code by checking different lengths
+      for (let len = 4; len >= 2; len--) {
+        const possibleCode = val.slice(0, len);
+        const match = COUNTRY_CODES.find(cc => cc.code === possibleCode);
+        if (match) {
+          return { countryCode: match.code, number: val.slice(len) };
+        }
+      }
+    }
+    
+    // Default to Jordan if no code found, strip leading zeros
+    return { countryCode: '+962', number: val.replace(/^0+/, '') };
   };
 
   const { countryCode: initialCode, number: initialNumber } = parseValue(value);
   const [selectedCode, setSelectedCode] = useState(initialCode);
   const [phoneNumber, setPhoneNumber] = useState(initialNumber);
+
+  // Sync state when value prop changes
+  useEffect(() => {
+    const { countryCode, number } = parseValue(value);
+    setSelectedCode(countryCode);
+    setPhoneNumber(number);
+  }, [value]);
 
   const handleCodeChange = (code: string) => {
     setSelectedCode(code);
@@ -61,8 +84,8 @@ const PhoneInput = ({ value, onChange, placeholder, className, id }: PhoneInputP
   };
 
   const handleNumberChange = (num: string) => {
-    // Only allow numbers
-    const cleanNum = num.replace(/[^0-9]/g, '');
+    // Only allow numbers, strip leading zeros
+    const cleanNum = num.replace(/[^0-9]/g, '').replace(/^0+/, '');
     setPhoneNumber(cleanNum);
     onChange(selectedCode + cleanNum);
   };
