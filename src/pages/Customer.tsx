@@ -35,6 +35,7 @@ interface Order {
   created_at: string;
   merchant_id: string;
   customer_notes: string | null;
+  currency: string | null;
   items?: OrderItem[];
   merchant_info?: {
     display_name: string;
@@ -411,7 +412,7 @@ const Customer = () => {
                                   {status.label}
                                 </Badge>
                                 <p className="text-primary font-bold mt-2">
-                                  {order.total_amount.toFixed(2)} {t('common.currency')}
+                                  {order.total_amount.toFixed(2)} {order.currency || 'JOD'}
                                 </p>
                               </div>
                             </div>
@@ -495,7 +496,7 @@ const Customer = () => {
                     <div key={item.id} className="flex justify-between text-sm">
                       <span>{item.item_title} × {item.quantity}</span>
                       <span className="font-medium">
-                        {(item.item_price * item.quantity).toFixed(2)} {t('common.currency')}
+                        {(item.item_price * item.quantity).toFixed(2)} {selectedOrder.currency || 'JOD'}
                       </span>
                     </div>
                   ))}
@@ -517,7 +518,7 @@ const Customer = () => {
                 <div className="flex justify-between font-bold text-lg">
                   <span>{t('customer.total')}:</span>
                   <span className="text-primary">
-                    {selectedOrder.total_amount.toFixed(2)} {t('common.currency')}
+                    {selectedOrder.total_amount.toFixed(2)} {selectedOrder.currency || 'JOD'}
                   </span>
                 </div>
               </div>
