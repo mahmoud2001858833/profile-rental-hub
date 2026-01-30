@@ -487,6 +487,8 @@ const translations: Translations = {
   // New translations
   'index.myKitchen': { ar: 'مطبخي', en: 'My Kitchen' },
   'cart.viewCookPage': { ar: 'زيارة صفحة الطباخ', en: 'Visit Cook Page' },
+  'cart.contactCook': { ar: 'تواصل مع الطباخ', en: 'Contact Cook' },
+  'cart.contactCookToOrder': { ar: 'تواصل مع الطباخ مباشرة عبر صفحته للطلب', en: 'Contact the cook directly through their page to order' },
 };
 
 interface LanguageContextType {
