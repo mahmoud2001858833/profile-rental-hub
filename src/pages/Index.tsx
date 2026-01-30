@@ -14,18 +14,40 @@ const Index = () => {
   const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user) {
-      supabase
+    const checkUserType = async () => {
+      if (!user) {
+        setUserType(null);
+        return;
+      }
+
+      // Check if merchant first
+      const { data: merchantProfile } = await supabase
         .from('profiles')
         .select('user_type')
         .eq('user_id', user.id)
-        .maybeSingle()
-        .then(({ data }) => {
-          setUserType(data?.user_type || null);
-        });
-    } else {
+        .maybeSingle();
+
+      if (merchantProfile) {
+        setUserType('merchant');
+        return;
+      }
+
+      // Check if customer
+      const { data: customerProfile } = await supabase
+        .from('customer_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (customerProfile) {
+        setUserType('customer');
+        return;
+      }
+
       setUserType(null);
-    }
+    };
+
+    checkUserType();
   }, [user]);
 
   return (
