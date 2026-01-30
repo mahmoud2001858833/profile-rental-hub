@@ -162,7 +162,13 @@ const Index = () => {
         </div>
 
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-1 animate-scale-in">
+        {/* Tagline - Close to Logo */}
+        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-2">
+          {t('index.heroTitle')}
+        </p>
+
+        {/* Logo - Medium with Strong Shadow */}
+        <div className="relative z-10 mb-4 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
@@ -170,11 +176,6 @@ const Index = () => {
             style={{ filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.2)) drop-shadow(0 6px 12px rgba(0,0,0,0.1))' }}
           />
         </div>
-
-        {/* Tagline - Above Buttons */}
-        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-4">
-          {t('index.heroTitle')}
-        </p>
 
         {/* Dynamic Buttons based on user type */}
         <div className="relative z-10 flex flex-row items-start justify-center gap-3 md:gap-6 w-full max-w-3xl px-4 animate-fade-in">
@@ -248,12 +249,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* WhatsApp Button - Only on Homepage */}
+      {/* WhatsApp Button - Bottom Left Corner */}
       <a
         href="https://wa.me/962799126390"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 left-6 z-50 w-12 h-12 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110"
+        className="fixed bottom-6 left-6 z-50 w-12 h-12 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110"
         aria-label="تواصل عبر واتساب"
       >
         <MessageCircle className="h-6 w-6 fill-current" />
