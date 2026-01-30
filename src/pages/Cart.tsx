@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, Loader2, CheckCircle, Phone, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, Loader2, CheckCircle, Phone, MessageCircle, ExternalLink } from 'lucide-react';
 import { z } from 'zod';
 
 const Cart = () => {
@@ -280,7 +280,18 @@ const Cart = () => {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold truncate">{item.title}</h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold truncate">{item.title}</h4>
+                          {item.merchant_slug && (
+                            <Link
+                              to={`/p/${item.merchant_slug}`}
+                              className="text-primary hover:text-primary/80"
+                              title={t('cart.viewCookPage')}
+                            >
+                              <ExternalLink className="h-4 w-4" />
+                            </Link>
+                          )}
+                        </div>
                         <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button

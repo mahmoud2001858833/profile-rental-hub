@@ -9,6 +9,7 @@ export interface CartItem {
   merchant_id: string;
   merchant_name: string;
   currency: string;
+  merchant_slug?: string;
 }
 
 interface CartContextType {

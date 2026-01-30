@@ -111,6 +111,7 @@ const Browse = () => {
       merchant_id: item.user_id,
       merchant_name: merchant?.display_name || 'تاجر',
       currency: currency,
+      merchant_slug: merchant?.page_slug || '',
     });
     toast.success(t('browse.addedToCart'));
   };

@@ -3,7 +3,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -11,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { Loader2, Copy, ExternalLink, Camera, ImagePlus, X } from 'lucide-react';
+import PhoneInput from '@/components/PhoneInput';
+import { Input } from '@/components/ui/input';
 
 interface Profile {
   id: string;
@@ -394,13 +395,11 @@ const ProfileForm = () => {
 
           <div className="space-y-2">
             <Label htmlFor="whatsapp">{t('profile.whatsapp')}</Label>
-            <Input
+            <PhoneInput
               id="whatsapp"
-              type="tel"
-              placeholder="+966 5XX XXX XXXX"
+              placeholder="5XX XXX XXX"
               value={profile.whatsapp_number || ''}
-              onChange={(e) => setProfile({ ...profile, whatsapp_number: e.target.value })}
-              maxLength={20}
+              onChange={(value) => setProfile({ ...profile, whatsapp_number: value })}
             />
           </div>
 

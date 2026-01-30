@@ -483,6 +483,10 @@ const translations: Translations = {
   'browse.noDishes': { ar: 'لا توجد أطباق', en: 'No dishes found' },
   'browse.tryChangingFilters': { ar: 'جرب تغيير الفلاتر أو البحث', en: 'Try changing filters or search' },
   'browse.delivery': { ar: 'توصيل', en: 'Delivery' },
+  
+  // New translations
+  'index.myKitchen': { ar: 'مطبخي', en: 'My Kitchen' },
+  'cart.viewCookPage': { ar: 'زيارة صفحة الطباخ', en: 'Visit Cook Page' },
 };
 
 interface LanguageContextType {
