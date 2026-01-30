@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, Loader2, CheckCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, Loader2, CheckCircle, Phone, MessageCircle } from 'lucide-react';
 import { z } from 'zod';
 
 const Cart = () => {
@@ -26,6 +26,11 @@ const Cart = () => {
   const [submitting, setSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [confirmedMerchant, setConfirmedMerchant] = useState<{
+    name: string;
+    phone: string | null;
+    whatsapp: string | null;
+  } | null>(null);
 
   const orderSchema = z.object({
     name: z.string().min(2, t('cart.nameRequired')).max(200),
@@ -112,6 +117,17 @@ const Cart = () => {
 
       if (itemsError) throw itemsError;
 
+      // Fetch merchant contact info
+      const { data: merchantData } = await supabase
+        .rpc('get_merchant_public_info', { merchant_ids: [merchantId] });
+
+      const merchantInfo = merchantData?.[0];
+      setConfirmedMerchant({
+        name: merchantGroup.merchant_name,
+        phone: merchantInfo?.phone || null,
+        whatsapp: merchantInfo?.whatsapp_number || null,
+      });
+
       // Clear merchant items from cart
       clearMerchantItems(merchantId);
       setOrderSuccess(true);
@@ -146,13 +162,50 @@ const Cart = () => {
         <main className="container py-16">
           <Card className="max-w-md mx-auto text-center">
             <CardContent className="py-12">
-              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="h-10 w-10 text-green-600" />
+              <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="h-10 w-10 text-success" />
               </div>
               <h2 className="text-2xl font-bold mb-2">{t('cart.orderSuccess')}</h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-4">
                 {t('cart.merchantWillContact')}
               </p>
+              
+              {/* Merchant Contact Info */}
+              {confirmedMerchant && (
+                <div className="bg-muted rounded-lg p-4 mb-6 text-start">
+                  <h3 className="font-semibold mb-3 text-center">{t('cart.contactMerchant')}</h3>
+                  <p className="text-sm text-muted-foreground mb-3 text-center">
+                    {confirmedMerchant.name}
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    {confirmedMerchant.phone && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(`tel:${confirmedMerchant.phone}`, '_self')}
+                        className="flex-1"
+                      >
+                        <Phone className="h-4 w-4 mx-1" />
+                        {t('cart.call')}
+                      </Button>
+                    )}
+                    {confirmedMerchant.whatsapp && (
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const cleanPhone = confirmedMerchant.whatsapp!.replace(/\D/g, '');
+                          window.open(`https://wa.me/${cleanPhone}`, '_blank');
+                        }}
+                        className="flex-1 bg-success hover:bg-success/90"
+                      >
+                        <MessageCircle className="h-4 w-4 mx-1" />
+                        {t('cart.whatsapp')}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+              
               <Button asChild>
                 <Link to="/browse">{t('cart.continueShopping')}</Link>
               </Button>

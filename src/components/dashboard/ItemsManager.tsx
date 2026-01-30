@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard, Gift } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Package, ImagePlus, X, AlertTriangle, CreditCard, Gift, Truck } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { z } from 'zod';
 import ItemGallery from './ItemGallery';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,6 +30,7 @@ interface Item {
   currency: string | null;
   category: string | null;
   country: string | null;
+  has_delivery?: boolean;
   gallery_count?: number;
 }
 
@@ -76,6 +78,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     currency: 'JOD', // Always default to JOD
     category: 'أطباق رئيسية',
     country: 'JO',
+    has_delivery: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [merchantCountry, setMerchantCountry] = useState<string>('JO');
@@ -144,6 +147,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       currency: getDefaultCurrency(),
       category: 'أطباق رئيسية',
       country: merchantCountry,
+      has_delivery: false,
     });
     setErrors({});
     setDialogOpen(true);
@@ -159,6 +163,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       currency: item.currency || 'JOD',
       category: item.category || 'أطباق رئيسية',
       country: item.country || merchantCountry,
+      has_delivery: item.has_delivery || false,
     });
     setErrors({});
     setDialogOpen(true);
@@ -239,6 +244,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
           currency: formData.currency,
           category: formData.category,
           country: formData.country,
+          has_delivery: formData.has_delivery,
         })
         .eq('id', editingItem.id);
 
@@ -263,6 +269,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
         currency: formData.currency,
         category: formData.category,
         country: formData.country,
+        has_delivery: formData.has_delivery,
         sort_order: items.length,
       });
 
@@ -601,6 +608,27 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                 </Select>
               </div>
 
+              {/* Delivery Toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Truck className={`h-5 w-5 ${formData.has_delivery ? 'text-green-600' : 'text-muted-foreground'}`} />
+                  <div>
+                    <Label htmlFor="has-delivery" className="cursor-pointer">
+                      {language === 'ar' ? 'توصيل متوفر' : 'Delivery Available'}
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {language === 'ar' ? 'فعّل إذا كنت توفر خدمة التوصيل لهذا الطبق' : 'Enable if you offer delivery for this item'}
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  id="has-delivery"
+                  checked={formData.has_delivery}
+                  onCheckedChange={(checked) => setFormData({ ...formData, has_delivery: checked })}
+                  className="data-[state=checked]:bg-green-600"
+                />
+              </div>
+
               {editingItem && user && (
                 <div className="pt-4 border-t border-border">
                   <ItemGallery itemId={editingItem.id} userId={user.id} />
@@ -657,7 +685,14 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                   </div>
                   <div className="flex-1 p-3 flex flex-col justify-between min-w-0">
                     <div>
-                      <h4 className="font-semibold text-sm truncate">{item.title}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-sm truncate">{item.title}</h4>
+                        {item.has_delivery && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 text-xs">
+                            <Truck className="h-3 w-3" />
+                          </span>
+                        )}
+                      </div>
                       {item.description && (
                         <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>
                       )}

@@ -155,6 +155,9 @@ const translations: Translations = {
   'cart.loginToContinue': { ar: 'يجب تسجيل الدخول لإرسال طلبك', en: 'You need to login to send your order' },
   'cart.loginNow': { ar: 'سجل الآن', en: 'Login Now' },
   'cart.toCart': { ar: 'للسلة', en: 'to cart' },
+  'cart.contactMerchant': { ar: 'تواصل مع الطباخ', en: 'Contact the Cook' },
+  'cart.call': { ar: 'اتصال', en: 'Call' },
+  'cart.whatsapp': { ar: 'واتساب', en: 'WhatsApp' },
   
   // Dashboard page
   'dashboard.title': { ar: 'لوحة التحكم', en: 'Dashboard' },
@@ -479,6 +482,7 @@ const translations: Translations = {
   'browse.addedToCart': { ar: 'تمت الإضافة للسلة', en: 'Added to cart' },
   'browse.noDishes': { ar: 'لا توجد أطباق', en: 'No dishes found' },
   'browse.tryChangingFilters': { ar: 'جرب تغيير الفلاتر أو البحث', en: 'Try changing filters or search' },
+  'browse.delivery': { ar: 'توصيل', en: 'Delivery' },
 };
 
 interface LanguageContextType {
