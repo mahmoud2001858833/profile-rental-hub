@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
-import { Pizza, Sandwich, Coffee, IceCreamCone, UtensilsCrossed, Salad, Soup, Cookie } from 'lucide-react';
+import { Pizza, Sandwich, Coffee, IceCreamCone, UtensilsCrossed, Salad, Soup, Cookie, MessageCircle } from 'lucide-react';
 import logoImage from '@/assets/logo-main.png';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
@@ -162,7 +162,7 @@ const Index = () => {
         </div>
 
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-6 md:mb-8 animate-scale-in">
+        <div className="relative z-10 mb-2 md:mb-3 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
@@ -247,6 +247,18 @@ const Index = () => {
           )}
         </div>
       </section>
+
+      {/* WhatsApp Button - Only on Homepage */}
+      <a
+        href="https://wa.me/962799126390"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-24 left-6 z-50 w-12 h-12 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110"
+        aria-label="تواصل عبر واتساب"
+      >
+        <MessageCircle className="h-6 w-6 fill-current" />
+        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25" />
+      </a>
 
       {/* Footer */}
       <footer className="border-t border-border/30 py-6 bg-card/50">
