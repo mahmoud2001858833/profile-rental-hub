@@ -326,12 +326,11 @@ const Auth = () => {
                 </div>
                 
                 <div 
-                  className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                  className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${
                     registerData.agreeToTerms 
                       ? 'bg-success/10 border-success' 
-                      : 'bg-muted/50 border-border hover:border-primary/50'
+                      : 'bg-muted/50 border-border'
                   }`}
-                  onClick={() => setRegisterData({ ...registerData, agreeToTerms: !registerData.agreeToTerms })}
                 >
                   <Checkbox
                     id="agree-terms"
@@ -347,7 +346,6 @@ const Auth = () => {
                       <Link 
                         to="/terms" 
                         target="_blank"
-                        onClick={(e) => e.stopPropagation()}
                         className="text-primary hover:underline font-bold"
                       >
                         {t('auth.termsLink')}
