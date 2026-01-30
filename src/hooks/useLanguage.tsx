@@ -18,6 +18,7 @@ const translations: Translations = {
   'header.login': { ar: 'تسجيل', en: 'Login' },
   'header.displayPages': { ar: 'صفحات العرض', en: 'Display Pages' },
   'header.tabkhaty': { ar: 'طبخات', en: 'Tabkhat' },
+  'header.contactUs': { ar: 'تواصل معنا', en: 'Contact Us' },
   
   // Index page
   'index.browseProducts': { ar: 'تصفح منتجات التجار', en: 'Browse Merchant Products' },

@@ -100,6 +100,12 @@ const Cart = () => {
         title: t('cart.orderConfirmed'),
         description: t('cart.orderSentToMerchant'),
       });
+
+      // Navigate to merchant page
+      const merchantSlug = merchantItems[0]?.merchant_slug;
+      if (merchantSlug) {
+        navigate(`/p/${merchantSlug}`);
+      }
     } catch (error) {
       console.error('Error creating order:', error);
       toast({

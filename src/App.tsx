@@ -17,7 +17,6 @@ import Terms from "./pages/Terms";
 import Browse from "./pages/Browse";
 import NotFound from "./pages/NotFound";
 import AIGuide from "./components/AIGuide";
-import WhatsAppButton from "./components/WhatsAppButton";
 import { useState } from "react";
 
 const App = () => {
@@ -47,7 +46,6 @@ const App = () => {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <AIGuide />
-                <WhatsAppButton />
               </BrowserRouter>
             </TooltipProvider>
           </CartProvider>
