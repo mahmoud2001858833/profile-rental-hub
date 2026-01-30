@@ -118,18 +118,7 @@ const Cart = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold truncate">{item.title}</h4>
-                        {item.merchant_slug && (
-                          <Link
-                            to={`/p/${item.merchant_slug}`}
-                            className="text-primary hover:text-primary/80"
-                            title={t('cart.viewCookPage')}
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </Link>
-                        )}
-                      </div>
+                      <h4 className="font-semibold truncate">{item.title}</h4>
                       <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Button
@@ -158,6 +147,14 @@ const Cart = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
+                      {item.merchant_slug && (
+                        <Button asChild variant="outline" size="sm" className="mt-2 w-full">
+                          <Link to={`/p/${item.merchant_slug}`}>
+                            <ExternalLink className="h-4 w-4 mx-1" />
+                            {t('cart.viewCookPage')}
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                     <div className="text-end">
                       <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {item.currency}</p>
