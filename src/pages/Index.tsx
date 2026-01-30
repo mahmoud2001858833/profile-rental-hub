@@ -162,13 +162,8 @@ const Index = () => {
         </div>
 
         {/* Logo - Medium with Strong Shadow */}
-        {/* Tagline - Close to Logo */}
-        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-2">
-          {t('index.heroTitle')}
-        </p>
-
         {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 mb-4 animate-scale-in">
+        <div className="relative z-10 mb-2 animate-scale-in">
           <img 
             src={logoImage} 
             alt="طبخات" 
@@ -176,6 +171,11 @@ const Index = () => {
             style={{ filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.2)) drop-shadow(0 6px 12px rgba(0,0,0,0.1))' }}
           />
         </div>
+
+        {/* Tagline - Below Logo */}
+        <p className="relative z-10 text-destructive text-center text-lg md:text-xl font-bold max-w-md animate-fade-in mb-4">
+          {t('index.heroTitle')}
+        </p>
 
         {/* Dynamic Buttons based on user type */}
         <div className="relative z-10 flex flex-row items-start justify-center gap-3 md:gap-6 w-full max-w-3xl px-4 animate-fade-in">
