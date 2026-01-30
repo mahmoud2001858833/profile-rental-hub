@@ -118,7 +118,17 @@ const Cart = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold truncate">{item.title}</h4>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-semibold truncate">{item.title}</h4>
+                        {item.merchant_slug && (
+                          <Button asChild variant="ghost" size="sm" className="h-6 px-2 text-xs text-primary hover:text-primary/80">
+                            <Link to={`/p/${item.merchant_slug}`}>
+                              <ExternalLink className="h-3 w-3 mx-1" />
+                              {t('cart.viewCookPage')}
+                            </Link>
+                          </Button>
+                        )}
+                      </div>
                       <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <Button
@@ -147,14 +157,6 @@ const Cart = () => {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      {item.merchant_slug && (
-                        <Button asChild variant="outline" size="sm" className="mt-2 w-full">
-                          <Link to={`/p/${item.merchant_slug}`}>
-                            <ExternalLink className="h-4 w-4 mx-1" />
-                            {t('cart.viewCookPage')}
-                          </Link>
-                        </Button>
-                      )}
                     </div>
                     <div className="text-end">
                       <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {item.currency}</p>
