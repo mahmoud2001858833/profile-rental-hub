@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Store, ShoppingBag, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import LanguageToggle from '@/components/LanguageToggle';
+import PhoneInput from '@/components/PhoneInput';
 import logoImage from '@/assets/logo-tabbkhat-new.png';
 type UserType = 'customer' | 'merchant';
 
@@ -233,14 +234,11 @@ const Auth = () => {
               <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="login-phone" className="font-semibold">{t('auth.phone')}</Label>
-                  <Input
+                  <PhoneInput
                     id="login-phone"
-                    type="tel"
-                    placeholder="+962 7XX XXX XXX"
+                    placeholder="7XX XXX XXX"
                     value={loginData.phone}
-                    onChange={(e) => setLoginData({ ...loginData, phone: e.target.value })}
-                    className="h-12 text-base"
-                    dir="ltr"
+                    onChange={(value) => setLoginData({ ...loginData, phone: value })}
                   />
                   {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                 </div>
@@ -276,14 +274,11 @@ const Auth = () => {
               <form onSubmit={handleRegister} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="register-phone" className="font-semibold">{t('auth.phone')}</Label>
-                  <Input
+                  <PhoneInput
                     id="register-phone"
-                    type="tel"
-                    placeholder="+962 7XX XXX XXX"
+                    placeholder="7XX XXX XXX"
                     value={registerData.phone}
-                    onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                    className="h-12 text-base"
-                    dir="ltr"
+                    onChange={(value) => setRegisterData({ ...registerData, phone: value })}
                   />
                   {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                 </div>
