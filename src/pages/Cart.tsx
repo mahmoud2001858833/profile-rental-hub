@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,14 +8,114 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, ExternalLink, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, ExternalLink, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { userType } = useAuth();
-  const { items, updateQuantity, removeItem, getTotal } = useCart();
+  const { user, userType } = useAuth();
+  const { items, updateQuantity, removeItem, getTotal, clearMerchantItems } = useCart();
   const { toast } = useToast();
   const { t, language } = useLanguage();
+  const [submittingMerchant, setSubmittingMerchant] = useState<string | null>(null);
+  const [customerInfo, setCustomerInfo] = useState<{ name: string; phone: string } | null>(null);
+
+  // Fetch customer info if logged in
+  useEffect(() => {
+    const fetchCustomerInfo = async () => {
+      if (!user) return;
+      
+      const { data: customerProfile } = await supabase
+        .from('customer_profiles')
+        .select('display_name, phone')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (customerProfile) {
+        setCustomerInfo({
+          name: customerProfile.display_name || '',
+          phone: customerProfile.phone || ''
+        });
+      }
+    };
+    fetchCustomerInfo();
+  }, [user]);
+
+  const handleConfirmOrder = async (merchantId: string, merchantItems: CartItem[], total: number) => {
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: t('cart.loginToConfirm'),
+        description: t('cart.loginToContinue'),
+        variant: 'destructive',
+      });
+      navigate('/auth?type=customer');
+      return;
+    }
+
+    if (!customerInfo?.name || !customerInfo?.phone) {
+      toast({
+        title: t('cart.loginToConfirm'),
+        description: t('cart.loginToContinue'),
+        variant: 'destructive',
+      });
+      navigate('/customer');
+      return;
+    }
+
+    setSubmittingMerchant(merchantId);
+
+    try {
+      // Create order
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          merchant_id: merchantId,
+          customer_id: user.id,
+          customer_name: customerInfo.name,
+          customer_phone: customerInfo.phone,
+          total_amount: total,
+          currency: merchantItems[0]?.currency || 'JOD',
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Create order items
+      const orderItems = merchantItems.map(item => ({
+        order_id: order.id,
+        item_id: item.id,
+        item_title: item.title,
+        item_price: item.price,
+        quantity: item.quantity
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      // Clear merchant items from cart
+      clearMerchantItems(merchantId);
+
+      toast({
+        title: t('cart.orderConfirmed'),
+        description: t('cart.orderSentToMerchant'),
+      });
+    } catch (error) {
+      console.error('Error creating order:', error);
+      toast({
+        title: t('common.error'),
+        description: t('cart.orderFailed'),
+        variant: 'destructive',
+      });
+    } finally {
+      setSubmittingMerchant(null);
+    }
+  };
 
   // Check if merchant trying to access cart
   useEffect(() => {
@@ -86,19 +186,34 @@ const Cart = () => {
           {Object.entries(groupedItems).map(([merchantId, group]) => (
             <Card key={merchantId}>
               <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Package className="h-5 w-5 text-primary" />
                     {group.merchant_name}
                   </CardTitle>
-                  {group.merchant_slug && (
-                    <Button asChild size="sm" className="bg-success hover:bg-success/90">
-                      <Link to={`/p/${group.merchant_slug}`}>
-                        <MessageCircle className="h-4 w-4 mx-1" />
-                        {t('cart.contactCook')}
-                      </Link>
+                  <div className="flex gap-2">
+                    {group.merchant_slug && (
+                      <Button asChild size="sm" variant="outline">
+                        <Link to={`/p/${group.merchant_slug}`}>
+                          <ExternalLink className="h-4 w-4 mx-1" />
+                          {t('cart.viewCookPage')}
+                        </Link>
+                      </Button>
+                    )}
+                    <Button 
+                      size="sm" 
+                      className="bg-success hover:bg-success/90"
+                      onClick={() => handleConfirmOrder(merchantId, group.items, group.total)}
+                      disabled={submittingMerchant === merchantId}
+                    >
+                      {submittingMerchant === merchantId ? (
+                        <Loader2 className="h-4 w-4 animate-spin mx-1" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4 mx-1" />
+                      )}
+                      {t('cart.confirmOrder')}
                     </Button>
-                  )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">

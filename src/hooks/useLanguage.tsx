@@ -44,7 +44,8 @@ const translations: Translations = {
   'index.heroDesc': { ar: 'منصة المنيو الرقمي الأولى للطباخين المنزليين. اعرضي أطباقك وتواصلي مع العملاء بسهولة.', en: 'The first digital menu platform for home cooks. Display your dishes and connect with customers easily.' },
   'index.startNow': { ar: 'ابدأي الآن', en: 'Start Now' },
   'index.registerAsCook': { ar: 'سجلي الآن كطباخة', en: 'Register as a Cook' },
-  'index.shopNow': { ar: 'تسوق الآن', en: 'Shop Now' },
+  'index.shopNow': { ar: 'تسوق الطعام', en: 'Shop Food' },
+  'index.myKitchen': { ar: 'مطبخي', en: 'My Kitchen' },
   'index.freeTrialMonth': { ar: '+ تجربة مجانية لمدة شهر', en: '+ Free trial for one month' },
   'index.startNowCTA': { ar: '🍳 ابدأ مشروعك الآن!', en: '🍳 Start Your Project Now!' },
   'index.joinPlatform': { ar: 'انضم لمنصة طبخاتي وحوّل شغفك بالطبخ إلى مصدر دخل حقيقي', en: 'Join Tabkhat platform and turn your cooking passion into a real income source' },
@@ -158,6 +159,14 @@ const translations: Translations = {
   'cart.contactMerchant': { ar: 'تواصل مع الطباخ', en: 'Contact the Cook' },
   'cart.call': { ar: 'اتصال', en: 'Call' },
   'cart.whatsapp': { ar: 'واتساب', en: 'WhatsApp' },
+  'cart.confirmOrder': { ar: 'تأكيد الطلب', en: 'Confirm Order' },
+  'cart.orderConfirmed': { ar: 'تم تأكيد الطلب', en: 'Order Confirmed' },
+  'cart.orderSentToMerchant': { ar: 'تم إرسال طلبك للطباخ وسيتواصل معك قريباً', en: 'Your order was sent to the cook and they will contact you soon' },
+  'cart.loginToConfirm': { ar: 'سجل دخولك لتأكيد الطلب', en: 'Login to confirm order' },
+  'cart.viewCookPage': { ar: 'صفحة الطباخ', en: 'Cook Page' },
+  'cart.contactCookToOrder': { ar: 'أكد طلبك وسيتواصل معك الطباخ لترتيب التوصيل والدفع', en: 'Confirm your order and the cook will contact you to arrange delivery and payment' },
+  
+  'public.addToCart': { ar: 'أضف للسلة', en: 'Add to Cart' },
   
   // Dashboard page
   'dashboard.title': { ar: 'لوحة التحكم', en: 'Dashboard' },
@@ -483,12 +492,6 @@ const translations: Translations = {
   'browse.noDishes': { ar: 'لا توجد أطباق', en: 'No dishes found' },
   'browse.tryChangingFilters': { ar: 'جرب تغيير الفلاتر أو البحث', en: 'Try changing filters or search' },
   'browse.delivery': { ar: 'توصيل', en: 'Delivery' },
-  
-  // New translations
-  'index.myKitchen': { ar: 'مطبخي', en: 'My Kitchen' },
-  'cart.viewCookPage': { ar: 'زيارة صفحة الطباخ', en: 'Visit Cook Page' },
-  'cart.contactCook': { ar: 'تواصل مع الطباخ', en: 'Contact Cook' },
-  'cart.contactCookToOrder': { ar: 'تواصل مع الطباخ مباشرة عبر صفحته للطلب', en: 'Contact the cook directly through their page to order' },
 };
 
 interface LanguageContextType {
