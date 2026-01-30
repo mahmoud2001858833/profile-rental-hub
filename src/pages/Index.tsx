@@ -5,10 +5,28 @@ import { useLanguage } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
 import { Pizza, Sandwich, Coffee, IceCreamCone, UtensilsCrossed, Salad, Soup, Cookie } from 'lucide-react';
 import logoImage from '@/assets/logo-main.png';
+import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 
 const Index = () => {
   const { user } = useAuth();
   const { t, dir } = useLanguage();
+  const [userType, setUserType] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('profiles')
+        .select('user_type')
+        .eq('user_id', user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          setUserType(data?.user_type || null);
+        });
+    } else {
+      setUserType(null);
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-primary/5 to-success/5">
@@ -136,56 +154,75 @@ const Index = () => {
           {t('index.heroTitle')}
         </p>
 
-        {/* Separate Buttons - Bigger */}
+        {/* Dynamic Buttons based on user type */}
         <div className="relative z-10 flex flex-row items-start justify-center gap-4 md:gap-8 w-full max-w-3xl px-4 animate-fade-in">
-          {/* Start as Cook Button with subtitle */}
-          <div className="flex flex-col items-center gap-3">
+          {/* Not logged in: Show register + shop */}
+          {!user && (
+            <>
+              <div className="flex flex-col items-center gap-3">
+                <Button 
+                  size="lg" 
+                  className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+                  asChild
+                >
+                  <Link to="/auth?type=merchant">
+                    {t('index.registerAsCook')}
+                  </Link>
+                </Button>
+                <span className="text-destructive font-semibold text-sm md:text-base bg-destructive/10 px-5 py-2 rounded-full">
+                  {t('index.freeTrialMonth')}
+                </span>
+              </div>
+              
+              <Button 
+                size="lg" 
+                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+                asChild
+              >
+                <Link to="/browse">
+                  {t('index.shopNow')}
+                </Link>
+              </Button>
+            </>
+          )}
+
+          {/* Logged in as merchant: Shop + My Kitchen */}
+          {user && userType === 'merchant' && (
+            <>
+              <Button 
+                size="lg" 
+                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+                asChild
+              >
+                <Link to="/browse">
+                  {t('index.shopNow')}
+                </Link>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+                asChild
+              >
+                <Link to="/dashboard">
+                  {t('index.myKitchen')}
+                </Link>
+              </Button>
+            </>
+          )}
+
+          {/* Logged in as customer: Shop only */}
+          {user && userType === 'customer' && (
             <Button 
               size="lg" 
-              className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+              className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
               asChild
             >
-              <Link to="/auth?type=merchant">
-                {t('index.registerAsCook')}
+              <Link to="/browse">
+                {t('index.shopNow')}
               </Link>
             </Button>
-            <span className="text-success font-semibold text-sm md:text-base bg-success/10 px-5 py-2 rounded-full">
-              {t('index.freeTrialMonth')}
-            </span>
-          </div>
-          
-          {/* Shop Now Button */}
-          <Button 
-            size="lg" 
-            className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-            asChild
-          >
-            <Link to="/browse">
-              {t('index.shopNow')}
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      {/* Start Now - Special Section */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-transparent via-success/5 to-success/10 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-success/5 via-transparent to-transparent" />
-        <div className="container text-center px-4 relative z-10">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4">
-            {t('index.startNowCTA')}
-          </h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            {t('index.joinPlatform')}
-          </p>
-          <Button 
-            size="lg" 
-            className="h-16 md:h-20 px-16 md:px-24 text-xl md:text-2xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-2xl hover:shadow-3xl transition-all hover:scale-105 backdrop-blur-sm border border-success/30"
-            asChild
-          >
-            <Link to="/auth?type=merchant">
-              {t('index.startNow')}
-            </Link>
-          </Button>
+          )}
         </div>
       </section>
 
