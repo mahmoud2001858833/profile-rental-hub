@@ -140,6 +140,8 @@ const translations: Translations = {
   'cart.willContact': { ar: 'سيتواصل معك', en: 'will contact you' },
   'cart.soon': { ar: 'قريباً', en: 'soon' },
   'cart.orderFailed': { ar: 'فشل في إرسال الطلب، حاول مرة أخرى', en: 'Failed to send order, please try again' },
+  'cart.itemsUnavailable': { ar: 'بعض المنتجات غير متوفرة', en: 'Some items are unavailable' },
+  'cart.someItemsRemoved': { ar: 'تم حذف المنتجات غير المتوفرة من السلة', en: 'Unavailable items have been removed from your cart' },
   'cart.nameRequired': { ar: 'الاسم مطلوب', en: 'Name is required' },
   'cart.phoneTooShort': { ar: 'رقم الهاتف قصير جداً', en: 'Phone number is too short' },
   'cart.phoneTooLong': { ar: 'رقم الهاتف طويل جداً', en: 'Phone number is too long' },
