@@ -2,8 +2,17 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="icon" href="/favicon.png" type="image/png" />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#8B5CF6" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="طبخات" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     
     <!-- Primary Meta Tags -->
     <title>طبخات - منصة المنيو الرقمي للطباخين المنزليين</title>
@@ -18,18 +27,16 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://profile-rental-hub.lovable.app/">
-    
-    
-    
     <meta property="og:site_name" content="طبخات">
     <meta property="og:locale" content="ar_SA">
+    <meta property="og:title" content="طبخات - منصة المنيو الرقمي للطباخين المنزليين">
+    <meta property="og:description" content="حوّلي شغفك بالطبخ إلى مشروع حقيقي مع طبخات. منصة المنيو الرقمي الأولى للطباخين المنزليين في السعودية. اعرضي أطباقك وتواصلي مع العملاء بسهولة.">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://profile-rental-hub.lovable.app/">
-    
-    
-    
+    <meta name="twitter:title" content="طبخات - منصة المنيو الرقمي للطباخين المنزليين">
+    <meta name="twitter:description" content="حوّلي شغفك بالطبخ إلى مشروع حقيقي مع طبخات. منصة المنيو الرقمي الأولى للطباخين المنزليين في السعودية. اعرضي أطباقك وتواصلي مع العملاء بسهولة.">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -52,13 +59,23 @@
       }
     }
     </script>
-    <meta property="og:title" content="طبخات - منصة المنيو الرقمي للطباخين المنزليين">
-  <meta name="twitter:title" content="طبخات - منصة المنيو الرقمي للطباخين المنزليين">
-  <meta property="og:description" content="حوّلي شغفك بالطبخ إلى مشروع حقيقي مع طبخات. منصة المنيو الرقمي الأولى للطباخين المنزليين في السعودية. اعرضي أطباقك وتواصلي مع العملاء بسهولة.">
-  <meta name="twitter:description" content="حوّلي شغفك بالطبخ إلى مشروع حقيقي مع طبخات. منصة المنيو الرقمي الأولى للطباخين المنزليين في السعودية. اعرضي أطباقك وتواصلي مع العملاء بسهولة.">
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('SW registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
