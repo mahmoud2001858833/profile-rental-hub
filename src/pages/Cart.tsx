@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, ExternalLink, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Package, ExternalLink, MessageCircle, CheckCircle, Loader2, Truck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const Cart = () => {
@@ -172,13 +172,19 @@ const Cart = () => {
         merchant_name: item.merchant_name,
         merchant_slug: item.merchant_slug,
         items: [],
+        subtotal: 0,
+        deliveryTotal: 0,
         total: 0,
       };
     }
     acc[item.merchant_id].items.push(item);
-    acc[item.merchant_id].total += item.price * item.quantity;
+    const itemTotal = item.price * item.quantity;
+    const deliveryCost = (item.has_delivery && item.delivery_cost) ? item.delivery_cost * item.quantity : 0;
+    acc[item.merchant_id].subtotal += itemTotal;
+    acc[item.merchant_id].deliveryTotal += deliveryCost;
+    acc[item.merchant_id].total += itemTotal + deliveryCost;
     return acc;
-  }, {} as Record<string, { merchant_name: string; merchant_slug?: string; items: CartItem[]; total: number }>);
+  }, {} as Record<string, { merchant_name: string; merchant_slug?: string; items: CartItem[]; subtotal: number; deliveryTotal: number; total: number }>);
 
   const ArrowIcon = language === 'ar' ? ArrowRight : ArrowLeft;
 
@@ -253,68 +259,91 @@ const Cart = () => {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                {group.items.map((item) => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="w-20 h-20 rounded-lg bg-muted overflow-hidden flex-shrink-0">
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="h-8 w-8 text-muted-foreground/30" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-semibold truncate">{item.title}</h4>
-                        {item.merchant_slug && (
-                          <Button asChild variant="ghost" size="sm" className="h-6 px-2 text-xs text-primary hover:text-primary/80">
-                            <Link to={`/p/${item.merchant_slug}`}>
-                              <ExternalLink className="h-3 w-3 mx-1" />
-                              {t('cart.viewCookPage')}
-                            </Link>
-                          </Button>
+                {group.items.map((item) => {
+                  const itemDeliveryCost = (item.has_delivery && item.delivery_cost) ? item.delivery_cost : 0;
+                  const itemTotalWithDelivery = (item.price + itemDeliveryCost) * item.quantity;
+                  
+                  return (
+                    <div key={item.id} className="flex gap-4">
+                      <div className="w-20 h-20 rounded-lg bg-muted overflow-hidden flex-shrink-0">
+                        {item.image_url ? (
+                          <img
+                            src={item.image_url}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="h-8 w-8 text-muted-foreground/30" />
+                          </div>
                         )}
                       </div>
-                      <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-7 w-7 text-destructive ms-auto"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-semibold truncate">{item.title}</h4>
+                          {item.has_delivery && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-success/10 text-success text-xs">
+                              <Truck className="h-3 w-3" />
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-primary font-bold">{item.price.toFixed(2)} {item.currency}</p>
+                          {item.has_delivery && itemDeliveryCost > 0 && (
+                            <span className="text-xs text-muted-foreground">
+                              + {itemDeliveryCost.toFixed(2)} {language === 'ar' ? 'توصيل' : 'delivery'}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-7 w-7"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-8 text-center font-medium">{item.quantity}</span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-7 w-7"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7 text-destructive ms-auto"
+                            onClick={() => removeItem(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="text-end">
+                        <p className="font-bold">{itemTotalWithDelivery.toFixed(2)} {item.currency}</p>
+                        {item.has_delivery && itemDeliveryCost > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {language === 'ar' ? 'شامل التوصيل' : 'incl. delivery'}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="text-end">
-                      <p className="font-bold">{(item.price * item.quantity).toFixed(2)} {item.currency}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <Separator />
+                {group.deliveryTotal > 0 && (
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Truck className="h-4 w-4" />
+                      {language === 'ar' ? 'تكلفة التوصيل:' : 'Delivery Cost:'}
+                    </span>
+                    <span>{group.deliveryTotal.toFixed(2)} {group.items[0]?.currency || 'د.أ'}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between font-bold">
                   <span>{t('cart.subtotal')}:</span>
                   <span className="text-primary text-lg">{group.total.toFixed(2)} {group.items[0]?.currency || 'د.أ'}</span>
@@ -329,7 +358,7 @@ const Cart = () => {
               <div className="flex items-center justify-between text-xl font-bold">
                 <span>{t('cart.total')}:</span>
                 <span className="text-primary">
-                  {getTotal().toFixed(2)} {items[0]?.currency || 'د.أ'}
+                  {Object.values(groupedItems).reduce((sum, group) => sum + group.total, 0).toFixed(2)} {items[0]?.currency || 'د.أ'}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground text-center mt-4">
