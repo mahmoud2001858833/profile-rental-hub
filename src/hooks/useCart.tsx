@@ -10,6 +10,8 @@ export interface CartItem {
   merchant_name: string;
   currency: string;
   merchant_slug?: string;
+  has_delivery?: boolean;
+  delivery_cost?: number;
 }
 
 interface CartContextType {

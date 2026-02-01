@@ -31,6 +31,7 @@ interface Item {
   category: string | null;
   country: string | null;
   has_delivery?: boolean;
+  delivery_cost?: number;
   gallery_count?: number;
 }
 
@@ -73,6 +74,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
     category: 'طبخات شعبية',
     country: 'JO',
     has_delivery: false,
+    delivery_cost: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [merchantCountry, setMerchantCountry] = useState<string>('JO');
@@ -142,6 +144,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       category: 'طبخات شعبية',
       country: merchantCountry,
       has_delivery: false,
+      delivery_cost: '',
     });
     setErrors({});
     setDialogOpen(true);
@@ -158,6 +161,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
       category: item.category || 'طبخات شعبية',
       country: item.country || merchantCountry,
       has_delivery: item.has_delivery || false,
+      delivery_cost: item.delivery_cost?.toString() || '',
     });
     setErrors({});
     setDialogOpen(true);
@@ -239,6 +243,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
           category: formData.category,
           country: formData.country,
           has_delivery: formData.has_delivery,
+          delivery_cost: formData.has_delivery ? (parseFloat(formData.delivery_cost) || 0) : 0,
         })
         .eq('id', editingItem.id);
 
@@ -264,6 +269,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
         category: formData.category,
         country: formData.country,
         has_delivery: formData.has_delivery,
+        delivery_cost: formData.has_delivery ? (parseFloat(formData.delivery_cost) || 0) : 0,
         sort_order: items.length,
       });
 
@@ -605,7 +611,7 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
               {/* Delivery Toggle */}
               <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30">
                 <div className="flex items-center gap-2">
-                  <Truck className={`h-5 w-5 ${formData.has_delivery ? 'text-green-600' : 'text-muted-foreground'}`} />
+                  <Truck className={`h-5 w-5 ${formData.has_delivery ? 'text-success' : 'text-muted-foreground'}`} />
                   <div>
                     <Label htmlFor="has-delivery" className="cursor-pointer">
                       {language === 'ar' ? 'توصيل متوفر' : 'Delivery Available'}
@@ -618,10 +624,38 @@ const ItemsManager = ({ onNavigateToPayment }: ItemsManagerProps) => {
                 <Switch
                   id="has-delivery"
                   checked={formData.has_delivery}
-                  onCheckedChange={(checked) => setFormData({ ...formData, has_delivery: checked })}
-                  className="data-[state=checked]:bg-green-600"
+                  onCheckedChange={(checked) => setFormData({ ...formData, has_delivery: checked, delivery_cost: checked ? formData.delivery_cost : '' })}
+                  className="data-[state=checked]:bg-success"
                 />
               </div>
+
+              {/* Delivery Cost - Only shown when delivery is enabled */}
+              {formData.has_delivery && (
+                <div className="space-y-2 p-3 rounded-lg border border-success/30 bg-success/5">
+                  <Label htmlFor="delivery-cost" className="flex items-center gap-2">
+                    <Truck className="h-4 w-4 text-success" />
+                    {language === 'ar' ? 'تكلفة التوصيل' : 'Delivery Cost'}
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="delivery-cost"
+                      type="number"
+                      placeholder="0.00"
+                      value={formData.delivery_cost}
+                      onChange={(e) => setFormData({ ...formData, delivery_cost: e.target.value })}
+                      min="0"
+                      step="0.01"
+                      className="flex-1"
+                    />
+                    <span className="flex items-center px-3 bg-muted rounded-md text-sm font-medium">
+                      {getCurrencySymbol(formData.currency)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {language === 'ar' ? 'سيُضاف هذا المبلغ لسعر الطبق عند الطلب مع التوصيل' : 'This amount will be added to item price when ordering with delivery'}
+                  </p>
+                </div>
+              )}
 
               {editingItem && user && (
                 <div className="pt-4 border-t border-border">

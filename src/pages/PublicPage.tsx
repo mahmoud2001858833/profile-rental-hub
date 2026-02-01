@@ -36,6 +36,8 @@ interface Item {
   price: number;
   image_url: string | null;
   currency: string | null;
+  has_delivery?: boolean;
+  delivery_cost?: number;
   gallery_images?: ItemImage[];
 }
 
@@ -62,7 +64,9 @@ const PublicPage = () => {
       merchant_id: profile.user_id,
       merchant_name: profile.display_name || t('public.noName'),
       currency: currencySymbol,
-      merchant_slug: slug
+      merchant_slug: slug,
+      has_delivery: item.has_delivery || false,
+      delivery_cost: item.delivery_cost || 0
     });
 
     toast.success(dir === 'rtl' ? `تم إضافة ${item.title} للسلة` : `${item.title} added to cart`);
@@ -93,7 +97,7 @@ const PublicPage = () => {
     // Fetch items
     const { data: itemsData } = await supabase
       .from('items')
-      .select('id, title, description, price, image_url, currency')
+      .select('id, title, description, price, image_url, currency, has_delivery, delivery_cost')
       .eq('user_id', profileData.user_id)
       .eq('is_active', true)
       .order('sort_order', { ascending: true });
@@ -311,7 +315,15 @@ const PublicPage = () => {
                       </p>
                     )}
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-accent font-bold">{item.price.toFixed(2)} {getCurrencySymbol(item.currency || 'JOD')}</p>
+                      <div>
+                        <p className="text-accent font-bold">{item.price.toFixed(2)} {getCurrencySymbol(item.currency || 'JOD')}</p>
+                        {item.has_delivery && item.delivery_cost && item.delivery_cost > 0 && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Truck className="h-3 w-3" />
+                            +{item.delivery_cost.toFixed(2)} {dir === 'rtl' ? 'توصيل' : 'delivery'}
+                          </p>
+                        )}
+                      </div>
                       <Button
                         size="icon"
                         className="h-8 w-8 bg-success hover:bg-success/90 rounded-full"

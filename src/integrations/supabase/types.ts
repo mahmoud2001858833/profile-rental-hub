@@ -106,6 +106,7 @@ export type Database = {
           country: string | null
           created_at: string | null
           currency: string | null
+          delivery_cost: number | null
           description: string | null
           has_delivery: boolean | null
           id: string
@@ -122,6 +123,7 @@ export type Database = {
           country?: string | null
           created_at?: string | null
           currency?: string | null
+          delivery_cost?: number | null
           description?: string | null
           has_delivery?: boolean | null
           id?: string
@@ -138,6 +140,7 @@ export type Database = {
           country?: string | null
           created_at?: string | null
           currency?: string | null
+          delivery_cost?: number | null
           description?: string | null
           has_delivery?: boolean | null
           id?: string
