@@ -15,6 +15,7 @@ import PublicPage from "./pages/PublicPage";
 import Cart from "./pages/Cart";
 import Terms from "./pages/Terms";
 import Browse from "./pages/Browse";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import AIGuide from "./components/AIGuide";
 import { useState } from "react";
@@ -41,6 +42,7 @@ const App = () => {
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/browse" element={<Browse />} />
+                  <Route path="/payment-result" element={<PaymentSuccess />} />
                   <Route path="/p/:slug" element={<PublicPage />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />

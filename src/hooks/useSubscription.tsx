@@ -88,7 +88,34 @@ export const useSubscription = (): SubscriptionStatus & { startFreeTrial: () => 
         }
       }
 
-      // Get the most recent approved payment
+      // Check for active Stripe subscription first
+      const { data: stripeSubscription, error: stripeError } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (stripeSubscription && stripeSubscription.current_period_end) {
+        const expirationDate = new Date(stripeSubscription.current_period_end);
+        const now = new Date();
+        const active = now < expirationDate;
+        
+        if (active) {
+          const timeDiff = expirationDate.getTime() - now.getTime();
+          const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+          setIsActive(true);
+          setLastPaymentDate(stripeSubscription.current_period_start ? new Date(stripeSubscription.current_period_start) : null);
+          setExpiresAt(expirationDate);
+          setDaysRemaining(days);
+          setIsFreeTrial(false);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Get the most recent approved payment (CliQ)
       const { data: receipts, error } = await supabase
         .from('payment_receipts')
         .select('*')
