@@ -4,17 +4,22 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle, ArrowRight, Loader2, XCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t, dir } = useLanguage();
+  const { dir } = useLanguage();
   const [countdown, setCountdown] = useState(5);
+  const [isVisible, setIsVisible] = useState(false);
   
   const status = searchParams.get('status');
   const isSuccess = status === 'success';
   const isCancelled = status === 'cancelled';
+
+  useEffect(() => {
+    // Trigger animation
+    setTimeout(() => setIsVisible(true), 100);
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -38,14 +43,11 @@ const PaymentSuccess = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-4" dir={dir}>
         <Card className="max-w-md w-full">
           <CardContent className="pt-8 pb-8 text-center space-y-6">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="mx-auto w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center"
+            <div 
+              className={`mx-auto w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center transition-transform duration-500 ${isVisible ? 'scale-100' : 'scale-0'}`}
             >
               <XCircle className="h-10 w-10 text-destructive" />
-            </motion.div>
+            </div>
 
             <div className="space-y-2">
               <h1 className="text-2xl font-bold">
@@ -75,27 +77,15 @@ const PaymentSuccess = () => {
       <Card className="max-w-md w-full">
         <CardContent className="pt-8 pb-8 text-center space-y-6">
           {/* Success Animation */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="mx-auto w-20 h-20 bg-success/10 rounded-full flex items-center justify-center"
+          <div 
+            className={`mx-auto w-20 h-20 bg-success/10 rounded-full flex items-center justify-center transition-transform duration-500 ${isVisible ? 'scale-100' : 'scale-0'}`}
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            >
-              <CheckCircle className="h-10 w-10 text-success" />
-            </motion.div>
-          </motion.div>
+            <CheckCircle className={`h-10 w-10 text-success transition-transform duration-300 delay-200 ${isVisible ? 'scale-100' : 'scale-0'}`} />
+          </div>
 
           {/* Success Message */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="space-y-2"
+          <div 
+            className={`space-y-2 transition-all duration-500 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             <h1 className="text-2xl font-bold text-success">
               {dir === 'rtl' ? 'تم الدفع بنجاح!' : 'Payment Successful!'}
@@ -105,14 +95,11 @@ const PaymentSuccess = () => {
                 ? 'شكراً لك! تم تفعيل اشتراكك الشهري بنجاح.'
                 : 'Thank you! Your monthly subscription has been activated.'}
             </p>
-          </motion.div>
+          </div>
 
           {/* Subscription Details */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-muted/50 rounded-lg p-4 space-y-2"
+          <div 
+            className={`bg-muted/50 rounded-lg p-4 space-y-2 transition-all duration-500 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">
@@ -136,14 +123,11 @@ const PaymentSuccess = () => {
                 {dir === 'rtl' ? 'نشط' : 'Active'}
               </span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Auto Redirect Notice */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex items-center justify-center gap-2 text-sm text-muted-foreground"
+          <div 
+            className={`flex items-center justify-center gap-2 text-sm text-muted-foreground transition-opacity duration-500 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
           >
             <Loader2 className="h-4 w-4 animate-spin" />
             <span>
@@ -151,19 +135,17 @@ const PaymentSuccess = () => {
                 ? `سيتم توجيهك للوحة التحكم خلال ${countdown} ثواني...`
                 : `Redirecting to dashboard in ${countdown} seconds...`}
             </span>
-          </motion.div>
+          </div>
 
           {/* Manual Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+          <div 
+            className={`transition-all duration-500 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             <Button onClick={() => navigate('/dashboard')} className="w-full">
               {dir === 'rtl' ? 'انتقل للوحة التحكم الآن' : 'Go to Dashboard Now'}
               <ArrowRight className="h-4 w-4 mx-2" />
             </Button>
-          </motion.div>
+          </div>
         </CardContent>
       </Card>
     </div>
