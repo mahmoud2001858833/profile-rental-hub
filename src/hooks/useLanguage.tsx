@@ -459,9 +459,9 @@ const translations: Translations = {
   'orders.hello': { ar: 'مرحباً، بخصوص طلبك:', en: 'Hello, regarding your order:' },
   
   // AI Guide
-  'aiGuide.title': { ar: 'مرشد طبخاتي', en: 'Tabkhaty Guide' },
+  'aiGuide.title': { ar: 'مرشد طبخات', en: 'Tabkhat Guide' },
   'aiGuide.online': { ar: 'متصل الآن', en: 'Online now' },
-  'aiGuide.welcome': { ar: 'مرحباً! أنا مرشد طبخاتي الذكي 👋\n\nكيف يمكنني مساعدتك اليوم؟', en: 'Hello! I am the Tabkhaty smart guide 👋\n\nHow can I help you today?' },
+  'aiGuide.welcome': { ar: 'مرحباً! أنا مرشد طبخات الذكي 👋\n\nكيف يمكنني مساعدتك اليوم؟', en: 'Hello! I am the Tabkhat smart guide 👋\n\nHow can I help you today?' },
   'aiGuide.placeholder': { ar: 'اكتب سؤالك...', en: 'Write your question...' },
   'aiGuide.error': { ar: 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.', en: 'Sorry, an error occurred. Please try again.' },
   'aiGuide.navigated': { ar: 'تم الانتقال', en: 'Navigated' },

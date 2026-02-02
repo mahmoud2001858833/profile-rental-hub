@@ -99,7 +99,7 @@ const PaymentManager = () => {
       } = await supabase.from('payment_receipts').insert({
         user_id: user.id,
         receipt_url: urlData.publicUrl,
-        amount: 5,
+        amount: 10,
         currency: 'JOD',
         payment_month: new Date().toISOString().slice(0, 10)
       });
@@ -292,17 +292,17 @@ const PaymentManager = () => {
           </CardContent>
         </Card>}
 
-      {/* Stripe Payment Option - Disabled */}
-      <Card className="border-muted bg-muted/30">
+      {/* Stripe Payment Option */}
+      <Card className="border-primary/20 bg-primary/5">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg text-muted-foreground">
-              <CreditCard className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <CreditCard className="h-5 w-5 text-primary" />
               {t('payment.stripeTitle')}
             </CardTitle>
-            <Badge variant="secondary" className="flex items-center gap-1">
-              <Lock className="h-3 w-3" />
-              {t('payment.stripeClosed')}
+            <Badge className="bg-primary text-primary-foreground">
+              <Sparkles className="h-3 w-3 ml-1" />
+              {t('payment.usd')}
             </Badge>
           </div>
           <CardDescription>{t('payment.stripeDesc')}</CardDescription>
@@ -311,11 +311,31 @@ const PaymentManager = () => {
           <div className="bg-background rounded-lg p-4 space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
-              <span className="font-bold text-primary text-lg">5 {t('payment.jod')}</span>
+              <span className="font-bold text-primary text-lg">15 {t('payment.usd')}</span>
             </div>
           </div>
-          <Button className="w-full mt-4" disabled>
-            <Lock className="mx-2 h-4 w-4" />
+          <Button 
+            className="w-full mt-4" 
+            onClick={async () => {
+              try {
+                const { data, error } = await supabase.functions.invoke('create-checkout', {
+                  body: { userId: user?.id }
+                });
+                if (error) throw error;
+                if (data?.url) {
+                  window.location.href = data.url;
+                }
+              } catch (err) {
+                console.error('Stripe checkout error:', err);
+                toast({
+                  title: t('common.error'),
+                  description: t('payment.uploadFailed'),
+                  variant: 'destructive'
+                });
+              }
+            }}
+          >
+            <CreditCard className="mx-2 h-4 w-4" />
             {t('payment.stripePay')}
           </Button>
         </CardContent>
@@ -338,7 +358,7 @@ const PaymentManager = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('payment.amount')}:</span>
-              <span className="font-bold text-primary text-lg">5 {t('payment.jod')}</span>
+              <span className="font-bold text-primary text-lg">10 {t('payment.jod')}</span>
             </div>
           </div>
           
