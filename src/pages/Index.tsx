@@ -208,29 +208,17 @@ const Index = () => {
             </>
           )}
 
-          {/* Logged in as merchant: Shop + My Kitchen */}
+          {/* Logged in as merchant: My Kitchen only */}
           {user && userType === 'merchant' && (
-            <>
-              <Button 
-                size="lg" 
-                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-                asChild
-              >
-                <Link to="/browse">
-                  {t('index.shopNow')}
-                </Link>
-              </Button>
-              
-              <Button 
-                size="lg" 
-                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-                asChild
-              >
-                <Link to="/dashboard">
-                  {t('index.myKitchen')}
-                </Link>
-              </Button>
-            </>
+            <Button 
+              size="lg" 
+              className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
+              asChild
+            >
+              <Link to="/dashboard">
+                {t('index.myKitchen')}
+              </Link>
+            </Button>
           )}
 
           {/* Logged in as customer: Shop only */}
@@ -249,16 +237,21 @@ const Index = () => {
       </section>
 
       {/* WhatsApp Button - Bottom Left Corner */}
-      <a
-        href="https://wa.me/962799126390"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 left-6 z-50 w-12 h-12 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110"
-        aria-label="تواصل عبر واتساب"
-      >
-        <MessageCircle className="h-6 w-6 fill-current" />
-        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25" />
-      </a>
+      <div className="fixed bottom-6 left-6 z-50 flex flex-col items-center gap-1">
+        <a
+          href="https://wa.me/962799126390"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-10 h-10 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110 relative"
+          aria-label="تواصل عبر واتساب"
+        >
+          <MessageCircle className="h-5 w-5 fill-current" />
+          <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25" />
+        </a>
+        <span className="text-xs font-medium text-muted-foreground bg-background/80 px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+          تواصل مع طبخات
+        </span>
+      </div>
 
       {/* Footer */}
       <footer className="border-t border-border/30 py-6 bg-card/50">

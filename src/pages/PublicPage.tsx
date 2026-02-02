@@ -264,6 +264,14 @@ const PublicPage = () => {
       {/* Contact Buttons - Only show if whatsapp_number is set */}
       {profile?.whatsapp_number && (
         <div className="container pb-8">
+          {/* Contact Title */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="h-px w-12 bg-border" />
+            <span className="text-sm font-semibold text-muted-foreground">
+              {dir === 'rtl' ? 'تواصل مع الطباخة' : 'Contact the Cook'}
+            </span>
+            <div className="h-px w-12 bg-border" />
+          </div>
           <div className="flex gap-4 justify-center max-w-md mx-auto">
             <Button onClick={handleCall} size="lg" className="flex-1 gap-2 shadow-lg shadow-primary/20">
               <Phone className="h-4 w-4" />

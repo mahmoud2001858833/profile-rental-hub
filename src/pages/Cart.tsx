@@ -361,9 +361,6 @@ const Cart = () => {
                   {Object.values(groupedItems).reduce((sum, group) => sum + group.total, 0).toFixed(2)} {items[0]?.currency || 'د.أ'}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground text-center mt-4">
-                {t('cart.contactCookToOrder')}
-              </p>
             </CardContent>
           </Card>
         </div>
