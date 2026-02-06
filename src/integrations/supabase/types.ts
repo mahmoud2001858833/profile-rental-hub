@@ -234,6 +234,45 @@ export type Database = {
         }
         Relationships: []
       }
+      password_reset_otps: {
+        Row: {
+          attempts: number
+          created_at: string
+          expires_at: string
+          id: string
+          otp_hash: string
+          phone: string
+          reset_token: string | null
+          reset_token_expires_at: string | null
+          used: boolean
+          user_type: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          otp_hash: string
+          phone: string
+          reset_token?: string | null
+          reset_token_expires_at?: string | null
+          used?: boolean
+          user_type: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          otp_hash?: string
+          phone?: string
+          reset_token?: string | null
+          reset_token_expires_at?: string | null
+          used?: boolean
+          user_type?: string
+        }
+        Relationships: []
+      }
       payment_receipts: {
         Row: {
           admin_notes: string | null
@@ -469,6 +508,7 @@ export type Database = {
       }
     }
     Functions: {
+      cleanup_expired_otps: { Args: never; Returns: undefined }
       disable_expired_merchant_pages: { Args: never; Returns: undefined }
       get_merchant_public_info: {
         Args: { merchant_ids: string[] }

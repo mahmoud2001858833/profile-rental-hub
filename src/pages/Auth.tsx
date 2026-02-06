@@ -13,6 +13,7 @@ import { Store, ShoppingBag, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import LanguageToggle from '@/components/LanguageToggle';
 import PhoneInput from '@/components/PhoneInput';
+import PasswordResetModal from '@/components/PasswordResetModal';
 import logoImage from '@/assets/logo-tabbkhat-new.png';
 type UserType = 'customer' | 'merchant';
 
@@ -55,6 +56,7 @@ const Auth = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
   // Redirect after successful auth - immediate redirect to browse, then database check
   useEffect(() => {
@@ -267,6 +269,14 @@ const Auth = () => {
                 <Button type="submit" className="w-full h-12 text-base font-bold bg-success hover:bg-success/90 text-success-foreground" disabled={isSubmitting}>
                   {isSubmitting ? t('auth.loggingIn') : t('auth.login')}
                 </Button>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordReset(true)}
+                  className="w-full text-sm text-primary hover:underline py-2"
+                >
+                  {t('auth.forgotPassword')}
+                </button>
               </form>
             </TabsContent>
             
@@ -372,6 +382,11 @@ const Auth = () => {
           </div>
         </CardContent>
       </Card>
+      
+      <PasswordResetModal 
+        open={showPasswordReset} 
+        onOpenChange={setShowPasswordReset} 
+      />
     </div>
   );
 };
