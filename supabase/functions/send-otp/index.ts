@@ -43,8 +43,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Clean phone number (remove spaces, dashes, etc.)
-    const cleanPhone = phone.replace(/[^0-9+]/g, '');
+    // Clean phone number (remove spaces, dashes, etc.) but keep the + sign
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    
+    // Ensure phone has + prefix for database lookup
+    const phoneForLookup = cleanPhone.startsWith('+') ? cleanPhone : `+${cleanPhone}`;
     
     // Create Supabase client with service role
     const supabaseAdmin = createClient(
@@ -59,7 +62,7 @@ Deno.serve(async (req) => {
       const { data: profile } = await supabaseAdmin
         .from('profiles')
         .select('id')
-        .eq('phone', cleanPhone)
+        .eq('phone', phoneForLookup)
         .eq('user_type', 'merchant')
         .maybeSingle();
       phoneExists = !!profile;
@@ -67,7 +70,7 @@ Deno.serve(async (req) => {
       const { data: customerProfile } = await supabaseAdmin
         .from('customer_profiles')
         .select('id')
-        .eq('phone', cleanPhone)
+        .eq('phone', phoneForLookup)
         .maybeSingle();
       phoneExists = !!customerProfile;
     }
@@ -84,7 +87,7 @@ Deno.serve(async (req) => {
     const { count } = await supabaseAdmin
       .from('password_reset_otps')
       .select('*', { count: 'exact', head: true })
-      .eq('phone', cleanPhone)
+      .eq('phone', phoneForLookup)
       .eq('user_type', userType)
       .gte('created_at', oneHourAgo);
 
@@ -99,7 +102,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin
       .from('password_reset_otps')
       .update({ used: true })
-      .eq('phone', cleanPhone)
+      .eq('phone', phoneForLookup)
       .eq('user_type', userType)
       .eq('used', false);
 
@@ -112,7 +115,7 @@ Deno.serve(async (req) => {
     const { error: insertError } = await supabaseAdmin
       .from('password_reset_otps')
       .insert({
-        phone: cleanPhone,
+        phone: phoneForLookup,
         otp_hash: otpHash,
         user_type: userType,
         expires_at: expiresAt,
@@ -138,8 +141,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Format phone for WhatsApp (remove + and leading zeros if needed)
-    let whatsappPhone = cleanPhone.replace(/^\+/, '');
+    // Format phone for WhatsApp (remove + for UltraMsg API)
+    let whatsappPhone = phoneForLookup.replace(/^\+/, '');
     
     const messageBody = `رمز التحقق الخاص بك هو: ${otp}\n\nصالح لمدة 5 دقائق.\n\nطبخات`;
 
