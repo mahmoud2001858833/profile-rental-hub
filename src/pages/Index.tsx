@@ -255,33 +255,32 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t border-border/30 py-6 bg-card/50">
-        <div className="container text-center space-y-4 px-4">
-          {/* Social Media Icons */}
-          <div className="flex justify-center gap-4">
-            <a
-              href="https://www.instagram.com/tabb_khat?utm_source=qr&igsh=MWtqZzY0NWM1bmV3MA=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-md"
-              aria-label="Instagram"
-            >
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a
-              href="https://www.facebook.com/profile.php?id=61587530040566"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-md"
-              aria-label="Facebook"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-          </div>
-          
-          <div className="flex justify-center gap-6 text-sm">
-            <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">
+        <div className="container text-center space-y-3 px-4">
+          <div className="flex justify-center items-center gap-6">
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               {t('index.termsConditions')}
             </Link>
+            
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/tabb_khat?utm_source=qr&igsh=MWtqZzY0NWM1bmV3MA=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61587530040566"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-4 w-4" />
+              </a>
+            </div>
           </div>
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} {t('index.tabkhatyRights')}
