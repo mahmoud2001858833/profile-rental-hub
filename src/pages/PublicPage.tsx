@@ -310,6 +310,9 @@ const PublicPage = () => {
         </div>
       )}
 
+      {/* Ratings Section - at the top */}
+      {profile && <RatingSection merchantId={profile.user_id} dir={dir} />}
+
       {/* Items */}
       <section className="container pb-12">
         <h2 className="text-lg font-bold mb-4 text-center">{t('public.productsServices')}</h2>
@@ -373,8 +376,6 @@ const PublicPage = () => {
         )}
       </section>
 
-      {/* Ratings Section */}
-      {profile && <RatingSection merchantId={profile.user_id} dir={dir} />}
 
       {/* Footer */}
       <footer className="border-t border-border py-6 bg-card">
