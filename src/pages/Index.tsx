@@ -1,250 +1,242 @@
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { useLanguage } from '@/hooks/useLanguage';
-import Header from '@/components/Header';
-import { Pizza, Sandwich, Coffee, IceCreamCone, UtensilsCrossed, Salad, Soup, Cookie, MessageCircle, Instagram, Facebook } from 'lucide-react';
-import logoImage from '@/assets/logo-main.png';
-import { supabase } from '@/integrations/supabase/client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/hooks/useLanguage";
+import { useCart } from "@/hooks/useCart";
+import Header from "@/components/Header";
+import CategoryFilter from "@/components/CategoryFilter";
+import CountryFilter from "@/components/CountryFilter";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Search, Plus, ChefHat, Truck, MessageCircle, Instagram, Facebook } from "lucide-react";
+import { toast } from "sonner";
+import logoImage from "@/assets/logo-main.png";
+
+interface Item {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  image_url: string | null;
+  currency: string | null;
+  user_id: string;
+  category: string | null;
+  country: string | null;
+  has_delivery?: boolean;
+}
+
+interface MerchantInfo {
+  display_name: string;
+  page_slug: string;
+  avatar_url: string | null;
+  country: string | null;
+}
 
 const Index = () => {
-  const { user } = useAuth();
   const { t, dir } = useLanguage();
-  const [userType, setUserType] = useState<string | null>(null);
+  const { addItem } = useCart();
+  const [items, setItems] = useState<Item[]>([]);
+  const [merchantsInfo, setMerchantsInfo] = useState<Record<string, MerchantInfo>>({});
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCountry, setSelectedCountry] = useState<string>("all");
 
   useEffect(() => {
-    const checkUserType = async () => {
-      if (!user) {
-        setUserType(null);
-        return;
-      }
+    fetchItems();
+  }, []);
 
-      // Check if merchant first
-      const { data: merchantProfile } = await supabase
+  const fetchItems = async () => {
+    setLoading(true);
+    
+    const { data: itemsData, error } = await supabase
+      .from('items')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching items:', error);
+      setLoading(false);
+      return;
+    }
+
+    if (itemsData && itemsData.length > 0) {
+      const merchantIds = [...new Set(itemsData.map(item => item.user_id))];
+      
+      const { data: profilesData } = await supabase
         .from('profiles')
-        .select('user_type')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        .select('user_id, display_name, page_slug, avatar_url, country')
+        .in('user_id', merchantIds)
+        .eq('page_enabled', true);
 
-      if (merchantProfile) {
-        setUserType('merchant');
-        return;
+      if (profilesData) {
+        const merchantMap: Record<string, MerchantInfo> = {};
+        profilesData.forEach(profile => {
+          merchantMap[profile.user_id] = {
+            display_name: profile.display_name || 'تاجر',
+            page_slug: profile.page_slug || '',
+            avatar_url: profile.avatar_url,
+            country: profile.country,
+          };
+        });
+        setMerchantsInfo(merchantMap);
       }
+      setItems(itemsData);
+    } else {
+      setItems([]);
+    }
+    
+    setLoading(false);
+  };
 
-      // Check if customer
-      const { data: customerProfile } = await supabase
-        .from('customer_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+  const handleAddToCart = (item: Item) => {
+    const merchant = merchantsInfo[item.user_id];
+    const currency = getCurrencySymbol(item.currency, merchant?.country || null);
+    addItem({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      image_url: item.image_url,
+      merchant_id: item.user_id,
+      merchant_name: merchant?.display_name || 'تاجر',
+      currency: currency,
+      merchant_slug: merchant?.page_slug || '',
+    });
+    toast.success(t('browse.addedToCart'));
+  };
 
-      if (customerProfile) {
-        setUserType('customer');
-        return;
-      }
-
-      setUserType(null);
+  const getCurrencySymbol = (currency: string | null, country: string | null) => {
+    if (currency) return currency;
+    const countryToCurrency: Record<string, string> = {
+      JO: 'د.أ', SA: 'ر.س', AE: 'د.إ', EG: 'ج.م', MA: 'د.م',
+      KW: 'د.ك', BH: 'د.ب', QA: 'ر.ق', OM: 'ر.ع', LB: 'ل.ل',
     };
+    return country ? countryToCurrency[country] || 'د.أ' : 'د.أ';
+  };
 
-    checkUserType();
-  }, [user]);
+  const filteredItems = items.filter(item => {
+    const matchesSearch = !searchQuery || 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory = !selectedCategory || selectedCategory === 'all' || item.category === selectedCategory;
+    const matchesCountry = !selectedCountry || selectedCountry === 'all' || item.country === selectedCountry;
+    return matchesSearch && matchesCategory && matchesCountry;
+  });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-primary/5 to-success/5">
+    <div className="min-h-screen flex flex-col bg-background" dir={dir}>
       <Header />
 
-      {/* Hero Section - Compact Layout */}
-      <section className="flex-1 flex flex-col items-center justify-end pb-8 md:pb-12 px-4 relative overflow-hidden">
-        
-        {/* Decorative Background Blobs */}
-        <div className="absolute top-10 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-success/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-success/5 rounded-full blur-3xl" />
-        
-        {/* Food Icons Around Logo - Many More */}
-        <div className="absolute inset-0 pointer-events-none">
-          <Pizza 
-            className="absolute top-[10%] left-[5%] text-primary/25 animate-float" 
-            size={48} 
-            strokeWidth={1.5}
-          />
-          <Coffee 
-            className="absolute top-[15%] left-[15%] text-success/30 animate-float" 
-            size={36} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '0.5s' }}
-          />
-          <Sandwich 
-            className="absolute top-[8%] right-[5%] text-primary/25 animate-float" 
-            size={44} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1s' }}
-          />
-          <IceCreamCone 
-            className="absolute top-[18%] right-[12%] text-success/30 animate-float" 
-            size={38} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1.5s' }}
-          />
-          <UtensilsCrossed 
-            className="absolute top-[30%] left-[3%] text-primary/20 animate-float" 
-            size={42} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '2s' }}
-          />
-          <Salad 
-            className="absolute top-[25%] right-[4%] text-success/25 animate-float" 
-            size={40} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '0.8s' }}
-          />
-          <Soup 
-            className="absolute bottom-[35%] left-[6%] text-primary/20 animate-float" 
-            size={36} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1.2s' }}
-          />
-          <Cookie 
-            className="absolute bottom-[30%] right-[5%] text-success/20 animate-float" 
-            size={34} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '0.3s' }}
-          />
-          <Pizza 
-            className="absolute top-[45%] left-[8%] text-success/20 animate-float" 
-            size={32} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1.8s' }}
-          />
-          <Coffee 
-            className="absolute top-[40%] right-[7%] text-primary/20 animate-float" 
-            size={30} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '2.2s' }}
-          />
-          <Sandwich 
-            className="absolute bottom-[45%] left-[10%] text-success/25 animate-float" 
-            size={38} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '0.6s' }}
-          />
-          <IceCreamCone 
-            className="absolute bottom-[40%] right-[10%] text-primary/25 animate-float" 
-            size={36} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1.4s' }}
-          />
-          <UtensilsCrossed 
-            className="absolute top-[55%] left-[4%] text-success/15 animate-float hidden md:block" 
-            size={34} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '2.5s' }}
-          />
-          <Salad 
-            className="absolute top-[50%] right-[3%] text-primary/15 animate-float hidden md:block" 
-            size={32} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '0.9s' }}
-          />
-          <Soup 
-            className="absolute bottom-[20%] left-[12%] text-primary/20 animate-float hidden md:block" 
-            size={40} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '1.7s' }}
-          />
-          <Cookie 
-            className="absolute bottom-[25%] right-[12%] text-success/20 animate-float hidden md:block" 
-            size={38} 
-            strokeWidth={1.5}
-            style={{ animationDelay: '2.1s' }}
-          />
-        </div>
-
-        {/* Logo - Medium with Strong Shadow */}
-        <div className="relative z-10 animate-scale-in">
+      {/* Small Logo + Tagline */}
+      <section className="bg-gradient-to-b from-primary/5 to-background py-6">
+        <div className="container flex flex-col items-center gap-2">
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-[320px] h-auto md:w-[420px] lg:w-[500px] object-contain"
-            style={{ filter: 'drop-shadow(0 15px 30px rgba(0,0,0,0.2)) drop-shadow(0 6px 12px rgba(0,0,0,0.1))' }}
+            className="w-[120px] h-auto object-contain"
+            style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}
           />
-        </div>
-
-        {/* Tagline - Directly Below Logo */}
-        <p className="relative z-10 text-destructive text-center text-xl md:text-2xl lg:text-3xl font-bold max-w-lg animate-fade-in mb-4 -mt-32 md:-mt-40">
-          {t('index.heroTitle')}
-        </p>
-
-        {/* Dynamic Buttons based on user type */}
-        <div className="relative z-10 flex flex-row items-start justify-center gap-3 md:gap-6 w-full max-w-3xl px-4 animate-fade-in">
-          {/* Not logged in: Show register + shop */}
-          {!user && (
-            <>
-              <div className="flex flex-col items-center gap-3">
-                <Button 
-                  size="lg" 
-                  className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-                  asChild
-                >
-                  <Link to="/auth?type=merchant">
-                    {t('index.registerAsCook')}
-                  </Link>
-                </Button>
-                <span className="text-destructive font-semibold text-sm md:text-base bg-destructive/10 px-5 py-2 rounded-full">
-                  {t('index.freeTrialMonth')}
-                </span>
-              </div>
-              
-              <Button 
-                size="lg" 
-                className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-                asChild
-              >
-                <Link to="/browse">
-                  {t('index.shopNow')}
-                </Link>
-              </Button>
-            </>
-          )}
-
-          {/* Logged in as merchant: My Kitchen only */}
-          {user && userType === 'merchant' && (
-            <Button 
-              size="lg" 
-              className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-success hover:bg-success/90 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-              asChild
-            >
-              <Link to="/dashboard">
-                {t('index.myKitchen')}
-              </Link>
-            </Button>
-          )}
-
-          {/* Logged in as customer: Shop only */}
-          {user && userType === 'customer' && (
-            <Button 
-              size="lg" 
-              className="h-16 md:h-20 px-8 md:px-14 text-lg md:text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]"
-              asChild
-            >
-              <Link to="/browse">
-                {t('index.shopNow')}
-              </Link>
-            </Button>
-          )}
+          <p className="text-destructive text-center text-lg md:text-xl font-bold -mt-8">
+            {t('index.heroTitle')}
+          </p>
         </div>
       </section>
 
-      {/* WhatsApp Button - Bottom Left Corner */}
+      {/* Search and Filters - Sticky */}
+      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur border-b border-border py-4">
+        <div className="container space-y-3">
+          <div className="relative">
+            <Search className={`absolute top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground ${dir === 'rtl' ? 'right-3' : 'left-3'}`} />
+            <Input
+              placeholder={t('index.searchPlaceholder')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`h-12 text-base ${dir === 'rtl' ? 'pr-10' : 'pl-10'}`}
+            />
+          </div>
+          <CountryFilter selectedCountry={selectedCountry} onCountryChange={setSelectedCountry} />
+          <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+        </div>
+      </div>
+
+      {/* Items Grid */}
+      <main className="container py-8 flex-1">
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="overflow-hidden animate-pulse">
+                <div className="aspect-square bg-muted" />
+                <CardContent className="p-4 space-y-2">
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-20">
+            <ChefHat className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold mb-2">{t('browse.noDishes')}</h3>
+            <p className="text-muted-foreground">{t('browse.tryChangingFilters')}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredItems.map((item) => {
+              const merchant = merchantsInfo[item.user_id];
+              const currency = getCurrencySymbol(item.currency, merchant?.country || null);
+              
+              return (
+                <Card key={item.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+                  <Link to={merchant?.page_slug ? `/p/${merchant.page_slug}` : '#'}>
+                    <div className="aspect-square relative overflow-hidden bg-muted">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ChefHat className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2 flex gap-1">
+                        {item.category && <Badge className="text-xs">{item.category}</Badge>}
+                        {item.has_delivery && (
+                          <Badge className="text-xs bg-green-600 hover:bg-green-700">
+                            <Truck className="h-3 w-3 mr-1" />
+                            {t('browse.delivery')}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                  <CardContent className="p-3 space-y-2">
+                    <h3 className="font-semibold text-sm line-clamp-1">{item.title}</h3>
+                    {merchant && (
+                      <Link to={`/p/${merchant.page_slug}`} className="text-xs text-primary hover:underline flex items-center gap-1">
+                        {merchant.avatar_url && <img src={merchant.avatar_url} alt="" className="w-4 h-4 rounded-full" />}
+                        {merchant.display_name}
+                      </Link>
+                    )}
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="font-bold text-primary">{item.price} {currency}</span>
+                      <Button size="sm" variant="secondary" className="h-8 w-8 p-0" onClick={(e) => { e.preventDefault(); handleAddToCart(item); }}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </main>
+
+      {/* WhatsApp Floating Button */}
       <div className="fixed bottom-6 left-6 z-50 flex flex-col items-center gap-1">
-        <a
-          href="https://wa.me/962799126390"
-          target="_blank"
-          rel="noopener noreferrer"
+        <a href="https://wa.me/962799126390" target="_blank" rel="noopener noreferrer"
           className="w-10 h-10 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110 relative"
-          aria-label="تواصل عبر واتساب"
-        >
+          aria-label="تواصل عبر واتساب">
           <MessageCircle className="h-5 w-5 fill-current" />
           <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25" />
         </a>
@@ -260,24 +252,15 @@ const Index = () => {
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               {t('index.termsConditions')}
             </Link>
-            
             <div className="flex items-center gap-3">
-              <a
-                href="https://www.instagram.com/tabb_khat?utm_source=qr&igsh=MWtqZzY0NWM1bmV3MA=="
-                target="_blank"
-                rel="noopener noreferrer"
+              <a href="https://www.instagram.com/tabb_khat?utm_source=qr&igsh=MWtqZzY0NWM1bmV3MA==" target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
-                aria-label="Instagram"
-              >
+                aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a
-                href="https://www.facebook.com/profile.php?id=61587530040566"
-                target="_blank"
-                rel="noopener noreferrer"
+              <a href="https://www.facebook.com/profile.php?id=61587530040566" target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
-                aria-label="Facebook"
-              >
+                aria-label="Facebook">
                 <Facebook className="h-4 w-4" />
               </a>
             </div>

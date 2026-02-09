@@ -20,8 +20,8 @@ const Header = () => {
   const location = useLocation();
   const cartCount = getItemCount();
   
-  // Show cart and admin only on browse page (not on homepage)
-  const showCartAndAdmin = location.pathname !== '/';
+  // Show cart and admin on all pages
+  const showCartAndAdmin = true;
   
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [password, setPassword] = useState("");
@@ -95,12 +95,20 @@ const Header = () => {
                 </Button>
               )
             ) : (
-              <Button variant="secondary" asChild>
-                <Link to="/auth">
-                  <LogIn className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                  <span>{t('header.login')}</span>
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" className="bg-success hover:bg-success/90 text-white font-bold" asChild>
+                  <Link to="/auth?type=merchant">
+                    <ChefHat className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                    <span className="hidden sm:inline">سجلي كطباخة</span>
+                  </Link>
+                </Button>
+                <Button variant="secondary" asChild>
+                  <Link to="/auth">
+                    <LogIn className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                    <span>{t('header.login')}</span>
+                  </Link>
+                </Button>
+              </div>
             )}
           </nav>
         </div>
