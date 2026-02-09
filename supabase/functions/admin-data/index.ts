@@ -92,11 +92,20 @@ serve(async (req) => {
         })
       );
 
+      // Fetch all ratings
+      const { data: ratings, error: ratingsError } = await supabase
+        .from("ratings")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (ratingsError) throw ratingsError;
+
       return new Response(
         JSON.stringify({
           merchants: merchants || [],
           receipts: enrichedReceipts,
           products: enrichedProducts,
+          ratings: ratings || [],
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -150,6 +159,20 @@ serve(async (req) => {
         const { id } = data;
         const { error } = await supabase
           .from("items")
+          .delete()
+          .eq("id", id);
+
+        if (error) throw error;
+        return new Response(
+          JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      if (type === "delete_rating") {
+        const { id } = data;
+        const { error } = await supabase
+          .from("ratings")
           .delete()
           .eq("id", id);
 

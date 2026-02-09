@@ -17,7 +17,8 @@ import {
   Eye,
   ShieldCheck,
   Package,
-  Trash2
+  Trash2,
+  Star
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -27,6 +28,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import NotificationBell from '@/components/NotificationBell';
+import RatingStars from '@/components/RatingStars';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Merchant {
   id: string;
@@ -62,15 +66,26 @@ interface Product {
   merchant_phone?: string;
 }
 
+interface AdminRating {
+  id: string;
+  merchant_id: string;
+  customer_name: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
 const ADMIN_PASSWORD = "12345678";
 
 const Admin = () => {
   const navigate = useNavigate();
   const { t, language, dir } = useLanguage();
+  const { user } = useAuth();
   
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [receipts, setReceipts] = useState<PaymentReceipt[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [adminRatings, setAdminRatings] = useState<AdminRating[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedReceipt, setSelectedReceipt] = useState<string | null>(null);
 
@@ -113,6 +128,7 @@ const Admin = () => {
       setMerchants(data.merchants || []);
       setReceipts(data.receipts || []);
       setProducts(data.products || []);
+      setAdminRatings(data.ratings || []);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error(t('common.error'));
@@ -239,6 +255,31 @@ const Admin = () => {
     }
   };
 
+  const handleDeleteRating = async (ratingId: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-data`,
+        {
+          method: 'POST',
+          headers: {
+            'x-admin-password': ADMIN_PASSWORD,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            type: 'delete_rating',
+            data: { id: ratingId }
+          })
+        }
+      );
+      if (!response.ok) throw new Error('Failed to delete rating');
+      toast.success('تم حذف التقييم');
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting rating:', error);
+      toast.error(t('common.error'));
+    }
+  };
 
   if (loadingData) {
     return (
@@ -268,10 +309,13 @@ const Admin = () => {
             <ShieldCheck className="h-6 w-6 text-primary" />
             <h1 className="font-bold text-lg">{t('admin.title')}</h1>
           </div>
-          <Button variant="ghost" onClick={handleSignOut}>
-            <LogOut className="mx-2 h-4 w-4" />
-            {t('dashboard.logout')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Button variant="ghost" onClick={handleSignOut}>
+              <LogOut className="mx-2 h-4 w-4" />
+              {t('dashboard.logout')}
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -326,7 +370,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="merchants" className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-3 mb-6">
+          <TabsList className="grid w-full max-w-lg grid-cols-4 mb-6">
             <TabsTrigger value="merchants" className="gap-2">
               <Store className="h-4 w-4" />
               {t('admin.merchants')}
@@ -334,6 +378,10 @@ const Admin = () => {
             <TabsTrigger value="products" className="gap-2">
               <Package className="h-4 w-4" />
               {t('admin.productsTab')}
+            </TabsTrigger>
+            <TabsTrigger value="ratings" className="gap-2">
+              <Star className="h-4 w-4" />
+              التقييمات
             </TabsTrigger>
             <TabsTrigger value="payments" className="gap-2">
               <CreditCard className="h-4 w-4" />
@@ -486,6 +534,47 @@ const Admin = () => {
                             >
                               <Trash2 className="h-4 w-4 mx-1" />
                               {t('admin.deleteProduct')}
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="ratings">
+            <Card>
+              <CardHeader>
+                <CardTitle>جميع التقييمات ({adminRatings.length})</CardTitle>
+                <CardDescription>عرض وإدارة تقييمات العملاء</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {adminRatings.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">لا توجد تقييمات</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>العميل</TableHead>
+                        <TableHead>التقييم</TableHead>
+                        <TableHead>التعليق</TableHead>
+                        <TableHead>التاريخ</TableHead>
+                        <TableHead>إجراءات</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {adminRatings.map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell>{r.customer_name}</TableCell>
+                          <TableCell><RatingStars rating={r.rating} size={14} /></TableCell>
+                          <TableCell className="max-w-[200px] truncate">{r.comment || '-'}</TableCell>
+                          <TableCell>{new Date(r.created_at).toLocaleDateString('ar-JO')}</TableCell>
+                          <TableCell>
+                            <Button size="sm" variant="destructive" onClick={() => handleDeleteRating(r.id)}>
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </TableCell>
                         </TableRow>
