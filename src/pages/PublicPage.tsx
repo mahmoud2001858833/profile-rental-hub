@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Phone, MessageCircle, Truck, Loader2, Package, Copy, Check, Plus, ShoppingCart } from 'lucide-react';
 import ImageGallery from '@/components/ui/image-gallery';
 import LanguageToggle from '@/components/LanguageToggle';
+import RatingStars from '@/components/RatingStars';
+import RatingSection from '@/components/RatingSection';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
@@ -50,6 +52,8 @@ const PublicPage = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [avgRating, setAvgRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
 
   const handleAddToCart = (item: Item) => {
     if (!profile) return;
@@ -120,6 +124,18 @@ const PublicPage = () => {
       setItems(itemsWithGallery);
     }
     
+    // Fetch ratings
+    const { data: ratingsData } = await supabase
+      .from('ratings')
+      .select('rating')
+      .eq('merchant_id', profileData.user_id);
+    
+    if (ratingsData && ratingsData.length > 0) {
+      const avg = ratingsData.reduce((sum: number, r: any) => sum + r.rating, 0) / ratingsData.length;
+      setAvgRating(Math.round(avg * 10) / 10);
+      setRatingCount(ratingsData.length);
+    }
+
     setLoading(false);
   };
 
@@ -228,6 +244,15 @@ const PublicPage = () => {
             <p className="text-muted-foreground max-w-md mx-auto mb-4 leading-relaxed">
               {profile.bio}
             </p>
+          )}
+
+          {/* Average Rating */}
+          {ratingCount > 0 && (
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <RatingStars rating={Math.round(avgRating)} size={18} />
+              <span className="font-bold">{avgRating}</span>
+              <span className="text-sm text-muted-foreground">({ratingCount})</span>
+            </div>
           )}
 
           {/* WhatsApp Number Display (phone field is private for auth only) */}
@@ -347,6 +372,9 @@ const PublicPage = () => {
           </div>
         )}
       </section>
+
+      {/* Ratings Section */}
+      {profile && <RatingSection merchantId={profile.user_id} dir={dir} />}
 
       {/* Footer */}
       <footer className="border-t border-border py-6 bg-card">
