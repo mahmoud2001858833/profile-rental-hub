@@ -130,16 +130,16 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-background" dir={dir}>
       <Header />
 
-      {/* Small Logo + Tagline */}
-      <section className="bg-gradient-to-b from-primary/5 to-background py-6">
-        <div className="container flex flex-col items-center gap-2">
+      {/* Logo + Tagline */}
+      <section className="bg-gradient-to-b from-primary/5 to-background py-2">
+        <div className="container flex flex-col items-center gap-0">
           <img 
             src={logoImage} 
             alt="طبخات" 
-            className="w-[180px] h-auto object-contain"
+            className="w-[220px] h-auto object-contain"
             style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}
           />
-          <p className="text-destructive text-center text-lg md:text-xl font-bold -mt-8">
+          <p className="text-destructive text-center text-lg md:text-xl font-bold -mt-10">
             {t('index.heroTitle')}
           </p>
         </div>
