@@ -40,7 +40,7 @@ const translations: Translations = {
   'index.allRights': { ar: 'جميع الحقوق محفوظة', en: 'All rights reserved' },
   'index.tabkhatyRights': { ar: 'طبخات - جميع الحقوق محفوظة', en: 'Tabkhat - All rights reserved' },
   'index.tabkhatyPlatform': { ar: 'منصة طبخات', en: 'Tabkhat Platform' },
-  'index.heroTitle': { ar: 'حوّلي شغفك بالطبخ إلى مشروع حقيقي', en: 'Turn your cooking passion into a real business' },
+  'index.heroTitle': { ar: 'طبخات … لأطيب أكلات', en: 'Tabkhat … For the tastiest dishes' },
   'index.heroSubtitle': { ar: 'بمنيو رقمي وتجربة بيع سلسة مع طبخات', en: 'With a digital menu and smooth selling experience' },
   'index.heroDesc': { ar: 'منصة المنيو الرقمي الأولى للطباخين المنزليين. اعرضي أطباقك وتواصلي مع العملاء بسهولة.', en: 'The first digital menu platform for home cooks. Display your dishes and connect with customers easily.' },
   'index.startNow': { ar: 'ابدأي الآن', en: 'Start Now' },
