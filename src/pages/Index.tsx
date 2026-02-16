@@ -139,7 +139,7 @@ const Index = () => {
             className="w-[220px] h-auto object-contain"
             style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}
           />
-          <p className="text-destructive text-center text-lg md:text-xl font-bold -mt-10">
+          <p className="text-destructive text-center text-xl md:text-2xl font-bold -mt-10">
             {t('index.heroTitle')}
           </p>
         </div>
