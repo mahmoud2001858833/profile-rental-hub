@@ -25,7 +25,7 @@ const translations: Translations = {
   'index.discoverBest': { ar: 'اكتشف أفضل المنتجات', en: 'Discover the Best Products' },
   'index.browseDesc': { ar: 'تصفح منتجات من مختلف التجار واطلب مباشرة', en: 'Browse products from various merchants and order directly' },
   'index.loginToShop': { ar: 'سجل لتبدأ التسوق', en: 'Sign up to start shopping' },
-  'index.searchPlaceholder': { ar: 'ابحث عن طبق أو طباخ...', en: 'Search for a dish or cook...' },
+  'index.searchPlaceholder': { ar: 'ابحث عن طبق أو مطبخ...', en: 'Search for a dish or kitchen...' },
   'index.products': { ar: 'الأطباق', en: 'Dishes' },
   'index.product': { ar: 'طبق', en: 'dish' },
   'index.noProducts': { ar: 'لا توجد أطباق', en: 'No dishes' },
