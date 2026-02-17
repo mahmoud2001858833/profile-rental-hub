@@ -118,9 +118,12 @@ const Index = () => {
   };
 
   const filteredItems = items.filter(item => {
+    const query = searchQuery.toLowerCase();
+    const merchant = merchantsInfo[item.user_id];
     const matchesSearch = !searchQuery || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      item.title.toLowerCase().includes(query) ||
+      (item.description && item.description.toLowerCase().includes(query)) ||
+      (merchant && merchant.display_name.toLowerCase().includes(query));
     const matchesCategory = !selectedCategory || selectedCategory === 'all' || item.category === selectedCategory;
     const matchesCountry = !selectedCountry || selectedCountry === 'all' || item.country === selectedCountry;
     return matchesSearch && matchesCategory && matchesCountry;

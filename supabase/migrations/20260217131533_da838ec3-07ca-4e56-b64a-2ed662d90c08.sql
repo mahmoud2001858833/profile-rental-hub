@@ -1,0 +1,1 @@
+ALTER TABLE profiles ALTER COLUMN page_enabled SET DEFAULT true;

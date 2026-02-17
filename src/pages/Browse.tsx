@@ -135,14 +135,14 @@ const Browse = () => {
 
   // Filter items by search, category, and country
   const filteredItems = items.filter(item => {
+    const query = searchQuery.toLowerCase();
+    const merchant = merchantsInfo[item.user_id];
     const matchesSearch = !searchQuery || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      item.title.toLowerCase().includes(query) ||
+      (item.description && item.description.toLowerCase().includes(query)) ||
+      (merchant && merchant.display_name.toLowerCase().includes(query));
     
-    // Handle 'all' as showing everything - 'all' means no filter applied
     const matchesCategory = !selectedCategory || selectedCategory === 'all' || item.category === selectedCategory;
-    
-    // Filter by item's country, not merchant's country - 'all' means no filter
     const matchesCountry = !selectedCountry || selectedCountry === 'all' || item.country === selectedCountry;
     
     return matchesSearch && matchesCategory && matchesCountry;
