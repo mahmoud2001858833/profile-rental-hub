@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, ChefHat, Truck, MessageCircle, Instagram, Facebook } from "lucide-react";
+import { Search, Plus, ChefHat, Truck, MessageCircle, Facebook } from "lucide-react";
 import { toast } from "sonner";
 import logoImage from "@/assets/logo-main.png";
 
@@ -256,12 +256,7 @@ const Index = () => {
               {t('index.termsConditions')}
             </Link>
             <div className="flex items-center gap-3">
-              <a href="https://www.instagram.com/tabb_khat?utm_source=qr&igsh=MWtqZzY0NWM1bmV3MA==" target="_blank" rel="noopener noreferrer"
-                className="w-8 h-8 bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
-                aria-label="Instagram">
-                <Instagram className="h-4 w-4" />
-              </a>
-              <a href="https://www.facebook.com/profile.php?id=61587530040566" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.facebook.com/share/1FKjNxLzaF/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
                 aria-label="Facebook">
                 <Facebook className="h-4 w-4" />
