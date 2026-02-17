@@ -21,20 +21,25 @@ const Header = () => {
   const navigate = useNavigate();
   const cartCount = getItemCount();
   const [isAdminPhone, setIsAdminPhone] = useState(false);
+  const [pageSlug, setPageSlug] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
       setIsAdminPhone(false);
+      setPageSlug(null);
       return;
     }
     const checkAdminPhone = async () => {
-      // Check profiles table
       const { data: profile } = await supabase
         .from('profiles')
-        .select('phone')
+        .select('phone, page_slug')
         .eq('user_id', user.id)
         .maybeSingle();
       
+      if (profile?.page_slug) {
+        setPageSlug(profile.page_slug);
+      }
+
       if (profile?.phone) {
         const cleaned = cleanPhone(profile.phone);
         if (ADMIN_PHONES.some(p => cleaned.includes(p) || p.includes(cleaned))) {
@@ -43,7 +48,6 @@ const Header = () => {
         }
       }
 
-      // Check customer_profiles table
       const { data: customerProfile } = await supabase
         .from('customer_profiles')
         .select('phone')
@@ -78,7 +82,6 @@ const Header = () => {
         <nav className="flex items-center gap-2">
           <LanguageToggle />
           
-          {/* Admin Link - only for specific phone numbers */}
           {isAdminPhone && (
             <Button variant="secondary" size="sm" onClick={handleAdminClick}>
               <ShieldCheck className={`h-4 w-4 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
@@ -86,7 +89,6 @@ const Header = () => {
             </Button>
           )}
 
-          {/* Cart */}
           {(!user || userType === 'customer') && (
             <Button variant="ghost" className="relative text-white hover:bg-white/20" asChild>
               <Link to="/cart">
@@ -104,12 +106,22 @@ const Header = () => {
             <div className="w-8 h-8 rounded-full bg-white/20 animate-pulse" />
           ) : user ? (
             userType === 'merchant' ? (
-              <Button variant="secondary" size="lg" asChild className="font-bold bg-white text-primary hover:bg-white/90">
-                <Link to="/dashboard">
-                  <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
-                  <span>ارفع طبخاتك</span>
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                {pageSlug && (
+                  <Button variant="ghost" className="text-white hover:bg-white/20" asChild>
+                    <Link to={`/p/${pageSlug}`}>
+                      <Store className={`h-4 w-4 ${dir === 'rtl' ? 'ml-1' : 'mr-1'}`} />
+                      <span>{t('index.myKitchen')}</span>
+                    </Link>
+                  </Button>
+                )}
+                <Button variant="secondary" size="lg" asChild className="font-bold bg-white text-primary hover:bg-white/90">
+                  <Link to="/dashboard">
+                    <ChefHat className={`h-5 w-5 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`} />
+                    <span>ارفع طبخاتك</span>
+                  </Link>
+                </Button>
+              </div>
             ) : (
               <Button variant="secondary" asChild>
                 <Link to="/customer">
