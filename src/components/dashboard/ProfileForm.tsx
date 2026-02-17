@@ -418,7 +418,7 @@ const ProfileForm = () => {
         </CardContent>
       </Card>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full">
+      <Button onClick={handleSave} disabled={saving} className="w-full bg-success hover:bg-success/90 text-success-foreground">
         {saving ? (
           <>
             <Loader2 className="mx-2 h-4 w-4 animate-spin" />
